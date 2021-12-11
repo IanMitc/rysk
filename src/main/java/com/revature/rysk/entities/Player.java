@@ -28,4 +28,20 @@ public class Player {
     @ManyToOne
     @JoinColumn(name = "password_password_id")
     private Password password;
+
+    public AuthToken getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(AuthToken authToken) {
+        this.authToken = authToken;
+    }
+
+    public Password getPassword() {
+        return password;
+    }
+
+    public void setPassword(Password password) {
+        this.password = password;
+    }
 }
