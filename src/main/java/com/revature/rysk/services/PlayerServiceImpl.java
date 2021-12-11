@@ -1,5 +1,6 @@
 package com.revature.rysk.services;
 
+import com.revature.rysk.entities.AuthToken;
 import com.revature.rysk.entities.Player;
 import com.revature.rysk.exceptions.DuplicateResourceException;
 import com.revature.rysk.exceptions.NotFoundException;
@@ -21,6 +22,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (checkedPlayer.isPresent())
             throw new DuplicateResourceException("Email is already in use");
 
+        player.setAuthToken(new AuthToken());
         Player playerOutput = playerRepository.save(player);
         //we make the password null in the returned object because it should never be needed by the UI
         playerOutput.setPassword(null);
@@ -31,7 +33,10 @@ public class PlayerServiceImpl implements PlayerService {
     public Player getPlayerByEmail(String email) {
         Optional<Player> player = playerRepository.getPlayerByPlayerEmail(email);
         if (player.isPresent()) {
-            return player.get();
+            Player playerOutput = player.get();
+            playerOutput.setAuthToken(null);
+            playerOutput.setPassword(null);
+            return playerOutput;
         }
         throw new NotFoundException("Player not found");
     }
