@@ -34,7 +34,7 @@
 
 ### player/email (post email)
 
-```aidl
+```
 test@example.com
 ```
 
@@ -48,9 +48,30 @@ test@example.com
     "password": null
 ```
 
-### player/update (post updated player info)
+### player (put updated player info)
+
+```
+    "playerId": 302,
+    "playerEmail": "test4@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 10,
+        "authToken": "3150364b-ffd3-4d55-a205-5036ade6f946"
+    }
+```
 
 - returns updated player should be saved to cookie or local storage so user will stay logged in.
+
+```
+    "playerId": 302,
+    "playerEmail": "test4@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 10,
+        "authToken": "3150364b-ffd3-4d55-a205-5036ade6f946"
+    },
+    "password": null
+```
 
 ### player/login (post player email, password)
 
