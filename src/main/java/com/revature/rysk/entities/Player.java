@@ -22,10 +22,10 @@ public class Player {
     private String playerEmail;
     @Column(nullable = false)
     private String playerName;
-    @OneToOne(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToOne(orphanRemoval = true)
     @JoinColumn(name = "auth_token_auth_token_id")
     private AuthToken authToken;
-    @ManyToOne(cascade = {CascadeType.REMOVE})
+    @ManyToOne
     @JoinColumn(name = "password_password_id")
     private Password password;
 }
