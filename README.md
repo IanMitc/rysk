@@ -29,29 +29,26 @@
         "authTokenId": 7,
         "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
     },
-    "password": {
-        "passwordId": 8
-    }
+    "password": null
 ```
 
-### player/{email} (post currently logged in player)
+### player/email (post email)
+
+```aidl
+test@example.com
+```
 
 - returns player
 
 ```    
-    "playerId": 202,
-    "playerEmail": "test2@example.com",
+    "playerId": 152,
+    "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "authToken": {
-        "authTokenId": 7,
-        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
-    },
-    "password": {
-        "passwordId": 8
-    }
+    "authToken": null,
+    "password": null
 ```
 
-### player/{id} (post updated player info)
+### player/update (post updated player info)
 
 - returns updated player should be saved to cookie or local storage so user will stay logged in.
 
