@@ -1,29 +1,64 @@
-1. Project Name 
-2. Project Description (short explanation of idea) 
-3. Feature list 
-4. Wire frame 
-5. App flow 
-6. Distribution of task between team members 
+1. Project Name
+2. Project Description (short explanation of idea)
+3. Feature list
+4. Wire frame
+5. App flow
+6. Distribution of task between team members
 
 # Rysk REST API version 1.0
 
 ## Player
 
-### player (post player, password)
+### player (post player)
 
-- return player and auth token. Adds player to system
+```
+    "playerName": "Testy McTestface",
+    "playerEmail": "test@example.com",
+    "password": {
+        "password": "password"
+    }
+```
 
-### player/{email} (get)
+- return player and auth token. Adds player to system.
+
+```    
+    "playerId": 202,
+    "playerEmail": "test2@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 7,
+        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    },
+    "password": {
+        "passwordId": 8
+    }
+```
+
+### player/{email} (post currently logged in player)
 
 - returns player
 
-### player/{id} (put authkey, updated player info)
+```    
+    "playerId": 202,
+    "playerEmail": "test2@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 7,
+        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    },
+    "password": {
+        "passwordId": 8
+    }
+```
+
+### player/{id} (post updated player info)
 
 - returns updated player should be saved to cookie or local storage so user will stay logged in.
 
 ### player/login (post player email, password)
 
-- returns auth token to use as for length of session. Can be saved in cookie or local storage with user info. we could just say success and assume the client side isn't going to try and inject moves for other players for now.
+- returns auth token to use as for length of session. Can be saved in cookie or local storage with user info. we could
+  just say success and assume the client side isn't going to try and inject moves for other players for now.
 
 ### player/logout (post auth token, player id)
 
@@ -53,11 +88,13 @@
 
 ### game/quit (post auth token, player id, game id)
 
-- returns current game board but player is no longer active (auto distribute countries to other players or make neutral?)
+- returns current game board but player is no longer active (auto distribute countries to other players or make
+  neutral?)
 
 ### game/exit (post auth token, player id, game id)
 
-- returns success or error. Allows game play to continue until this players turn (or is attacked) and then waits for that player to rejoin.
+- returns success or error. Allows game play to continue until this players turn (or is attacked) and then waits for
+  that player to rejoin.
 
 ### game/log (post auth token, player id, game id)
 
@@ -65,7 +102,8 @@
 
 ### game/log/{log id} (post auth token, player id, game id)
 
-- returns all log messages from a particular message to the most recent. If we don't use web sockets, we can have the log component call this on a timer and then update the UI game state if a new log is returned.
+- returns all log messages from a particular message to the most recent. If we don't use web sockets, we can have the
+  log component call this on a timer and then update the UI game state if a new log is returned.
 
 ## Game Play
 
@@ -83,7 +121,8 @@
 
 ### game/play/defend (post auth token, player id, defending country id, number of dice)
 
-- returns up to 2 random numbers for dice roll or failure if not auth etc. Triggers logging of attack and if web sockets are implemented will tell players to update board info.
+- returns up to 2 random numbers for dice roll or failure if not auth etc. Triggers logging of attack and if web sockets
+  are implemented will tell players to update board info.
 
 ### game/play/move (post auth token, player id, from country id, to country id)
 
@@ -91,4 +130,5 @@
 
 ### game/play/draw (post auth token, player id)
 
-- returns card if player took over a country, empty if not, or error. Also signals to the backend that the player's turn has ended.
+- returns card if player took over a country, empty if not, or error. Also signals to the backend that the player's turn
+  has ended.
