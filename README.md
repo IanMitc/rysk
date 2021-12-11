@@ -1,46 +1,94 @@
-# Getting Started with Create React App
+1. Project Name 
+2. Project Description (short explanation of idea) 
+3. Feature list 
+4. Wire frame 
+5. App flow 
+6. Distribution of task between team members 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Rysk REST API version 1.0
 
-## Available Scripts
+## Player
 
-In the project directory, you can run:
+### player (post player, password)
 
-### `npm start`
+- return player and auth token. Adds player to system
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### player/{email} (get)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- returns player
 
-### `npm test`
+### player/{id} (put authkey, updated player info)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- returns updated player should be saved to cookie or local storage so user will stay logged in.
 
-### `npm run build`
+### player/login (post player email, password)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- returns auth token to use as for length of session. Can be saved in cookie or local storage with user info. we could just say success and assume the client side isn't going to try and inject moves for other players for now.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### player/logout (post auth token, player id)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- returns empty if success and removes auth token from system so can no longer be used.
 
-### `npm run eject`
+### player/login/check (post auth token, player id)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- returns existing or new auth token if valid or empty if invalid
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### player/games (post auth token, player id)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- returns games that player is a participant in
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Game Management
 
-## Learn More
+### game/new (post auth token, player id, other player ids for game)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- returns "empty" game board for a new game while waiting for other players.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### game/decline (post auth token, user id, game id)
+
+- returns success or failure
+
+### game/join (post auth token, user id, game id)
+
+- returns game board. Can be used for joining new or existing games also to update board in UI if needed.
+
+### game/quit (post auth token, player id, game id)
+
+- returns current game board but player is no longer active (auto distribute countries to other players or make neutral?)
+
+### game/exit (post auth token, player id, game id)
+
+- returns success or error. Allows game play to continue until this players turn (or is attacked) and then waits for that player to rejoin.
+
+### game/log (post auth token, player id, game id)
+
+- returns the game history
+
+### game/log/{log id} (post auth token, player id, game id)
+
+- returns all log messages from a particular message to the most recent. If we don't use web sockets, we can have the log component call this on a timer and then update the UI game state if a new log is returned.
+
+## Game Play
+
+### game/play/discard (post auth token, player id, 0 or 3 cards)
+
+- returns number of additional armies earned
+
+### game/play/armies (post auth token, player id, game id, country id, number of armies to add)
+
+- returns updated country or failure if not auth, not turn, not controlled by player,
+
+### game/play/attack (post auth token, player id, attacking country id, number of attacking armies, number of dice, defending country id)
+
+- returns up to 3 random numbers for dice roll or failure if not auth etc.
+
+### game/play/defend (post auth token, player id, defending country id, number of dice)
+
+- returns up to 2 random numbers for dice roll or failure if not auth etc. Triggers logging of attack and if web sockets are implemented will tell players to update board info.
+
+### game/play/move (post auth token, player id, from country id, to country id)
+
+- returns updated countries or failure
+
+### game/play/draw (post auth token, player id)
+
+- returns card if player took over a country, empty if not, or error. Also signals to the backend that the player's turn has ended.
