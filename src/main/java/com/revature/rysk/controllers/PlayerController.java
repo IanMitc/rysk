@@ -1,16 +1,12 @@
 package com.revature.rysk.controllers;
 
-//local branch new_br
-import com.revature.rysk.entities.AuthToken;
 import com.revature.rysk.entities.Player;
 import com.revature.rysk.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class PlayerController {
     @Autowired
     private PlayerService playerService;
@@ -31,10 +27,17 @@ public class PlayerController {
     }
 
     @PostMapping("/player/login")
-    public Player login(@RequestBody Player player) { return playerService.login(player); }
+    public Player login(@RequestBody Player player) {
+        return playerService.login(player);
+    }
 
     @PostMapping("/player/logout")
     public Player logout(@RequestBody Player player) {
         return playerService.logout(player);
+    }
+
+    @PostMapping("/player/check")
+    public Player checkLoggedIn(@RequestBody Player player) {
+        return playerService.checkLoggedIn(player);
     }
 }

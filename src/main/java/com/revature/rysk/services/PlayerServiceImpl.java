@@ -98,7 +98,7 @@ public class PlayerServiceImpl implements PlayerService {
         AuthToken authTokenToCheck = player.getAuthToken();
 
         if (authToken != null) {
-            if (!authToken.getAuthToken().equals(authTokenToCheck.getAuthToken())){
+            if (!authToken.getAuthToken().equals(authTokenToCheck.getAuthToken())) {
                 throw new PermissionsException("Not Authorized");
             }
             playerFromDb.setAuthToken(null);
@@ -106,5 +106,27 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         return null;
+    }
+
+    @Override
+    public Player checkLoggedIn(Player player) {
+        System.out.println(player);
+        Optional<Player> playerFromDb = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+        System.out.println(playerFromDb);
+        if (playerFromDb.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        AuthToken authTokenFromDb = playerFromDb.get().getAuthToken();
+        AuthToken authToken = player.getAuthToken();
+
+        if (authTokenFromDb == null || !authTokenFromDb.getAuthToken().equals(authToken.getAuthToken())) {
+            throw new PermissionsException("Not logged in");
+        }
+
+        Player playerOutput = playerFromDb.get();
+        //we make the password null in the returned object because it should never be needed by the UI
+        playerOutput.setPlayerPassword(null);
+        return playerOutput;
     }
 }
