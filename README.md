@@ -145,57 +145,57 @@ test@example.com
 
 - returns "empty" game board for a new game while waiting for other players.
 
-### game/decline (post auth token, user id, game id)
+### game/decline (post Player, game id)
 
 - returns success or failure
 
-### game/join (post auth token, user id, game id)
+### game/join (post Player, game id)
 
 - returns game board. Can be used for joining new or existing games also to update board in UI if needed.
 
-### game/quit (post auth token, player id, game id)
+### game/quit (post Player, game id)
 
 - returns current game board but player is no longer active (auto distribute countries to other players or make
   neutral?)
 
-### game/exit (post auth token, player id, game id)
+### game/exit (post Player, game id)
 
 - returns success or error. Allows game play to continue until this players turn (or is attacked) and then waits for
   that player to rejoin.
 
-### game/log (post auth token, player id, game id)
+### game/log (post Player, game id)
 
 - returns the game history
 
-### game/log/{log id} (post auth token, player id, game id)
+### game/log/{log id} (post Player, game id)
 
 - returns all log messages from a particular message to the most recent. If we don't use web sockets, we can have the
   log component call this on a timer and then update the UI game state if a new log is returned.
 
 ## Game Play
 
-### game/play/discard (post auth token, player id, 0 or 3 cards)
+### game/play/discard (post Player, 0 or 3 cards)
 
 - returns number of additional armies earned
 
-### game/play/armies (post auth token, player id, game id, country id, number of armies to add)
+### game/play/armies (post Player, game id, country id, number of armies to add)
 
 - returns updated country or failure if not auth, not turn, not controlled by player,
 
-### game/play/attack (post auth token, player id, attacking country id, number of attacking armies, number of dice, defending country id)
+### game/play/attack (post Player, attacking country id, number of attacking armies, number of dice, defending country id)
 
 - returns up to 3 random numbers for dice roll or failure if not auth etc.
 
-### game/play/defend (post auth token, player id, defending country id, number of dice)
+### game/play/defend (post Player, defending country id, number of dice)
 
 - returns up to 2 random numbers for dice roll or failure if not auth etc. Triggers logging of attack and if web sockets
   are implemented will tell players to update board info.
 
-### game/play/move (post auth token, player id, from country id, to country id)
+### game/play/move (post Player, from country id, to country id, number of armies)
 
 - returns updated countries or failure
 
-### game/play/draw (post auth token, player id)
+### game/play/draw (post Player)
 
 - returns card if player took over a country, empty if not, or error. Also signals to the backend that the player's turn
   has ended.
