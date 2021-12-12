@@ -2,6 +2,7 @@ package com.revature.rysk.entities.Game;
 
 import com.revature.rysk.entities.Player.Player;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Country {
     @Id
     @GeneratedValue
