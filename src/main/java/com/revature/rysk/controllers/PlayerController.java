@@ -1,5 +1,6 @@
 package com.revature.rysk.controllers;
 
+//local branch new_br
 import com.revature.rysk.entities.AuthToken;
 import com.revature.rysk.entities.Player;
 import com.revature.rysk.services.PlayerService;
@@ -30,9 +31,7 @@ public class PlayerController {
     }
 
     @PostMapping("/player/login")
-    public Player login(@RequestBody Player player) {
-        return playerService.login(player);
-    }
+    public Player login(@RequestBody Player player) { return playerService.login(player); }
 
     @PostMapping("/player/logout")
     public Player logout(@RequestBody Player player) {
