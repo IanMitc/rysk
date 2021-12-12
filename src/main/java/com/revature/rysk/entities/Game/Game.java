@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -21,10 +20,12 @@ public class Game {
     private long gameId;
 
     @ManyToMany
-    @JoinTable(name = "game_players",
-            joinColumns = @JoinColumn(name = "game_null"),
-            inverseJoinColumns = @JoinColumn(name = "players_player_id"))
-    private Set<Player> players;
+    @JoinTable(name = "game_players", joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"), inverseJoinColumns = @JoinColumn(name = "players_player_id", referencedColumnName = "playerId"))
+    private Deque<Player> players;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "current_player_player_id")
+    private Player currentPlayer;
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Continent> continents;
@@ -32,8 +33,23 @@ public class Game {
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "deck_deck_id")
     private Deck deck;
+    private STAGE stage;
 
-    public void newGame() {
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GameLog> logs = new ArrayList<>();
+
+    public void newGame(List<Player> playersForGame) {
+        //gets a new deck of all the cards
+        this.deck = new Deck();
+        this.deck.newDeck();
+
+        //Randomize turn order
+        Collections.shuffle(playersForGame);
+        this.players.addAll(playersForGame);
+
+        this.players = new LinkedList<>();
+
+
         //Create all Countries and populate them with one Army for start of game
         Country Alaska = Country.builder().name(Country.NAME.Alaska).printableName("Alaska").armies(1).build();
         Country Alberta = Country.builder().name(Country.NAME.Alberta).printableName("Alberta").armies(1).build();
@@ -78,6 +94,62 @@ public class Game {
         Country NewGuinea = Country.builder().name(Country.NAME.NewGuinea).printableName("New Guinea").armies(1).build();
         Country WesternAustralia = Country.builder().name(Country.NAME.WesternAustralia).printableName("W Australia").armies(1).build();
 
+        //Add them to a list to be dealt to players
+        List<Country> countries = new LinkedList<>();
+        countries.add(Alaska);
+        countries.add(Alberta);
+        countries.add(CentralAmerica);
+        countries.add(EasternUnitedStates);
+        countries.add(Greenland);
+        countries.add(NorthwestTerritory);
+        countries.add(Ontario);
+        countries.add(Quebec);
+        countries.add(WesternUnitedStates);
+        countries.add(Argentina);
+        countries.add(Brazil);
+        countries.add(Peru);
+        countries.add(Venezuela);
+        countries.add(GreatBritain);
+        countries.add(Iceland);
+        countries.add(NorthernEurope);
+        countries.add(Scandinavia);
+        countries.add(SouthernEurope);
+        countries.add(Ukraine);
+        countries.add(WesternEurope);
+        countries.add(Congo);
+        countries.add(EastAfrica);
+        countries.add(Egypt);
+        countries.add(Madagascar);
+        countries.add(NorthAfrica);
+        countries.add(SouthAfrica);
+        countries.add(Afghanistan);
+        countries.add(China);
+        countries.add(India);
+        countries.add(Irkutsk);
+        countries.add(Japan);
+        countries.add(Kamchatka);
+        countries.add(MiddleEast);
+        countries.add(Mongolia);
+        countries.add(Siam);
+        countries.add(Siberia);
+        countries.add(Ural);
+        countries.add(Yakutsk);
+        countries.add(EasternAustralia);
+        countries.add(Indonesia);
+        countries.add(NewGuinea);
+        countries.add(WesternAustralia);
+
+        Collections.shuffle(countries);
+        //for each country, assign the top player as the controller
+        for (Country c : countries) {
+            Player p = players.pop();
+            c.setControlledBy(p);
+            players.addLast(p);
+        }
+        //Take the top player and make him current
+        this.currentPlayer = this.players.pop();
+        this.players.addLast(this.currentPlayer);
+
         //Populate neighbors
         //Alaska
         Set<Country> neighbors = new LinkedHashSet<>();
@@ -86,41 +158,41 @@ public class Game {
         neighbors.add(NorthwestTerritory);
         Alaska.setNeighbors(neighbors);
         //Alberta
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Alaska);
         neighbors.add(NorthwestTerritory);
         neighbors.add(Ontario);
         neighbors.add(WesternUnitedStates);
         Alberta.setNeighbors(neighbors);
         //CentralAmerica
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(EasternUnitedStates);
         neighbors.add(WesternUnitedStates);
         neighbors.add(Venezuela);
         CentralAmerica.setNeighbors(neighbors);
         //EasternUnitedStates
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(CentralAmerica);
         neighbors.add(Ontario);
         neighbors.add(Quebec);
         neighbors.add(WesternUnitedStates);
         EasternUnitedStates.setNeighbors(neighbors);
         //Greenland
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(NorthwestTerritory);
         neighbors.add(Ontario);
         neighbors.add(Quebec);
         neighbors.add(Iceland);
         Greenland.setNeighbors(neighbors);
         //NorthwestTerritory
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Alaska);
         neighbors.add(Alberta);
         neighbors.add(Greenland);
         neighbors.add(Ontario);
         NorthwestTerritory.setNeighbors(neighbors);
         //Ontario
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Alberta);
         neighbors.add(EasternUnitedStates);
         neighbors.add(Greenland);
@@ -129,57 +201,57 @@ public class Game {
         neighbors.add(WesternUnitedStates);
         Ontario.setNeighbors(neighbors);
         //Quebec
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(EasternUnitedStates);
         neighbors.add(Greenland);
         neighbors.add(Ontario);
         Quebec.setNeighbors(neighbors);
         //WesternUnitedStates
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Alberta);
         neighbors.add(CentralAmerica);
         neighbors.add(EasternUnitedStates);
         neighbors.add(Ontario);
         WesternUnitedStates.setNeighbors(neighbors);
         //Argentina
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Brazil);
         neighbors.add(Peru);
         Argentina.setNeighbors(neighbors);
         //Brazil
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Argentina);
         neighbors.add(Peru);
         neighbors.add(Venezuela);
         neighbors.add(NorthAfrica);
         Brazil.setNeighbors(neighbors);
         //Peru
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Argentina);
         neighbors.add(Brazil);
         neighbors.add(Venezuela);
         Peru.setNeighbors(neighbors);
         //Venezuela
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(CentralAmerica);
         neighbors.add(Brazil);
         neighbors.add(Peru);
         Venezuela.setNeighbors(neighbors);
         //GreatBritain
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Iceland);
         neighbors.add(NorthernEurope);
         neighbors.add(Scandinavia);
         neighbors.add(WesternEurope);
         GreatBritain.setNeighbors(neighbors);
         //Iceland
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Greenland);
         neighbors.add(GreatBritain);
         neighbors.add(Scandinavia);
         Iceland.setNeighbors(neighbors);
         //NorthernEurope
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(GreatBritain);
         neighbors.add(Scandinavia);
         neighbors.add(SouthernEurope);
@@ -187,14 +259,14 @@ public class Game {
         neighbors.add(WesternEurope);
         NorthernEurope.setNeighbors(neighbors);
         //Scandinavia
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(GreatBritain);
         neighbors.add(Iceland);
         neighbors.add(NorthernEurope);
         neighbors.add(Ukraine);
         Scandinavia.setNeighbors(neighbors);
         //SouthernEurope
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(NorthernEurope);
         neighbors.add(Ukraine);
         neighbors.add(WesternEurope);
@@ -203,7 +275,7 @@ public class Game {
         neighbors.add(MiddleEast);
         SouthernEurope.setNeighbors(neighbors);
         //Ukraine
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(NorthernEurope);
         neighbors.add(Scandinavia);
         neighbors.add(SouthernEurope);
@@ -212,20 +284,20 @@ public class Game {
         neighbors.add(Ural);
         Ukraine.setNeighbors(neighbors);
         //WesternEurope
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(GreatBritain);
         neighbors.add(NorthernEurope);
         neighbors.add(SouthernEurope);
         neighbors.add(NorthAfrica);
         WesternEurope.setNeighbors(neighbors);
         //Congo
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(EastAfrica);
         neighbors.add(NorthAfrica);
         neighbors.add(SouthAfrica);
         Congo.setNeighbors(neighbors);
         //EastAfrica
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Congo);
         neighbors.add(Egypt);
         neighbors.add(Madagascar);
@@ -234,19 +306,19 @@ public class Game {
         neighbors.add(MiddleEast);
         EastAfrica.setNeighbors(neighbors);
         //Egypt
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(SouthernEurope);
         neighbors.add(EastAfrica);
         neighbors.add(NorthAfrica);
         neighbors.add(MiddleEast);
         Egypt.setNeighbors(neighbors);
         //Madagascar
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(EastAfrica);
         neighbors.add(SouthAfrica);
         Madagascar.setNeighbors(neighbors);
         //NorthAfrica
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Brazil);
         neighbors.add(SouthernEurope);
         neighbors.add(WesternEurope);
@@ -255,13 +327,13 @@ public class Game {
         neighbors.add(Egypt);
         NorthAfrica.setNeighbors(neighbors);
         //SouthAfrica
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Congo);
         neighbors.add(EastAfrica);
         neighbors.add(Madagascar);
         SouthAfrica.setNeighbors(neighbors);
         //Afghanistan
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Ukraine);
         neighbors.add(China);
         neighbors.add(India);
@@ -269,7 +341,7 @@ public class Game {
         neighbors.add(Ural);
         Afghanistan.setNeighbors(neighbors);
         //China
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Afghanistan);
         neighbors.add(India);
         neighbors.add(Mongolia);
@@ -278,26 +350,26 @@ public class Game {
         neighbors.add(Ural);
         China.setNeighbors(neighbors);
         //India
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Afghanistan);
         neighbors.add(China);
         neighbors.add(MiddleEast);
         neighbors.add(Siam);
         India.setNeighbors(neighbors);
         //Irkutsk
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Kamchatka);
         neighbors.add(Mongolia);
         neighbors.add(Siberia);
         neighbors.add(Yakutsk);
         Irkutsk.setNeighbors(neighbors);
         //Japan
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Kamchatka);
         neighbors.add(Mongolia);
         Japan.setNeighbors(neighbors);
         //Kamchatka
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Alaska);
         neighbors.add(Irkutsk);
         neighbors.add(Japan);
@@ -305,7 +377,7 @@ public class Game {
         neighbors.add(Yakutsk);
         Kamchatka.setNeighbors(neighbors);
         //MiddleEast
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(SouthernEurope);
         neighbors.add(Ukraine);
         neighbors.add(EastAfrica);
@@ -314,7 +386,7 @@ public class Game {
         neighbors.add(India);
         MiddleEast.setNeighbors(neighbors);
         //Mongolia
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(China);
         neighbors.add(Irkutsk);
         neighbors.add(Japan);
@@ -322,13 +394,13 @@ public class Game {
         neighbors.add(Siberia);
         Mongolia.setNeighbors(neighbors);
         //Siam
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(China);
         neighbors.add(India);
         neighbors.add(Indonesia);
         Siam.setNeighbors(neighbors);
         //Siberia
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(China);
         neighbors.add(Irkutsk);
         neighbors.add(Mongolia);
@@ -336,37 +408,37 @@ public class Game {
         neighbors.add(Yakutsk);
         Siberia.setNeighbors(neighbors);
         //Ural
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Ukraine);
         neighbors.add(Afghanistan);
         neighbors.add(China);
         neighbors.add(Siberia);
         Ural.setNeighbors(neighbors);
         //Yakutsk
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Irkutsk);
         neighbors.add(Kamchatka);
         neighbors.add(Siberia);
         Yakutsk.setNeighbors(neighbors);
         //EasternAustralia
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(NewGuinea);
         neighbors.add(WesternAustralia);
         EasternAustralia.setNeighbors(neighbors);
         //Indonesia
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(Siam);
         neighbors.add(NewGuinea);
         neighbors.add(WesternAustralia);
         Indonesia.setNeighbors(neighbors);
         //NewGuinea
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(EasternAustralia);
         neighbors.add(Indonesia);
         neighbors.add(WesternAustralia);
         NewGuinea.setNeighbors(neighbors);
         //WesternAustralia
-        neighbors = new LinkedHashSet<Country>();
+        neighbors = new LinkedHashSet<>();
         neighbors.add(EasternAustralia);
         neighbors.add(Indonesia);
         neighbors.add(NewGuinea);
@@ -381,65 +453,65 @@ public class Game {
         Continent Australia = Continent.builder().name(Continent.NAME.Australia).printableName("Australia").build();
         //Populate Continents
         // NorthAmerica
-        Set<Country> countries = new LinkedHashSet<Country>();
-        countries.add(Alaska);
-        countries.add(Alberta);
-        countries.add(CentralAmerica);
-        countries.add(EasternUnitedStates);
-        countries.add(Greenland);
-        countries.add(NorthwestTerritory);
-        countries.add(Ontario);
-        countries.add(Quebec);
-        countries.add(WesternUnitedStates);
-        NorthAmerica.setCountries(countries);
+        Set<Country> countrySet = new LinkedHashSet<>();
+        countrySet.add(Alaska);
+        countrySet.add(Alberta);
+        countrySet.add(CentralAmerica);
+        countrySet.add(EasternUnitedStates);
+        countrySet.add(Greenland);
+        countrySet.add(NorthwestTerritory);
+        countrySet.add(Ontario);
+        countrySet.add(Quebec);
+        countrySet.add(WesternUnitedStates);
+        NorthAmerica.setCountries(countrySet);
         // SouthAmerica
-        countries = new LinkedHashSet<Country>();
-        countries.add(Argentina);
-        countries.add(Brazil);
-        countries.add(Peru);
-        countries.add(Venezuela);
-        SouthAmerica.setCountries(countries);
+        countrySet = new LinkedHashSet<>();
+        countrySet.add(Argentina);
+        countrySet.add(Brazil);
+        countrySet.add(Peru);
+        countrySet.add(Venezuela);
+        SouthAmerica.setCountries(countrySet);
         // Europe
-        countries = new LinkedHashSet<Country>();
-        countries.add(GreatBritain);
-        countries.add(Iceland);
-        countries.add(NorthernEurope);
-        countries.add(Scandinavia);
-        countries.add(SouthernEurope);
-        countries.add(Ukraine);
-        countries.add(WesternEurope);
-        Europe.setCountries(countries);
+        countrySet = new LinkedHashSet<>();
+        countrySet.add(GreatBritain);
+        countrySet.add(Iceland);
+        countrySet.add(NorthernEurope);
+        countrySet.add(Scandinavia);
+        countrySet.add(SouthernEurope);
+        countrySet.add(Ukraine);
+        countrySet.add(WesternEurope);
+        Europe.setCountries(countrySet);
         // Africa
-        countries = new LinkedHashSet<Country>();
-        countries.add(Congo);
-        countries.add(EastAfrica);
-        countries.add(Egypt);
-        countries.add(Madagascar);
-        countries.add(NorthAfrica);
-        countries.add(SouthAfrica);
-        Africa.setCountries(countries);
+        countrySet = new LinkedHashSet<>();
+        countrySet.add(Congo);
+        countrySet.add(EastAfrica);
+        countrySet.add(Egypt);
+        countrySet.add(Madagascar);
+        countrySet.add(NorthAfrica);
+        countrySet.add(SouthAfrica);
+        Africa.setCountries(countrySet);
         // Asia
-        countries = new LinkedHashSet<Country>();
-        countries.add(Afghanistan);
-        countries.add(China);
-        countries.add(India);
-        countries.add(Irkutsk);
-        countries.add(Japan);
-        countries.add(Kamchatka);
-        countries.add(MiddleEast);
-        countries.add(Mongolia);
-        countries.add(Siam);
-        countries.add(Siberia);
-        countries.add(Ural);
-        countries.add(Yakutsk);
-        Asia.setCountries(countries);
+        countrySet = new LinkedHashSet<>();
+        countrySet.add(Afghanistan);
+        countrySet.add(China);
+        countrySet.add(India);
+        countrySet.add(Irkutsk);
+        countrySet.add(Japan);
+        countrySet.add(Kamchatka);
+        countrySet.add(MiddleEast);
+        countrySet.add(Mongolia);
+        countrySet.add(Siam);
+        countrySet.add(Siberia);
+        countrySet.add(Ural);
+        countrySet.add(Yakutsk);
+        Asia.setCountries(countrySet);
         // Australia
-        countries = new LinkedHashSet<Country>();
-        countries.add(EasternAustralia);
-        countries.add(Indonesia);
-        countries.add(NewGuinea);
-        countries.add(WesternAustralia);
-        Australia.setCountries(countries);
+        countrySet = new LinkedHashSet<>();
+        countrySet.add(EasternAustralia);
+        countrySet.add(Indonesia);
+        countrySet.add(NewGuinea);
+        countrySet.add(WesternAustralia);
+        Australia.setCountries(countrySet);
 
         //Save Continents
         this.continents = new LinkedHashSet<>();
@@ -450,7 +522,13 @@ public class Game {
         this.continents.add(Asia);
         this.continents.add(Australia);
 
-        this.deck = new Deck();
-        this.deck.newDeck();
+        this.stage = STAGE.DISCARD;
+
+        this.logs.add(GameLog.builder().game(this).message("New Game Started").build());
+        this.logs.add(GameLog.builder().game(this).message(currentPlayer.getPlayerName() + " goes first").build());
+    }
+
+    public enum STAGE {
+        DISCARD, ARMIES, ATTACK, DEFEND, MOVE, DRAW
     }
 }
