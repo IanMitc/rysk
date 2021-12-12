@@ -125,8 +125,11 @@ test@example.com
 - returns existing Player if valid
 
 ```
+    "playerId": 1,
     "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
     "authToken": {
+        "authTokenId": 1,
         "authToken": "be120813-d39e-4306-bdd8-becbf0a8da65"
     },
     "playerPassword": null
