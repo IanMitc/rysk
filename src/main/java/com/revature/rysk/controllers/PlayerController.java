@@ -1,6 +1,5 @@
 package com.revature.rysk.controllers;
 
-import com.revature.rysk.entities.AuthToken;
 import com.revature.rysk.entities.Player;
 import com.revature.rysk.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +36,10 @@ public class PlayerController {
     @PostMapping("/player/logout")
     public Player logout(@RequestBody Player player) {
         return playerService.logout(player);
+    }
+
+    @PostMapping("/player/check")
+    public Player checkLoggedIn(@RequestBody Player player) {
+        return playerService.checkLoggedIn(player);
     }
 }
