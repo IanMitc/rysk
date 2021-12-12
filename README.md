@@ -108,17 +108,16 @@ test@example.com
 ```
 
 - returns empty if success and removes auth token from system so can no longer be used.
+
 ```
 ```
 
 ### player/login/check (post Player)
 
 ```
-    "playerId": 1,
     "playerEmail": "test@example.com",
-    "playerName": "Testy McTestface",
+
     "authToken": {
-        "authTokenId": 1,
         "authToken": "be120813-d39e-4306-bdd8-becbf0a8da65"
     }
 ```
@@ -136,13 +135,13 @@ test@example.com
     "playerPassword": null
 ```
 
-### player/games (post auth token, player id)
+### player/games (post Player)
 
 - returns all games that player is a participant in
 
 ## Game Management
 
-### game/new (post auth token, player id, other player ids for game)
+### game/new (post Players for game)
 
 - returns "empty" game board for a new game while waiting for other players.
 
