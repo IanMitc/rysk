@@ -6,8 +6,6 @@ import com.revature.rysk.entities.Player;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class PlayerRepositoryTest {
     @Autowired
     PlayerRepository playerRepository;
@@ -19,8 +17,8 @@ class PlayerRepositoryTest {
                 .playerName("Testy McTestface")
                 .build();
 
-        player.setAuthToken(new AuthToken(1, "1"));
-        player.setPassword(new Password(1,"Password"));
+        player.setAuthToken(new AuthToken());
+        player.setPlayerPassword(new Password(1,"Password"));
 
         playerRepository.save(player);
     }

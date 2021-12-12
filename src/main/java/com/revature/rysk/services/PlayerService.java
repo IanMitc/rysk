@@ -12,4 +12,8 @@ public interface PlayerService {
     Player getPlayerById(long id);
 
     Player updatePlayer(long id, Player player);
+
+    Player login(Player player);
+
+    Player logout(Player player);
 }

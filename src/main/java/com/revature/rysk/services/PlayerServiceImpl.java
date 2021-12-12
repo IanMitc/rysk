@@ -25,7 +25,7 @@ public class PlayerServiceImpl implements PlayerService {
         player.setAuthToken(new AuthToken());
         Player playerOutput = playerRepository.save(player);
         //we make the password null in the returned object because it should never be needed by the UI
-        playerOutput.setPassword(null);
+        playerOutput.setPlayerPassword(null);
         return playerOutput;
     }
 
@@ -35,7 +35,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (player.isPresent()) {
             Player playerOutput = player.get();
             playerOutput.setAuthToken(null);
-            playerOutput.setPassword(null);
+            playerOutput.setPlayerPassword(null);
             return playerOutput;
         }
         throw new NotFoundException("Player not found");
@@ -45,7 +45,7 @@ public class PlayerServiceImpl implements PlayerService {
     public Player getPlayerById(long id) {
         Player playerOutput = playerRepository.getById(id);
         //we make the password null in the returned object because it should never be needed by the UI
-        playerOutput.setPassword(null);
+        playerOutput.setPlayerPassword(null);
         return playerOutput;
     }
 
@@ -69,7 +69,42 @@ public class PlayerServiceImpl implements PlayerService {
         playerFromDb.setPlayerEmail(player.getPlayerEmail());
         Player playerOutput = playerRepository.save(playerFromDb);
         //we make the password null in the returned object because it should never be needed by the UI
-        playerOutput.setPassword(null);
+        playerOutput.setPlayerPassword(null);
         return playerOutput;
+    }
+
+    @Override
+    public Player login(Player player) {
+        Optional<Player> playerFromDb = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerFromDb.isEmpty()
+                || !playerFromDb.get().getPlayerPassword().getPassword().equals(player.getPlayerPassword().getPassword())) {
+            throw new NotFoundException("Email or password is incorrect");
+        }
+
+        Player playerOutput = playerFromDb.get();
+        playerOutput.setAuthToken(new AuthToken());
+        playerRepository.save(playerOutput);
+        //we make the password null in the returned object because it should never be needed by the UI
+        playerOutput.setPlayerPassword(null);
+        return playerOutput;
+    }
+
+    @Override
+    public Player logout(Player player) {
+        Player playerFromDb = playerRepository.getById(player.getPlayerId());
+
+        AuthToken authToken = playerFromDb.getAuthToken();
+        AuthToken authTokenToCheck = player.getAuthToken();
+
+        if (authToken != null) {
+            if (!authToken.getAuthToken().equals(authTokenToCheck.getAuthToken())){
+                throw new PermissionsException("Not Authorized");
+            }
+            playerFromDb.setAuthToken(null);
+            playerRepository.save(playerFromDb);
+        }
+
+        return null;
     }
 }

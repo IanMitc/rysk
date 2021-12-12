@@ -30,5 +30,5 @@ public class Player {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "password_password_id")
-    private Password password;
+    private Password playerPassword;
 }

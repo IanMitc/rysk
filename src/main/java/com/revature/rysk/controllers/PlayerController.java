@@ -29,4 +29,13 @@ public class PlayerController {
         return playerService.updatePlayer(updatedPlayer.getPlayerId(), updatedPlayer);
     }
 
+    @PostMapping("/player/login")
+    public Player login(@RequestBody Player player) {
+        return playerService.login(player);
+    }
+
+    @PostMapping("/player/logout")
+    public Player logout(@RequestBody Player player) {
+        return playerService.logout(player);
+    }
 }

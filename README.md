@@ -14,22 +14,22 @@
 ```
     "playerName": "Testy McTestface",
     "playerEmail": "test@example.com",
-    "password": {
+    "playerPassword": {
         "password": "password"
     }
 ```
 
-- return player and auth token. Adds player to system.
+- return player. Can be saved in cookie or local storage. Adds player to system.
 
 ```    
-    "playerId": 202,
-    "playerEmail": "test2@example.com",
+    "playerId": 1,
+    "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 7,
+        "authTokenId": 1,
         "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
     },
-    "password": null
+    "playerPassword": null
 ```
 
 ### player/email (post email)
@@ -41,54 +41,83 @@ test@example.com
 - returns player
 
 ```    
-    "playerId": 152,
+    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": null,
-    "password": null
+    "playerPassword": null
 ```
 
 ### player (put updated player info)
 
 ```
-    "playerId": 302,
-    "playerEmail": "test4@example.com",
+    "playerId": 1,
+    "playerEmail": "test2@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 10,
-        "authToken": "3150364b-ffd3-4d55-a205-5036ade6f946"
+        "authTokenId": 1,
+        "authToken": "ec3dd984-1262-4a25-8064-a9000f175695"
     }
 ```
 
 - returns updated player should be saved to cookie or local storage so user will stay logged in.
 
 ```
-    "playerId": 302,
-    "playerEmail": "test4@example.com",
+    "playerId": 1,
+    "playerEmail": "test2@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 10,
-        "authToken": "3150364b-ffd3-4d55-a205-5036ade6f946"
+        "authTokenId": 1,
+        "authToken": "ec3dd984-1262-4a25-8064-a9000f175695"
     },
-    "password": null
+    "playerPassword": null
 ```
 
-### player/login (post player email, password)
+### player/login (post Player)
 
-- returns auth token to use as for length of session. Can be saved in cookie or local storage with user info. we could
-  just say success and assume the client side isn't going to try and inject moves for other players for now.
+```
+    "playerEmail": "test@example.com",
+    "playerPassword": {
+        "password": "password"
+    }
+```
 
-### player/logout (post auth token, player id)
+- returns Player. Can be saved in cookie or local storage.
+
+```    
+    "playerId": 1,
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 1,
+        "authToken": "48daeea3-a109-43f0-a969-016cb6f9e86f"
+    },
+    "playerPassword": null
+```
+
+### player/logout (post Player)
+
+```
+    "playerId": 1,
+    "playerEmail": "test2@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 6,
+        "authToken": "9d6077c5-cc7b-4e85-91d0-0490fa4047b7"
+    }
+```
 
 - returns empty if success and removes auth token from system so can no longer be used.
+```
+```
 
-### player/login/check (post auth token, player id)
+### player/login/check (post Player)
 
-- returns existing or new auth token if valid or empty if invalid
+- returns existing Player if valid
 
 ### player/games (post auth token, player id)
 
-- returns games that player is a participant in
+- returns all games that player is a participant in
 
 ## Game Management
 

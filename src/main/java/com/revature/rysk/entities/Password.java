@@ -11,17 +11,13 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Getter
+@Setter
+@ToString
 public class Password {
     @Id
     @GeneratedValue
     @Column(nullable = false)
-    @Getter
-    @Setter
     private long passwordId;
-    @Setter
     private String password;
-
-    private boolean checkPassword(String passwordToCheck) {
-        return password.equals(passwordToCheck);
-    }
 }
