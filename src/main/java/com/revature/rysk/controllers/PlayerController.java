@@ -1,6 +1,6 @@
 package com.revature.rysk.controllers;
 
-import com.revature.rysk.entities.Player;
+import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,7 @@
 package com.revature.rysk.services;
 
-import com.revature.rysk.entities.AuthToken;
-import com.revature.rysk.entities.Player;
+import com.revature.rysk.entities.Player.AuthToken;
+import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.exceptions.DuplicateResourceException;
 import com.revature.rysk.exceptions.NotFoundException;
 import com.revature.rysk.exceptions.PermissionsException;

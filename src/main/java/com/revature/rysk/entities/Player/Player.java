@@ -1,4 +1,4 @@
-package com.revature.rysk.entities;
+package com.revature.rysk.entities.Player;
 
 import lombok.*;
 

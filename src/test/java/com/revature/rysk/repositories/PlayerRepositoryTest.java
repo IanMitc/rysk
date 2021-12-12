@@ -1,8 +1,8 @@
 package com.revature.rysk.repositories;
 
-import com.revature.rysk.entities.AuthToken;
-import com.revature.rysk.entities.Password;
-import com.revature.rysk.entities.Player;
+import com.revature.rysk.entities.Player.AuthToken;
+import com.revature.rysk.entities.Player.Password;
+import com.revature.rysk.entities.Player.Player;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

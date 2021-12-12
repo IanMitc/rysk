@@ -1,6 +1,6 @@
 package com.revature.rysk.repositories;
 
-import com.revature.rysk.entities.Player;
+import com.revature.rysk.entities.Player.Player;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
