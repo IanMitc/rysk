@@ -1,9 +1,6 @@
 package com.revature.rysk.entities.Game;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -13,6 +10,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Continent {
     @Id
     @GeneratedValue
@@ -22,6 +20,10 @@ public class Continent {
 
     @OneToMany(mappedBy = "continent", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Country> countries = new java.util.LinkedHashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "game_game_id")
+    private Game game;
 
     public enum NAME {
         NorthAmerica,
