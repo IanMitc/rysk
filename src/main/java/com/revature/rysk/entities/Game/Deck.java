@@ -27,13 +27,14 @@ public class Deck {
     private Stack<Card> cards;
 
     public void newDeck() {
+        this.cards = new Stack<>();
         for (int i = 0; i < 14; i++) {
-            this.cards.add(new Card(Card.TYPE.Cannon));
-            this.cards.add(new Card(Card.TYPE.FootSoldier));
-            this.cards.add(new Card(Card.TYPE.Horseman));
+            this.cards.add(Card.builder().type(Card.TYPE.Cannon).build());
+            this.cards.add(Card.builder().type(Card.TYPE.FootSoldier).build());
+            this.cards.add(Card.builder().type(Card.TYPE.Horseman).build());
         }
         for (int i = 0; i < 2; i++) {
-            this.cards.add(new Card(Card.TYPE.Joker));
+            this.cards.add(Card.builder().type(Card.TYPE.Joker).build());
         }
         Collections.shuffle(this.cards);
     }
