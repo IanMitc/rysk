@@ -307,9 +307,22 @@ Success
 Success
 ```
 
-### game/exit (post Player, game id)
+### game/exit/{gameId] (post Player)
+
+```
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 1,
+        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    }
+```
 
 - returns success
+
+```
+Success
+```
 
 ### game/log (post Player, game id)
 

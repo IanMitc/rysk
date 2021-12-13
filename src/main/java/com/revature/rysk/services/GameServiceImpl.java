@@ -3,6 +3,7 @@ package com.revature.rysk.services;
 import com.revature.rysk.entities.Game.Card;
 import com.revature.rysk.entities.Game.Country;
 import com.revature.rysk.entities.Game.Game;
+import com.revature.rysk.entities.Game.GameLog;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.exceptions.BadRequestException;
 import com.revature.rysk.exceptions.NotFoundException;
@@ -73,6 +74,12 @@ public class GameServiceImpl implements GameService {
         }
 
         game.removePlayer(playerFromDb);
+
+        List<GameLog> gameLogs = game.getLogs();
+        gameLogs.add(GameLog.builder().message(playerFromDb.getPlayerName() + " quit the game. Countries have been reallocated.").build());
+
+        game.setLogs(gameLogs);
+
         gameRepository.save(game);
         return "Success";
     }
@@ -102,6 +109,7 @@ public class GameServiceImpl implements GameService {
         if (!players.contains(playerFromDb)) {
             throw new PermissionsException("You are not a part of this game");
         }
+
         return game;
     }
 
@@ -112,7 +120,35 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public String exitGame(Player player, long gameId) {
-        return null;
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        Player playerFromDb = playerOptional.get();
+
+        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+            throw new PermissionsException("You are not logged in");
+        }
+
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NotFoundException("Game not found");
+        }
+        Game game = gameOptional.get();
+        List<Player> players = game.getPlayers();
+
+        if (!players.contains(playerFromDb)) {
+            throw new PermissionsException("You are not a part of this game");
+        }
+        List<GameLog> gameLogs = game.getLogs();
+        gameLogs.add(GameLog.builder().message(playerFromDb.getPlayerName() + " exited the game.").build());
+
+        game.setLogs(gameLogs);
+        gameRepository.save(game);
+        return "Success";
     }
 
     @Override

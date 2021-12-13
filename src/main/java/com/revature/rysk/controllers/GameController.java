@@ -35,4 +35,9 @@ public class GameController {
     public String quitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.declineGame(player, gameId);
     }
+
+    @PostMapping("/game/exit/{gameId}")
+    public String exitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+        return gameService.exitGame(player, gameId);
+    }
 }
