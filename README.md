@@ -290,15 +290,26 @@ Success
     "stage": "DISCARD"
 ```
 
-### game/quit (post Player, game id)
+### game/quit/{gameID} (post Player)
 
-- returns current game board but player is no longer active (auto distribute countries to other players or make
-  neutral?)
+```
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 1,
+        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    }
+```
+
+- returns success
+
+```
+Success
+```
 
 ### game/exit (post Player, game id)
 
-- returns success or error. Allows game play to continue until this players turn (or is attacked) and then waits for
-  that player to rejoin.
+- returns success
 
 ### game/log (post Player, game id)
 

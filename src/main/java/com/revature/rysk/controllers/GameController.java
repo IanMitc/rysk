@@ -31,4 +31,8 @@ public class GameController {
         return gameService.joinGame(player, gameId);
     }
 
+    @PostMapping("/game/quit/{gameId}")
+    public String quitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+        return gameService.declineGame(player, gameId);
+    }
 }
