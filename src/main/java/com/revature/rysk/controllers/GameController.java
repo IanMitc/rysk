@@ -41,4 +41,9 @@ public class GameController {
     public List<GameLog> getFullLog(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.getFullLog(player, gameId);
     }
+
+    @PostMapping("/game/log/{gameId}/{logId}")
+    public List<GameLog> tailLog(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("logId") int logId) {
+        return gameService.tailLog(player, gameId, logId);
+    }
 }

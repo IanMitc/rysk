@@ -25,7 +25,7 @@ public interface GameService {
     List<GameLog> getFullLog(Player player, long gameId);
 
     //gets all log messages after specific message
-    List<String> tailLog(Player player, long gameId, long logId);
+    List<GameLog> tailLog(Player player, long gameId, int logId);
 
     int discard(List<Card> cards);
 

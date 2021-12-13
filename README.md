@@ -329,10 +329,25 @@ Success
   }
 ```
 
-### game/log/{log id} (post Player, game id)
+### game/log/{gameId}/{log id} (post Player)
+
+```
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 1,
+        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    }
+```
 
 - returns all log messages from a particular message to the most recent. If we don't use web sockets, we can have the
   log component call this on a timer and then update the UI game state if a new log is returned.
+
+```
+    {
+        "message": "Testy McTestface goes first"
+    }
+```
 
 ## Game Play
 

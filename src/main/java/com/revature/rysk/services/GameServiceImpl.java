@@ -177,8 +177,43 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<String> tailLog(Player player, long gameId, long logId) {
-        return null;
+    public List<GameLog> tailLog(Player player, long gameId, int logId) {
+        if (logId < 0){
+            throw new BadRequestException("There are no negative logs");
+        }
+
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        Player playerFromDb = playerOptional.get();
+
+        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+            throw new PermissionsException("You are not logged in");
+        }
+
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NotFoundException("Game not found");
+        }
+        Game game = gameOptional.get();
+        List<Player> players = game.getPlayers();
+
+        if (!players.contains(playerFromDb)) {
+            throw new PermissionsException("You are not a part of this game");
+        }
+        List<GameLog> gameLogs = game.getLogs();
+
+        List<GameLog> partialLogs = new ArrayList<>();
+
+        if (logId < gameLogs.size()) {
+            partialLogs = gameLogs.subList(logId + 1, gameLogs.size());
+        }
+
+        return partialLogs;
     }
 
     @Override
