@@ -49,10 +49,8 @@ public class Game {
 
         //Randomize turn order
         Collections.shuffle(playersForGame);
-        this.players.addAll(playersForGame);
-
         this.players = new LinkedList<>();
-
+        this.players.addAll(playersForGame);
 
         //Create all Countries and populate them with one Army for start of game
         Country Alaska = Country.builder().name(Country.NAME.Alaska).printableName("Alaska").armies(1).build();
