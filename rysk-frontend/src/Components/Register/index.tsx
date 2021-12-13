@@ -20,22 +20,24 @@ export const Register = () => {
     console.log(player);
   };
 
-  const onSubmit = () => {
-    console.log(player);
-    axios
-      .post("http://localhost:8080/player", player)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((e) => console.log(e));
-  };
-
   return (
     <div className="row">
       <div className="col-lg-3" />
       <div className="col-lg-6">
         <div className="wrapper">
-          <form onSubmit={onSubmit}>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+
+              console.log(player);
+              axios
+                .post("http://localhost:8080/player", player)
+                .then((response) => {
+                  console.log(response);
+                })
+                .catch((e) => console.log(e));
+            }}
+          >
             <h1>Register</h1>
             <div className="form-group">
               <label>Player Name</label>
@@ -68,7 +70,6 @@ export const Register = () => {
                   setPlayer((prevPlayer) => ({
                     ...prevPlayer,
                     playerPassword: {
-                      ...prevPlayer.playerPassword,
                       password: event.target.value,
                     },
                   }));
