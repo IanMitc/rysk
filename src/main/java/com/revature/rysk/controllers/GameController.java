@@ -21,11 +21,6 @@ public class GameController {
         return gameService.newGame(players);
     }
 
-    @PostMapping("/game/decline/{gameId}")
-    public String declineGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
-        return gameService.declineGame(player, gameId);
-    }
-
     @PostMapping("/game/join/{gameId}")
     public Game joinGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.joinGame(player, gameId);
@@ -33,7 +28,7 @@ public class GameController {
 
     @PostMapping("/game/quit/{gameId}")
     public String quitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
-        return gameService.declineGame(player, gameId);
+        return gameService.quitGame(player, gameId);
     }
 
     @PostMapping("/game/exit/{gameId}")

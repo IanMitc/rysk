@@ -48,7 +48,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public String declineGame(Player player, long gameId) {
+    public String quitGame(Player player, long gameId) {
         Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
 
         if (playerOptional.isEmpty()) {
@@ -111,11 +111,6 @@ public class GameServiceImpl implements GameService {
         }
 
         return game;
-    }
-
-    @Override
-    public Game quitGame(Player player, long gameId) {
-        return null;
     }
 
     @Override
