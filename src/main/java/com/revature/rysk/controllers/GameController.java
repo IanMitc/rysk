@@ -26,4 +26,9 @@ public class GameController {
         return gameService.declineGame(player, gameId);
     }
 
+    @PostMapping("/game/join/{gameId}")
+    public Game joinGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+        return gameService.joinGame(player, gameId);
+    }
+
 }

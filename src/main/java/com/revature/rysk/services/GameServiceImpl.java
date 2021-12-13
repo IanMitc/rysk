@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class GameServiceImpl implements GameService{
+public class GameServiceImpl implements GameService {
     @Autowired
     private GameRepository gameRepository;
     @Autowired
@@ -25,16 +25,15 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public Game newGame(List<Player> players) {
-        System.out.println(players);
-        if (players.size() > 6 || players.size() < 2){
+        if (players.size() > 6 || players.size() < 2) {
             throw new BadRequestException("Only 2-6 players allowed");
         }
 
         List<Player> newPlayers = new ArrayList<>();
-        for (Player newPlayer : players){
+        for (Player newPlayer : players) {
             Optional<Player> newPlayerFromDb = playerRepository.getPlayerByPlayerEmail(newPlayer.getPlayerEmail());
 
-            if (newPlayerFromDb.isEmpty()){
+            if (newPlayerFromDb.isEmpty()) {
                 throw new NotFoundException(newPlayer.getPlayerEmail() + " not found");
             }
 
@@ -49,17 +48,27 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public String declineGame(Player player, long gameId) {
-        Player playerFromDb = playerRepository.getById(player.getPlayerId());
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
 
-        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())){
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        Player playerFromDb = playerOptional.get();
+
+        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
             throw new PermissionsException("You are not logged in");
         }
 
-        Game game = gameRepository.getById(gameId);
-        System.out.println(game);
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NotFoundException("Game not found");
+        }
+        Game game = gameOptional.get();
         List<Player> players = game.getPlayers();
 
-        if (!players.contains(playerFromDb)){
+        if (!players.contains(playerFromDb)) {
             throw new PermissionsException("You are not a part of this game");
         }
 
@@ -70,7 +79,30 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public Game joinGame(Player player, long gameId) {
-        return null;
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        Player playerFromDb = playerOptional.get();
+
+        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+            throw new PermissionsException("You are not logged in");
+        }
+
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NotFoundException("Game not found");
+        }
+        Game game = gameOptional.get();
+        List<Player> players = game.getPlayers();
+
+        if (!players.contains(playerFromDb)) {
+            throw new PermissionsException("You are not a part of this game");
+        }
+        return game;
     }
 
     @Override

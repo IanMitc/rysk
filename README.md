@@ -205,6 +205,7 @@ Success
 ```
 
 ### game/decline/{gameId} (post Player)
+
 ```
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
@@ -215,13 +216,79 @@ Success
 ```
 
 - returns success
+
 ```
 Success
 ```
 
-### game/join (post Player, game id)
+### game/join/{gameID} (post Player)
+
+```
+    "playerEmail": "test3@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authToken": "4690fb69-0502-4c53-84e7-4093f8424ab7"
+    }
+```
 
 - returns game board. Can be used for joining new or existing games also to update board in UI if needed.
+
+```
+    "gameId": 7,
+    "players": [
+        {
+            "playerEmail": "test@example.com",
+            "playerName": "Testy McTestface"
+        },
+        {
+            "playerEmail": "test2@example.com",
+            "playerName": "Testy McTestface"
+        },
+        {
+            "playerEmail": "test3@example.com",
+            "playerName": "Testy McTestface"
+        }
+    ],
+    "currentPlayer": {
+        "playerEmail": "test2@example.com",
+        "playerName": "Testy McTestface"
+    },
+    "attackingPlayer": null,
+    "logs": [
+        {
+            "logId": 51,
+            "message": "New Game Started"
+        },
+        {
+            "logId": 52,
+            "message": "Testy McTestface goes first"
+        }
+    ],
+    "countries": [
+        {
+            "gameDbId": 9,
+            "controlledBy": {
+                "playerEmail": "test@example.com",
+                "playerName": "Testy McTestface"
+            },
+            "name": "Alaska",
+            "countryId": 0,
+            "printableName": "Alaska",
+            "armies": 1
+        },
+        ...
+        ...
+        ...
+        
+            "name": "WesternAustralia",
+            "countryId": 41,
+            "printableName": "W Australia",
+            "armies": 1
+        }
+    ],
+    "bonusArmies": 4,
+    "stage": "DISCARD"
+```
 
 ### game/quit (post Player, game id)
 
