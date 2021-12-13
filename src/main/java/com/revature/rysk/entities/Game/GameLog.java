@@ -1,8 +1,11 @@
 package com.revature.rysk.entities.Game;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -15,9 +18,9 @@ public class GameLog {
     @GeneratedValue
     private long logId;
 
-    @Setter(AccessLevel.NONE)
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "game_game_id")
+    @JsonIgnoreProperties({"players","currentPlayer","attackingPlayer","deck","logs","countries","attackingDice","defendingDice","bonusArmies","stage"})
+    @ManyToOne(cascade = CascadeType.ALL)
     private Game game;
+
     private String message;
 }

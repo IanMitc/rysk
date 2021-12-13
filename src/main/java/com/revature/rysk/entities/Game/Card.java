@@ -1,16 +1,18 @@
 package com.revature.rysk.entities.Game;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Enumerated;
 
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
 public class Card {
+    @Enumerated
     private TYPE type;
 
     public enum TYPE {

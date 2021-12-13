@@ -6,8 +6,6 @@ import com.revature.rysk.entities.Game.Game;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.exceptions.BadRequestException;
 import com.revature.rysk.exceptions.NotFoundException;
-import com.revature.rysk.repositories.ContinentRepository;
-import com.revature.rysk.repositories.CountryRepository;
 import com.revature.rysk.repositories.GameRepository;
 import com.revature.rysk.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class GameServiceImpl implements GameService{
@@ -24,10 +21,6 @@ public class GameServiceImpl implements GameService{
     private GameRepository gameRepository;
     @Autowired
     private PlayerRepository playerRepository;
-    @Autowired
-    private CountryRepository countryRepository;
-    @Autowired
-    private ContinentRepository continentRepository;
 
     @Override
     public Game newGame(List<Player> players) {
