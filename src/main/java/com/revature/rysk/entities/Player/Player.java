@@ -1,5 +1,6 @@
 package com.revature.rysk.entities.Player;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -28,6 +29,7 @@ public class Player {
     @JoinColumn(name = "auth_token_auth_token_id")
     private AuthToken authToken;
 
+    @JsonIgnore
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "password_password_id")
     private Password playerPassword;

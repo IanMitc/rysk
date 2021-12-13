@@ -6,6 +6,7 @@ import com.revature.rysk.entities.Game.Game;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.exceptions.BadRequestException;
 import com.revature.rysk.exceptions.NotFoundException;
+import com.revature.rysk.exceptions.PermissionsException;
 import com.revature.rysk.repositories.GameRepository;
 import com.revature.rysk.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,23 @@ public class GameServiceImpl implements GameService{
 
     @Override
     public String declineGame(Player player, long gameId) {
-        return null;
+        Player playerFromDb = playerRepository.getById(player.getPlayerId());
+
+        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())){
+            throw new PermissionsException("You are not logged in");
+        }
+
+        Game game = gameRepository.getById(gameId);
+        System.out.println(game);
+        List<Player> players = game.getPlayers();
+
+        if (!players.contains(playerFromDb)){
+            throw new PermissionsException("You are not a part of this game");
+        }
+
+        game.removePlayer(playerFromDb);
+        gameRepository.save(game);
+        return "Success";
     }
 
     @Override

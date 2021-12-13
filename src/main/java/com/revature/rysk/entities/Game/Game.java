@@ -1,14 +1,15 @@
 package com.revature.rysk.entities.Game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revature.rysk.entities.Player.Player;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -23,7 +24,7 @@ public class Game {
     @JsonIgnoreProperties({"authToken", "playerPassword"})
     @ManyToMany
     @JoinTable(name = "game_players", joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"), inverseJoinColumns = @JoinColumn(name = "players_player_id", referencedColumnName = "playerId"))
-    private List<Player> players;
+    private List<Player> players = new ArrayList<>(6);
 
     @JsonIgnoreProperties({"authToken", "playerPassword"})
     @ManyToOne(cascade = CascadeType.ALL)
@@ -35,7 +36,7 @@ public class Game {
     @JoinColumn(name = "attacking_player_player_id")
     private Player attackingPlayer;
 
-    @JsonIgnoreProperties({"cards"})
+    @JsonIgnore
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "deck_deck_id")
     private Deck deck;
@@ -44,11 +45,24 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GameLog> logs = new ArrayList<>();
 
-    @Embedded
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "game_countries",
+            joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"),
+            inverseJoinColumns = @JoinColumn(name = "countries_game_db_id", referencedColumnName = "gameDbId"))
     List<Country> countries = new ArrayList<>();
 
-    private ArrayList<Integer> attackingDice;
-    private ArrayList<Integer> defendingDice;
+    @JsonIgnore
+    private int attackingDice1;
+    @JsonIgnore
+    private int attackingDice2;
+    @JsonIgnore
+    private int attackingDice3;
+
+    @JsonIgnore
+    private int defendingDice1;
+    @JsonIgnore
+    private int defendingDice2;
+
     private int bonusArmies;
     private STAGE stage;
 
@@ -106,7 +120,7 @@ public class Game {
         countries.add(Country.builder().countryId(i++).name(Country.NAME.Indonesia).printableName("Indonesia").armies(1).build());
         countries.add(Country.builder().countryId(i++).name(Country.NAME.NewGuinea).printableName("New Guinea").armies(1).build());
         countries.add(Country.builder().countryId(i).name(Country.NAME.WesternAustralia).printableName("W Australia").armies(1).build());
-        
+
         List<Country> countriesToDeal = new ArrayList<>(countries);
         Collections.shuffle(countriesToDeal);
         //for each country, assign the top player as the controller
@@ -122,16 +136,54 @@ public class Game {
         this.players.remove(this.currentPlayer);
         this.players.add(this.currentPlayer);
 
-        //Setup dice
-        this.attackingDice = new ArrayList<>(3);
-        this.defendingDice = new ArrayList<>(2);
-
         this.bonusArmies = 4;
 
         this.stage = STAGE.DISCARD;
 
         this.logs.add(GameLog.builder().game(this).message("New Game Started").build());
         this.logs.add(GameLog.builder().game(this).message(currentPlayer.getPlayerName() + " goes first").build());
+    }
+
+    //If a player leaves the game, we take their countries and deal them to the remaining players.
+    //We set the armies to one for an even playing field.
+    public void removePlayer(Player player) {
+        this.players.remove(player);
+        List<Country> countriesToRedistribute = new ArrayList<>();
+        System.out.println(countriesToRedistribute);
+        for (Country c : this.countries) {
+            if (c.getControlledBy().equals(player)) {
+                countriesToRedistribute.add(c);
+                System.out.println(c);
+            }
+        }
+
+        List<Player> playersLeft = new ArrayList<>(this.players);
+
+        for (Country c : countriesToRedistribute) {
+            Player p = playersLeft.get(0);
+            playersLeft.remove(p);
+            playersLeft.add(p);
+            c.setControlledBy(p);
+            c.setArmies(1);
+            System.out.println(c);
+        }
+
+        if (player.equals(this.currentPlayer)) {
+            this.currentPlayer = this.players.get(0);
+            this.players.remove(this.currentPlayer);
+            this.players.add(this.currentPlayer);
+        }
+    }
+
+    //The Army bonus increases each time a set is turned in
+    private void nextBonus() {
+        if (this.bonusArmies < 12) {
+            this.bonusArmies += 2;
+        } else if (this.bonusArmies < 15) {
+            this.bonusArmies += 3;
+        } else {
+            this.bonusArmies += 5;
+        }
     }
 
     public enum STAGE {

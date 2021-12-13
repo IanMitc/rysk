@@ -28,8 +28,7 @@
     "authToken": {
         "authTokenId": 1,
         "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
-    },
-    "playerPassword": null
+    }
 ```
 
 ### player/email (post email)
@@ -45,7 +44,6 @@ test@example.com
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": null,
-    "playerPassword": null
 ```
 
 ### player (put updated player info)
@@ -70,7 +68,6 @@ test@example.com
         "authTokenId": 1,
         "authToken": "ec3dd984-1262-4a25-8064-a9000f175695"
     },
-    "playerPassword": null
 ```
 
 ### player/login (post Player)
@@ -91,8 +88,7 @@ test@example.com
     "authToken": {
         "authTokenId": 1,
         "authToken": "48daeea3-a109-43f0-a969-016cb6f9e86f"
-    },
-    "playerPassword": null
+    }
 ```
 
 ### player/logout (post Player)
@@ -132,7 +128,6 @@ test@example.com
         "authTokenId": 1,
         "authToken": "be120813-d39e-4306-bdd8-becbf0a8da65"
     },
-    "playerPassword": null
 ```
 
 ### player/games (post Player)
@@ -228,9 +223,21 @@ test@example.com
 }
 ```
 
-### game/decline (post Player, game id)
+### game/decline/{gameId} (post Player)
+```
+    "playerId": 1,
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 1,
+        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    }
+```
 
-- returns success or failure
+- returns success
+```
+Success
+```
 
 ### game/join (post Player, game id)
 
