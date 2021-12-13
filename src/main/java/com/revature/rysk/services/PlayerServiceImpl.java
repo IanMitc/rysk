@@ -54,7 +54,6 @@ public class PlayerServiceImpl implements PlayerService {
         Player playerFromDb = playerRepository.getById(id);
         Optional<Player> playerByEmail = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
 
-        System.out.println(player);
         if (playerFromDb.getPlayerId() != player.getPlayerId() && player.getPlayerId() != 0) {
             throw new NotFoundException("Player not found");
         } else if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
@@ -110,9 +109,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player checkLoggedIn(Player player) {
-        System.out.println(player);
         Optional<Player> playerFromDb = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
-        System.out.println(playerFromDb);
         if (playerFromDb.isEmpty()) {
             throw new NotFoundException("Player not found");
         }
