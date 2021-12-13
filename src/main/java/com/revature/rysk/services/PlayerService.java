@@ -15,7 +15,7 @@ public interface PlayerService {
 
     Player login(Player player);
 
-    Player logout(Player player);
+    String logout(Player player);
 
     Player checkLoggedIn(Player player);
 }

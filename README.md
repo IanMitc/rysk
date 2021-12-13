@@ -103,9 +103,10 @@ test@example.com
     }
 ```
 
-- returns empty if success and removes auth token from system so can no longer be used.
+- returns success and removes auth token from system so can no longer be used.
 
 ```
+Success
 ```
 
 ### player/login/check (post Player)

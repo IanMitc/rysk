@@ -90,7 +90,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Player logout(Player player) {
+    public String logout(Player player) {
         Player playerFromDb = playerRepository.getById(player.getPlayerId());
 
         AuthToken authToken = playerFromDb.getAuthToken();
@@ -104,7 +104,7 @@ public class PlayerServiceImpl implements PlayerService {
             playerRepository.save(playerFromDb);
         }
 
-        return null;
+        return "Success";
     }
 
     @Override
