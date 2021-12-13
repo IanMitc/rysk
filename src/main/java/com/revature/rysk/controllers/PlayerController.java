@@ -32,7 +32,7 @@ public class PlayerController {
     }
 
     @PostMapping("/player/logout")
-    public Player logout(@RequestBody Player player) {
+    public String logout(@RequestBody Player player) {
         return playerService.logout(player);
     }
 

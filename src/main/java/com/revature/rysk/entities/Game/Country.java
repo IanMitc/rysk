@@ -6,7 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Embeddable
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Country {
     @Id
     @GeneratedValue
-    private long countryId;
+    private long gameDbId;
 
     @JsonIgnoreProperties({"authToken", "playerPassword"})
     @OneToOne
@@ -25,6 +25,7 @@ public class Country {
     @Enumerated
     private NAME name;
 
+    private long countryId;
     private String printableName;
     private int armies;
 

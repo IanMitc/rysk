@@ -28,8 +28,7 @@
     "authToken": {
         "authTokenId": 1,
         "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
-    },
-    "playerPassword": null
+    }
 ```
 
 ### player/email (post email)
@@ -45,7 +44,6 @@ test@example.com
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": null,
-    "playerPassword": null
 ```
 
 ### player (put updated player info)
@@ -70,7 +68,6 @@ test@example.com
         "authTokenId": 1,
         "authToken": "ec3dd984-1262-4a25-8064-a9000f175695"
     },
-    "playerPassword": null
 ```
 
 ### player/login (post Player)
@@ -91,8 +88,7 @@ test@example.com
     "authToken": {
         "authTokenId": 1,
         "authToken": "48daeea3-a109-43f0-a969-016cb6f9e86f"
-    },
-    "playerPassword": null
+    }
 ```
 
 ### player/logout (post Player)
@@ -107,9 +103,10 @@ test@example.com
     }
 ```
 
-- returns empty if success and removes auth token from system so can no longer be used.
+- returns success and removes auth token from system so can no longer be used.
 
 ```
+Success
 ```
 
 ### player/login/check (post Player)
@@ -132,7 +129,6 @@ test@example.com
         "authTokenId": 1,
         "authToken": "be120813-d39e-4306-bdd8-becbf0a8da65"
     },
-    "playerPassword": null
 ```
 
 ### player/games (post Player)
@@ -143,11 +139,106 @@ test@example.com
 
 ### game/new (post Players for game)
 
-- returns "empty" game board for a new game while waiting for other players.
+```
+[
+    {
+        "playerId": 1,
+        "playerEmail": "test@example.com",
+        "playerName": "Testy McTestface"
+    },
+    {
+        "playerId": 2,
+        "playerEmail": "test2@example.com",
+        "playerName": "Testy McTestface"
+    }
+]
+```
 
-### game/decline (post Player, game id)
+- returns new game board.
 
-- returns success or failure
+```
+{
+    "gameId": 1,
+    "players": [
+        {
+            "playerId": 1,
+            "playerEmail": "test2@example.com",
+            "playerName": "Testy McTestface"
+        },
+        {
+            "playerId": 2,
+            "playerEmail": "test@example.com",
+            "playerName": "Testy McTestface"
+        }
+    ],
+    "currentPlayer": {
+        "playerId": 2,
+        "playerEmail": "test@example.com",
+        "playerName": "Testy McTestface"
+    },
+    "attackingPlayer": null,
+    "deck": {
+        "deckId": 14
+    },
+    "logs": [
+        {
+            "logId": 1,
+            "message": "New Game Started"
+        },
+        {
+            "logId": 2,
+            "message": "Testy McTestface goes first"
+        }
+    ],
+    "countries": [
+        {
+            "countryId": 0,
+            "controlledBy": {
+                "playerId": 1,
+                "playerEmail": "test2@example.com",
+                "playerName": "Testy McTestface"
+            },
+            "name": "Alaska",
+            "printableName": "Alaska",
+            "armies": 1
+        },
+        ...
+        ...
+        ...        
+        {
+            "countryId": 41,
+            "controlledBy": {
+                "playerId": 1,
+                "playerEmail": "test2@example.com",
+                "playerName": "Testy McTestface"
+            },
+            "name": "WesternAustralia",
+            "printableName": "W Australia",
+            "armies": 1
+        }
+    ],
+    "attackingDice": [],
+    "defendingDice": [],
+    "bonusArmies": 4,
+    "stage": "DISCARD"
+}
+```
+
+### game/decline/{gameId} (post Player)
+```
+    "playerId": 1,
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 1,
+        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    }
+```
+
+- returns success
+```
+Success
+```
 
 ### game/join (post Player, game id)
 
