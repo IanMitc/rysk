@@ -1,6 +1,7 @@
 package com.revature.rysk.controllers;
 
 import com.revature.rysk.entities.Game.Game;
+import com.revature.rysk.entities.Game.GameLog;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,10 @@ public class GameController {
     @PostMapping("/game/exit/{gameId}")
     public String exitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.exitGame(player, gameId);
+    }
+
+    @PostMapping("/game/log/{gameId}")
+    public List<GameLog> getFullLog(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+        return gameService.getFullLog(player, gameId);
     }
 }

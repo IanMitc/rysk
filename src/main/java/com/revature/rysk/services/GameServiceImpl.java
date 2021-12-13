@@ -147,8 +147,33 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<String> getFullLog(Player player, long gameId) {
-        return null;
+    public List<GameLog> getFullLog(Player player, long gameId) {
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        Player playerFromDb = playerOptional.get();
+
+        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+            throw new PermissionsException("You are not logged in");
+        }
+
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NotFoundException("Game not found");
+        }
+        Game game = gameOptional.get();
+        List<Player> players = game.getPlayers();
+
+        if (!players.contains(playerFromDb)) {
+            throw new PermissionsException("You are not a part of this game");
+        }
+        List<GameLog> gameLogs = game.getLogs();
+
+        return gameLogs;
     }
 
     @Override

@@ -307,9 +307,27 @@ Success
 Success
 ```
 
-### game/log (post Player, game id)
+### game/log/{gameID} (post Player)
+
+```
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "authToken": {
+        "authTokenId": 1,
+        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    }
+```
 
 - returns the game history
+
+```
+  {
+  "message": "New Game Started"
+  },
+  {
+  "message": "Testy McTestface goes first"
+  }
+```
 
 ### game/log/{log id} (post Player, game id)
 

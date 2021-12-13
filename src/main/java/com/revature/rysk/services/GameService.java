@@ -3,11 +3,11 @@ package com.revature.rysk.services;
 import com.revature.rysk.entities.Game.Card;
 import com.revature.rysk.entities.Game.Country;
 import com.revature.rysk.entities.Game.Game;
+import com.revature.rysk.entities.Game.GameLog;
 import com.revature.rysk.entities.Player.Player;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public interface GameService {
@@ -22,7 +22,7 @@ public interface GameService {
     //and they're not there, but it might be good just to notify the other players
     String exitGame(Player player, long gameId);
 
-    List<String> getFullLog(Player player, long gameId);
+    List<GameLog> getFullLog(Player player, long gameId);
 
     //gets all log messages after specific message
     List<String> tailLog(Player player, long gameId, long logId);
