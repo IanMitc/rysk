@@ -143,7 +143,90 @@ test@example.com
 
 ### game/new (post Players for game)
 
-- returns "empty" game board for a new game while waiting for other players.
+```
+[
+    {
+        "playerId": 1,
+        "playerEmail": "test@example.com",
+        "playerName": "Testy McTestface"
+    },
+    {
+        "playerId": 2,
+        "playerEmail": "test2@example.com",
+        "playerName": "Testy McTestface"
+    }
+]
+```
+
+- returns new game board.
+
+```
+{
+    "gameId": 1,
+    "players": [
+        {
+            "playerId": 1,
+            "playerEmail": "test2@example.com",
+            "playerName": "Testy McTestface"
+        },
+        {
+            "playerId": 2,
+            "playerEmail": "test@example.com",
+            "playerName": "Testy McTestface"
+        }
+    ],
+    "currentPlayer": {
+        "playerId": 2,
+        "playerEmail": "test@example.com",
+        "playerName": "Testy McTestface"
+    },
+    "attackingPlayer": null,
+    "deck": {
+        "deckId": 14
+    },
+    "logs": [
+        {
+            "logId": 1,
+            "message": "New Game Started"
+        },
+        {
+            "logId": 2,
+            "message": "Testy McTestface goes first"
+        }
+    ],
+    "countries": [
+        {
+            "countryId": 0,
+            "controlledBy": {
+                "playerId": 1,
+                "playerEmail": "test2@example.com",
+                "playerName": "Testy McTestface"
+            },
+            "name": "Alaska",
+            "printableName": "Alaska",
+            "armies": 1
+        },
+        ...
+        ...
+        ...        
+        {
+            "countryId": 41,
+            "controlledBy": {
+                "playerId": 1,
+                "playerEmail": "test2@example.com",
+                "playerName": "Testy McTestface"
+            },
+            "name": "WesternAustralia",
+            "printableName": "W Australia",
+            "armies": 1
+        }
+    ],
+    "attackingDice": [],
+    "defendingDice": [],
+    "bonusArmies": 4,
+    "stage": "DISCARD"
+}
+```
 
 ### game/decline (post Player, game id)
 
