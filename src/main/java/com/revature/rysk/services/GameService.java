@@ -12,7 +12,7 @@ import java.util.Set;
 @Service
 public interface GameService {
 
-    Game newGame(Set<Player> players);
+    Game newGame(List<Player> players);
 
     String declineGame(Player player, long gameId);
 
