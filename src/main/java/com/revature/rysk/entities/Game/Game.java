@@ -39,6 +39,7 @@ public class Game {
 
     private List<Integer> attackingDice;
     private List<Integer> defendingDice;
+    private int bonusArmies;
     private STAGE stage;
 
     public void newGame(List<Player> playersForGame) {
@@ -528,6 +529,8 @@ public class Game {
         //Setup dice
         this.attackingDice = new ArrayList<>(3);
         this.defendingDice = new ArrayList<>(2);
+
+        this.bonusArmies = 4;
 
         this.stage = STAGE.DISCARD;
 
