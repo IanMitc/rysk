@@ -22,11 +22,9 @@
 - return player. Can be saved in cookie or local storage. Adds player to system.
 
 ```    
-    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 1,
         "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
     }
 ```
@@ -40,7 +38,6 @@ test@example.com
 - returns player
 
 ```    
-    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": null,
@@ -49,11 +46,9 @@ test@example.com
 ### player (put updated player info)
 
 ```
-    "playerId": 1,
     "playerEmail": "test2@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 1,
         "authToken": "ec3dd984-1262-4a25-8064-a9000f175695"
     }
 ```
@@ -61,11 +56,9 @@ test@example.com
 - returns updated player should be saved to cookie or local storage so user will stay logged in.
 
 ```
-    "playerId": 1,
     "playerEmail": "test2@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 1,
         "authToken": "ec3dd984-1262-4a25-8064-a9000f175695"
     },
 ```
@@ -82,11 +75,9 @@ test@example.com
 - returns Player. Can be saved in cookie or local storage.
 
 ```    
-    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 1,
         "authToken": "48daeea3-a109-43f0-a969-016cb6f9e86f"
     }
 ```
@@ -94,11 +85,9 @@ test@example.com
 ### player/logout (post Player)
 
 ```
-    "playerId": 1,
     "playerEmail": "test2@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 6,
         "authToken": "9d6077c5-cc7b-4e85-91d0-0490fa4047b7"
     }
 ```
@@ -122,11 +111,9 @@ Success
 - returns existing Player if valid
 
 ```
-    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
-        "authTokenId": 1,
         "authToken": "be120813-d39e-4306-bdd8-becbf0a8da65"
     },
 ```
@@ -142,12 +129,10 @@ Success
 ```
 [
     {
-        "playerId": 1,
         "playerEmail": "test@example.com",
         "playerName": "Testy McTestface"
     },
     {
-        "playerId": 2,
         "playerEmail": "test2@example.com",
         "playerName": "Testy McTestface"
     }
@@ -161,18 +146,15 @@ Success
     "gameId": 1,
     "players": [
         {
-            "playerId": 1,
             "playerEmail": "test2@example.com",
             "playerName": "Testy McTestface"
         },
         {
-            "playerId": 2,
             "playerEmail": "test@example.com",
             "playerName": "Testy McTestface"
         }
     ],
     "currentPlayer": {
-        "playerId": 2,
         "playerEmail": "test@example.com",
         "playerName": "Testy McTestface"
     },
@@ -194,7 +176,6 @@ Success
         {
             "countryId": 0,
             "controlledBy": {
-                "playerId": 1,
                 "playerEmail": "test2@example.com",
                 "playerName": "Testy McTestface"
             },
@@ -208,7 +189,6 @@ Success
         {
             "countryId": 41,
             "controlledBy": {
-                "playerId": 1,
                 "playerEmail": "test2@example.com",
                 "playerName": "Testy McTestface"
             },
@@ -226,7 +206,6 @@ Success
 
 ### game/decline/{gameId} (post Player)
 ```
-    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
     "authToken": {
