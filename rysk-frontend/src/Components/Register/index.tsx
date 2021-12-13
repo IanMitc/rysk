@@ -7,7 +7,10 @@ export const Register = () => {
     playerName: "",
     playerEmail: "",
 
-    playerPassword: {
+    authToken: null || {
+      authToken: "",
+    },
+    playerPassword: null || {
       password: "",
     },
   });
@@ -28,12 +31,21 @@ export const Register = () => {
           <form
             onSubmit={(event) => {
               event.preventDefault();
-
-              console.log(player);
               axios
                 .post("http://localhost:8080/player", player)
                 .then((response) => {
                   console.log(response);
+                  setPlayer({
+                    playerName: response.data.playerName,
+                    playerEmail: response.data.playerEmail,
+
+                    authToken: {
+                      authToken: response.data.authToken.authToken,
+                    },
+                    playerPassword: {
+                      password: response.data.playerPassword.password,
+                    },
+                  });
                 })
                 .catch((e) => console.log(e));
             }}
@@ -64,7 +76,7 @@ export const Register = () => {
               <input
                 type="password"
                 className="form-control"
-                name="password"
+                name="playerPassword.password"
                 value={player.playerPassword.password}
                 onChange={(event) => {
                   setPlayer((prevPlayer) => ({
