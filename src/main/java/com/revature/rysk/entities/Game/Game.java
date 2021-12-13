@@ -33,10 +33,13 @@ public class Game {
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "deck_deck_id")
     private Deck deck;
-    private STAGE stage;
 
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GameLog> logs = new ArrayList<>();
+
+    private List<Integer> attackingDice;
+    private List<Integer> defendingDice;
+    private STAGE stage;
 
     public void newGame(List<Player> playersForGame) {
         //gets a new deck of all the cards
@@ -521,6 +524,10 @@ public class Game {
         this.continents.add(Africa);
         this.continents.add(Asia);
         this.continents.add(Australia);
+
+        //Setup dice
+        this.attackingDice = new ArrayList<>(3);
+        this.defendingDice = new ArrayList<>(2);
 
         this.stage = STAGE.DISCARD;
 
