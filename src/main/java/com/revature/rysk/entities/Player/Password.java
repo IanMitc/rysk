@@ -1,5 +1,6 @@
 package com.revature.rysk.entities.Player;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -18,6 +19,8 @@ public class Password {
     @Id
     @GeneratedValue
     @Column(nullable = false)
+    @JsonIgnore
     private long passwordId;
+
     private String password;
 }

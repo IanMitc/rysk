@@ -17,6 +17,7 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_id_generator")
     @SequenceGenerator(name = "player_id_generator", sequenceName = "player_id_sequence")
     @Column(nullable = false)
+    @JsonIgnore
     private long playerId;
 
     @Column(nullable = false, unique = true)
