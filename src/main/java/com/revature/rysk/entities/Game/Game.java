@@ -21,7 +21,7 @@ public class Game {
 
     @ManyToMany
     @JoinTable(name = "game_players", joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"), inverseJoinColumns = @JoinColumn(name = "players_player_id", referencedColumnName = "playerId"))
-    private Deque<Player> players;
+    private List<Player> players;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "current_player_player_id")
@@ -37,8 +37,8 @@ public class Game {
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GameLog> logs = new ArrayList<>();
 
-    private List<Integer> attackingDice;
-    private List<Integer> defendingDice;
+    private ArrayList<Integer> attackingDice;
+    private ArrayList<Integer> defendingDice;
     private int bonusArmies;
     private STAGE stage;
 
@@ -146,13 +146,15 @@ public class Game {
         Collections.shuffle(countries);
         //for each country, assign the top player as the controller
         for (Country c : countries) {
-            Player p = players.pop();
+            Player p = players.get(0);
+            players.remove(p);
+            players.add(p);
             c.setControlledBy(p);
-            players.addLast(p);
         }
         //Take the top player and make him current
-        this.currentPlayer = this.players.pop();
-        this.players.addLast(this.currentPlayer);
+        this.currentPlayer = this.players.get(0);
+        this.players.remove(this.currentPlayer);
+        this.players.add(this.currentPlayer);
 
         //Populate neighbors
         //Alaska
