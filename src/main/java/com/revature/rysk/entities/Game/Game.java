@@ -59,7 +59,7 @@ public class Game {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "game_countries",
             joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"),
-            inverseJoinColumns = @JoinColumn(name = "countries_game_db_id", referencedColumnName = "gameDbId"))
+            inverseJoinColumns = @JoinColumn(name = "countries_game_db_id", referencedColumnName = "gameDbCountryId"))
     List<Country> countries = new ArrayList<>();
 
     @JsonIgnore
