@@ -13,7 +13,8 @@ import javax.persistence.*;
 @Builder
 public class GameLog {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_log_id_generator")
+    @SequenceGenerator(name = "game_log_id_generator", sequenceName = "game_log_id_sequence")
     @JsonIgnore
     private long logId;
 
