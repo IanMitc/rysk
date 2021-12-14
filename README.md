@@ -5,15 +5,15 @@
 5. App flow
 6. Distribution of task between team members
 
-# Rysk REST API version 0.2
+# Rysk REST API version 0.3
 
 ## Player
 
-### //server:port/player (post player)
+### //server:port/player
 
-- Register New Player
+- Register a new Player.
 
-#### Input:
+#### Input: (post player)
 
 ```
 {
@@ -25,7 +25,7 @@
 }
 ```
 
-- return Player with Auth Token. Can be saved in cookie or local storage. Adds player to system.
+- Returns a Player with Auth Token.
 
 #### Output:
 
@@ -43,17 +43,17 @@
 }
 ```
 
-### //server:port/player/email (post email)
+### //server:port/player/email
 
-- Find a player by Email Address
+- Find a player by Email Address.
 
-#### Input:
+#### Input: (post email)
 
 ```
 test@example.com
 ```
 
-- returns Sanitized Player
+- Returns a sanitized Player
 
 #### Output:
 
@@ -71,11 +71,11 @@ test@example.com
 }
 ```
 
-### //server:port/player (put updated player info)
+### //server:port/player
 
-- Update a Player
+- Update a Player's name, email and password.
 
-#### Input:
+#### Input: (put Player)
 
 ```
 {
@@ -91,7 +91,7 @@ test@example.com
 }
 ```
 
-- returns Sanitized Player with Auth Token
+- Returns a sanitized Player with an Auth Token.
 
 #### Output:
 
@@ -109,11 +109,11 @@ test@example.com
 }
 ```
 
-### //server:port/player/login (post Player)
+### //server:port/player/login
 
-- log a Player into the system
+- Log a Player in.
 
-#### Input:
+#### Input: (post Player)
 
 ```
 {
@@ -124,7 +124,7 @@ test@example.com
 }
 ```
 
-- returns Sanitized Player with Auth Token
+- Returns a sanitized Player with and Auth Token.
 
 #### Output:
 
@@ -142,11 +142,11 @@ test@example.com
 }
 ```
 
-### //server:port/player/logout (post Player)
+### //server:port/player/logout
 
-- Logs a Player out of the system
+- Log a Player out.
 
-#### Input:
+#### Input: (post Player)
 
 ```
 {
@@ -157,7 +157,7 @@ test@example.com
 }
 ```
 
-- returns success and removes Auth Token from system.
+- Returns 'Success'
 
 #### Output:
 
@@ -165,11 +165,11 @@ test@example.com
 Success
 ```
 
-### //server:port/player/login/check (post Player)
+### //server:port/player/login/check
 
-- Check if Auth Token is valid
+- Check if an Auth Token is still valid.
 
-#### Input:
+#### Input: (post Player)
 
 ```
  {
@@ -180,7 +180,7 @@ Success
 }
 ```
 
-- returns Sanitized Player with Auth Token
+- Returns a sanitized Player with an Auth Token.
 
 #### Output:
 
@@ -200,28 +200,46 @@ Success
 
 ### //server:port/player/games (post Player)
 
-- returns all games that player is a participant in
+- Get all games that player is in.
+
+#### Input: (post Player)
+
+```
+ {
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
+    }
+}
+```
+
+- Returns array of game ids.
 
 ## Game Management
 
-### //server:port/game/new (post Players for game)
+### //server:port/game/new
 
-#### Input:
+- Start a new game with 2-6 players. The first in the list has to be initiating player.
+
+#### Input: (post Players)
 
 ```
 [
-    {
-        "playerEmail": "test@example.com",
-        "playerName": "Testy McTestface"
+     {
+        "playerId": 1,
+        "playerEmail": "test2@example.com",
+        "playerAuthToken": {
+           "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
+        }
     },
     {
-        "playerEmail": "test2@example.com",
-        "playerName": "Testy McTestface"
+        "playerId": 2,
+        "playerEmail": "test2@example.com"
     }
 ]
 ```
 
-- returns new game board.
+- Returns new game board.
 
 #### Output:
 
@@ -286,19 +304,22 @@ Success
     "stage": "DISCARD"
 ```
 
-### //server:port/game/join/{gameID} (post Player)
+### //server:port/game/{gameID}/join
 
-#### Input:
+- Join a game that the player is participating in.
+
+#### Input: (post Player)
 
 ```
-    "playerEmail": "test3@example.com",
-    "playerName": "Testy McTestface",
-    "authToken": {
-        "authToken": "4690fb69-0502-4c53-84e7-4093f8424ab7"
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
     }
+}
 ```
 
-- returns game board. Can be used for joining new or existing games also to update board in UI if needed.
+- Returns game board. Can be used for joining new or existing games also to update board in UI if needed.
 
 #### Output:
 
@@ -364,20 +385,22 @@ Success
     "stage": "DISCARD"
 ```
 
-### //server:port/game/quit/{gameID} (post Player)
+### //server:port/game/{gameID}/quit
 
-#### Input:
+- Quit a game that the player is participating in. Redistributes countries to other players with 1 army each.
+
+#### Input: (post Player)
 
 ```
-    "playerEmail": "test@example.com",
-    "playerName": "Testy McTestface",
-    "authToken": {
-        "authTokenId": 1,
-        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
     }
+}
 ```
 
-- returns success
+- Returns 'Success'.
 
 #### Output:
 
@@ -385,20 +408,22 @@ Success
 Success
 ```
 
-### //server:port/game/exit/{gameId] (post Player)
+### //server:port/game/{gameId]/exit
 
-#### Input:
+- Notify other players the player is stepping away for a bit. Gameplay continues until the players next turn.
+
+### Input: (post Player)
 
 ```
-    "playerEmail": "test@example.com",
-    "playerName": "Testy McTestface",
-    "authToken": {
-        "authTokenId": 1,
-        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
     }
+}
 ```
 
-- returns success
+- Returns 'Success'.
 
 #### Output:
 
@@ -406,20 +431,22 @@ Success
 Success
 ```
 
-### //server:port/game/log/{gameID} (post Player)
+### //server:port/game/{gameID}/log
 
-#### Input:
+- Get the full log of a games messages.
+
+### Input: (post Player)
 
 ```
-    "playerEmail": "test@example.com",
-    "playerName": "Testy McTestface",
-    "authToken": {
-        "authTokenId": 1,
-        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
     }
+}
 ```
 
-- returns the game history
+- Returns an array of log messages.
 
 #### Output:
 
@@ -432,21 +459,22 @@ Success
   }
 ```
 
-### //server:port/game/log/{gameId}/{log id} (post Player)
+### //server:port/game/{gameId}/log/{logId}
 
-#### Input:
+- Get all messages after the requested message. For example, requesting log 4 will return all logs starting with log 5.
+
+#### Input: (post Player)
 
 ```
-    "playerEmail": "test@example.com",
-    "playerName": "Testy McTestface",
-    "authToken": {
-        "authTokenId": 1,
-        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
     }
+}
 ```
 
-- returns all log messages from a particular message to the most recent. If we don't use web sockets, we can have the
-  log component call this on a timer and then update the UI game state if a new log is returned.
+- Returns an array of log messages.
 
 #### Output:
 
@@ -458,39 +486,124 @@ Success
 
 ## Game Play
 
-### //server:port/game/play/discard/{gameId} (post Player)
+### //server:port/game/{gameId}/play/discard
 
-0 cards turned in for armies
+- Indicate the player wants to turn in 0 cards for armies. Will send an error if Player has 5 cards and has to discard.
 
-- returns number of armies for player to place
+#### Input: (post Player)
 
-### //server:port/game/play/discard/{gameId}/{cardType1}/{cardType2}/{cardType3} (post Player)
+```
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
+    }
+}
+```
 
-3 cards turned in for armies
+- Returns the number of armies tha can be placed.
 
-- returns number of armies for player to place
+### //server:port/game/{gameId}/play/discard/{cardType1}/{cardType2}/{cardType3}
 
-### //server:port/game/play/armies (post Player, game id, country id, number of armies to add)
+- Indicate the player wants to turn in cards for armies. Valid Card types are Horseman, Cannon, FootSoldier or Joker.
 
-- returns updated country or failure if not auth, not turn, not controlled by player,
+#### Input:  (post Player)
 
-### //server:port/game/play/attack (post Player, attacking country id, number of attacking armies, number of dice, defending country id)
+```
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
+    }
+}
+```
 
-- returns up to 3 random numbers for dice roll or failure if not auth etc.
+- Returns the number of armies tha can be placed.
 
-### //server:port/game/play/defend (post Player, defending country id, number of dice)
+### //server:port/game/{gameId}/play/armies/{countryId}/{numberOfArmies}
 
-- returns up to 2 random numbers for dice roll or failure if not auth etc. Triggers logging of attack and if web sockets
-  are implemented will tell players to update board info.
+- Add armies to a given country.
 
-### //server:port/game/play/move (post Player, from country id, to country id, number of armies)
+#### Input: (post Player)
 
-- returns updated countries or failure
+```
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
+    }
+}
+```
 
-### //server:port/game/play/draw (post Player)
+- Returns updated country.
 
-- returns card if player took over a country, empty if not, or error. Also signals to the backend that the player's turn
-  has ended.
+### //server:port/game/{gameId}/play/attack/{attackingCountryId}/{defendingCountryId}/{numberOfArmies}/{numberOfDice}
+
+- Attack another country
+
+#### Input: (post Player)
+
+```
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
+    }
+}
+```
+
+- Returns an array of up to 3 random numbers for the dice roll.
+
+### //server:port/game/{gameId}/play/defend/{numberOfDice}
+
+- Defend against an attack.
+
+#### Input: (post Player)
+
+```
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
+    }
+}
+```
+
+- Returns an array of up to 2 random numbers for the dice roll.
+
+### //server:port/game/{gameId}/play/move/{fromCountryId}/{toCountryId}/{numberOfArmies}
+
+- Move armies from one country to another.
+
+#### Input: (post Player)
+
+```
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
+    }
+}
+```
+
+- Returns an array of updated countries.
+
+### //server:port/game/{gameId}/play/draw
+
+- End turn. If the player took over another country, they draw a card.
+
+#### Input: (post Player)
+
+```
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
+    }
+}
+```
+
+- Returns a card.
 
 ### TODO: Probably needed for gameplay
 

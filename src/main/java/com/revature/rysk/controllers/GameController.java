@@ -23,39 +23,39 @@ public class GameController {
         return gameService.newGame(players);
     }
 
-    @PostMapping("/game/join/{gameId}")
+    @PostMapping("/game/{gameId}/join")
     public Game joinGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.joinGame(player, gameId);
     }
 
-    @PostMapping("/game/quit/{gameId}")
+    @PostMapping("/game/{gameId}/quit")
     public String quitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.quitGame(player, gameId);
     }
 
-    @PostMapping("/game/exit/{gameId}")
+    @PostMapping("/game/{gameId}/exit")
     public String exitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.exitGame(player, gameId);
     }
 
-    @PostMapping("/game/log/{gameId}")
+    @PostMapping("/game/{gameId}/log")
     public List<GameLog> getFullLog(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.getFullLog(player, gameId);
     }
 
-    @PostMapping("/game/log/{gameId}/{logId}")
+    @PostMapping("/game/{gameId}/log/{logId}")
     public List<GameLog> tailLog(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("logId") int logId) {
         return gameService.tailLog(player, gameId, logId);
     }
 
     // For when the player does not want to discard any cards
-    @PostMapping("/game/play/discard/{gameId}")
+    @PostMapping("/game/{gameId}/play/discard")
     public int discard(@RequestBody Player player, @PathVariable("gameId") long gameId) {
         return gameService.discard(player, gameId);
     }
 
     //For when the player wants to discard 3 cards
-    @PostMapping("/game/play/discard/{gameId}/{cardType1}/{cardType2}/{cardType3}")
+    @PostMapping("/game/play/{gameId}/discard/{cardType1}/{cardType2}/{cardType3}")
     public int discard(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("carType1") Card.TYPE cardType1, @PathVariable("carType2") Card.TYPE cardType2, @PathVariable("carType3") Card.TYPE cardType3) {
         return gameService.discard(player, gameId, cardType1, cardType2, cardType3);
     }
