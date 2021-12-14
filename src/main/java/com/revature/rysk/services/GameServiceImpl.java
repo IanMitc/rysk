@@ -21,6 +21,7 @@ public class GameServiceImpl implements GameService {
     @Autowired
     private PlayerRepository playerRepository;
 
+    //Not secure, need to refactor to make sure only logged in players can create games
     @Override
     public Game newGame(List<Player> players) {
         if (players.size() > 6 || players.size() < 2) {
@@ -456,10 +457,13 @@ public class GameServiceImpl implements GameService {
         int totalArmies = armies + bonus;
         logs.add(GameLog.builder().message(playerFromDb.getPlayerName() + " recieved " + totalArmies + " total armies.").build());
 
+        //Make sure game state is updated and saved
         playerHand.setCards(playerHandList);
         playersCards.add(playerHand);
         game.setPlayersCards(playersCards);
-
+        Deck deck = game.getDeck();
+        deck.discard(discardPile);
+        game.setDeck(deck);
         game.setLogs(logs);
         game.setStage(Game.STAGE.ARMIES);
         game.setArmiesToPlay(totalArmies);
