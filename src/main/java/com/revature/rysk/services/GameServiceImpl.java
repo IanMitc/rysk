@@ -495,4 +495,23 @@ public class GameServiceImpl implements GameService {
     public List<Card> draw(Player player) {
         return null;
     }
+
+    private Player checkAuthorized(Player player) {
+        Player playerOutput = getPlayerById(player.getPlayerId());
+
+        if (playerOutput.getPlayerAuthToken() == null || !playerOutput.checkAuthToken(player.getPlayerAuthToken().getAuthToken())) {
+            throw new PermissionsException("Not Authorized");
+        }
+
+        return playerOutput;
+    }
+
+    private Player getPlayerById(long playerId) {
+        Optional<Player> playerOptional = playerRepository.findById(playerId);
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        return playerOptional.get();
+    }
 }
