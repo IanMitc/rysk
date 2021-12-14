@@ -1,5 +1,6 @@
 package com.revature.rysk.controllers;
 
+import com.revature.rysk.entities.Game.Card;
 import com.revature.rysk.entities.Game.Game;
 import com.revature.rysk.entities.Game.GameLog;
 import com.revature.rysk.entities.Player.Player;
@@ -45,5 +46,17 @@ public class GameController {
     @PostMapping("/game/log/{gameId}/{logId}")
     public List<GameLog> tailLog(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("logId") int logId) {
         return gameService.tailLog(player, gameId, logId);
+    }
+
+    // For when the player does not want to discard any cards
+    @PostMapping("/game/play/discard/{gameId}")
+    public int discard(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+        return gameService.discard(player, gameId);
+    }
+
+    //For when the player wants to discard 3 cards
+    @PostMapping("/game/play/discard/{gameId}/{cardType1}/{cardType2}/{cardType3}")
+    public int discard(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("carType1") Card.TYPE cardType1, @PathVariable("carType2") Card.TYPE cardType2, @PathVariable("carType3") Card.TYPE cardType3) {
+        return gameService.discard(player, gameId, cardType1, cardType2, cardType3);
     }
 }

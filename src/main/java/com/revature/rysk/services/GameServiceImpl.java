@@ -1,9 +1,6 @@
 package com.revature.rysk.services;
 
-import com.revature.rysk.entities.Game.Card;
-import com.revature.rysk.entities.Game.Country;
-import com.revature.rysk.entities.Game.Game;
-import com.revature.rysk.entities.Game.GameLog;
+import com.revature.rysk.entities.Game.*;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.exceptions.BadRequestException;
 import com.revature.rysk.exceptions.NotFoundException;
@@ -171,14 +168,13 @@ public class GameServiceImpl implements GameService {
         if (!players.contains(playerFromDb)) {
             throw new PermissionsException("You are not a part of this game");
         }
-        List<GameLog> gameLogs = game.getLogs();
 
-        return gameLogs;
+        return game.getLogs();
     }
 
     @Override
     public List<GameLog> tailLog(Player player, long gameId, int logId) {
-        if (logId < 0){
+        if (logId < 0) {
             throw new BadRequestException("There are no negative logs");
         }
 
@@ -217,8 +213,258 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public int discard(List<Card> cards) {
-        return 0;
+    public int discard(Player player, long gameId) {
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        Player playerFromDb = playerOptional.get();
+
+        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+            throw new PermissionsException("You are not logged in");
+        }
+
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NotFoundException("Game not found");
+        }
+
+        Game game = gameOptional.get();
+
+        if (game.getStage().ordinal() > Game.STAGE.DISCARD.ordinal()) {
+            throw new BadRequestException("Wrong stage to discard cards");
+        }
+
+        List<GameLog> logs = game.getLogs();
+        int bonus = 0;
+        //Calculate Standard number of armies
+        List<Country> countryList = game.getCountries();
+        List<Country.NAME> playerCountries = new ArrayList<>();
+        for (Country c : countryList) {
+            if (c.getControlledBy().equals(playerFromDb)) {
+                playerCountries.add(c.getName());
+            }
+        }
+        int armies = playerCountries.size() / 3;
+        logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                + " gets "
+                + armies
+                + " armies for having "
+                + playerCountries.size()
+                + " countries."
+        ).build());
+
+        //Calculate bonus from controlling continents
+        List<Country.NAME> NorthAmerica = ContinentCountries.getCountries(Continent.NAME.NorthAmerica);
+        List<Country.NAME> SouthAmerica = ContinentCountries.getCountries(Continent.NAME.SouthAmerica);
+        List<Country.NAME> Europe = ContinentCountries.getCountries(Continent.NAME.Europe);
+        List<Country.NAME> Africa = ContinentCountries.getCountries(Continent.NAME.Africa);
+        List<Country.NAME> Asia = ContinentCountries.getCountries(Continent.NAME.Asia);
+        List<Country.NAME> Australia = ContinentCountries.getCountries(Continent.NAME.Australia);
+
+        if (playerCountries.containsAll(NorthAmerica)) {
+            bonus += 5;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 5 armies for controlling N. America"
+            ).build());
+        }
+        if (playerCountries.containsAll(SouthAmerica)) {
+            bonus += 2;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 2 armies for controlling S. America"
+            ).build());
+        }
+        if (playerCountries.containsAll(Europe)) {
+            bonus += 5;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 5 armies for controlling Europe"
+            ).build());
+        }
+        if (playerCountries.containsAll(Africa)) {
+            bonus += 3;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 3 armies for controlling Africa"
+            ).build());
+        }
+        if (playerCountries.containsAll(Asia)) {
+            bonus += 7;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 7 armies for controlling Asia"
+            ).build());
+        }
+        if (playerCountries.containsAll(Australia)) {
+            bonus += 2;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 2 armies for controlling Australia"
+            ).build());
+        }
+
+        int totalArmies = armies + bonus;
+        logs.add(GameLog.builder().message(playerFromDb.getPlayerName() + " recieved " + totalArmies + " total armies.").build());
+
+        game.setLogs(logs);
+        game.setStage(Game.STAGE.ARMIES);
+        game.setArmiesToPlay(totalArmies);
+        gameRepository.save(game);
+        return totalArmies;
+    }
+
+    @Override
+    public int discard(Player player, long gameId, Card.TYPE cardType1, Card.TYPE cardType2, Card.TYPE cardType3) {
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        Player playerFromDb = playerOptional.get();
+
+        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+            throw new PermissionsException("You are not logged in");
+        }
+
+        Optional<Game> gameOptional = gameRepository.findById(gameId);
+
+        if (gameOptional.isEmpty()) {
+            throw new NotFoundException("Game not found");
+        }
+
+        Game game = gameOptional.get();
+
+        if (game.getStage().ordinal() > Game.STAGE.DISCARD.ordinal()) {
+            throw new BadRequestException("Wrong stage to discard cards");
+        }
+
+        List<Hand> playersCards = game.getPlayersCards();
+        List<Card> playerHandList = new ArrayList<>();
+        Hand playerHand = null;
+        for (Hand h : playersCards) {
+            if (playerFromDb.equals(h.getHeldBy())) {
+                playerHand = h;
+                playerHandList = h.getCards();
+                playersCards.remove(h);
+            }
+        }
+
+        if (playerHand == null) {
+            throw new NotFoundException("Hand not found");
+        } else if (playerHandList.size() < 3) {
+            throw new BadRequestException("Player does not hold enough cards to turn in");
+        }
+        List<Card> discardPile = new ArrayList<>();
+        discardPile.add(Card.builder().type(cardType1).build());
+        discardPile.add(Card.builder().type(cardType2).build());
+        discardPile.add(Card.builder().type(cardType3).build());
+
+        boolean hasAll = true;
+        for (Card c : discardPile) {
+            hasAll = playerHandList.remove(c);
+        }
+
+        if (!hasAll) {
+            throw new BadRequestException("Player does not have these cards");
+        }
+        List<GameLog> logs = game.getLogs();
+
+        //Calculate bonus from cards
+        int bonus = 0;
+        if ((discardPile.contains(Card.builder().type(Card.TYPE.Joker).build()))
+                || (discardPile.get(0) == discardPile.get(1)
+                && discardPile.get(0) == discardPile.get(2)
+                && discardPile.get(1) == discardPile.get(2)
+        )
+                || (discardPile.contains(Card.builder().type(Card.TYPE.Cannon).build())
+                && discardPile.contains(Card.builder().type(Card.TYPE.FootSoldier).build())
+                && discardPile.contains(Card.builder().type(Card.TYPE.Horseman).build())
+        )) {
+            bonus += game.getBonusArmies();
+            game.nextBonus();
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets "
+                    + bonus
+                    + " armies from trading in cards."
+            ).build());
+        } else {
+            throw new BadRequestException("Not a valid set of cards to turn in");
+        }
+
+        //Calculate Standard number of armies
+        List<Country> countryList = game.getCountries();
+        List<Country.NAME> playerCountries = new ArrayList<>();
+        for (Country c : countryList) {
+            if (c.getControlledBy().equals(playerFromDb)) {
+                playerCountries.add(c.getName());
+            }
+        }
+        int armies = playerCountries.size() / 3;
+        logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                + " gets "
+                + armies
+                + " armies for having "
+                + playerCountries.size()
+                + " countries."
+        ).build());
+
+        //Calculate bonus from controlling continents
+        List<Country.NAME> NorthAmerica = ContinentCountries.getCountries(Continent.NAME.NorthAmerica);
+        List<Country.NAME> SouthAmerica = ContinentCountries.getCountries(Continent.NAME.SouthAmerica);
+        List<Country.NAME> Europe = ContinentCountries.getCountries(Continent.NAME.Europe);
+        List<Country.NAME> Africa = ContinentCountries.getCountries(Continent.NAME.Africa);
+        List<Country.NAME> Asia = ContinentCountries.getCountries(Continent.NAME.Asia);
+        List<Country.NAME> Australia = ContinentCountries.getCountries(Continent.NAME.Australia);
+
+        if (playerCountries.containsAll(NorthAmerica)) {
+            bonus += 5;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 5 armies for controlling N. America"
+            ).build());
+        }
+        if (playerCountries.containsAll(SouthAmerica)) {
+            bonus += 2;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 2 armies for controlling S. America"
+            ).build());
+        }
+        if (playerCountries.containsAll(Europe)) {
+            bonus += 5;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 5 armies for controlling Europe"
+            ).build());
+        }
+        if (playerCountries.containsAll(Africa)) {
+            bonus += 3;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 3 armies for controlling Africa"
+            ).build());
+        }
+        if (playerCountries.containsAll(Asia)) {
+            bonus += 7;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 7 armies for controlling Asia"
+            ).build());
+        }
+        if (playerCountries.containsAll(Australia)) {
+            bonus += 2;
+            logs.add(GameLog.builder().message(playerFromDb.getPlayerName()
+                    + " gets 2 armies for controlling Australia"
+            ).build());
+        }
+
+        int totalArmies = armies + bonus;
+        logs.add(GameLog.builder().message(playerFromDb.getPlayerName() + " recieved " + totalArmies + " total armies.").build());
+
+        playerHand.setCards(playerHandList);
+        playersCards.add(playerHand);
+        game.setPlayersCards(playersCards);
+
+        game.setLogs(logs);
+        game.setStage(Game.STAGE.ARMIES);
+        game.setArmiesToPlay(totalArmies);
+        gameRepository.save(game);
+        return totalArmies;
     }
 
     @Override

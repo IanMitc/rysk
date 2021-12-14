@@ -27,7 +27,11 @@ public interface GameService {
     //gets all log messages after specific message
     List<GameLog> tailLog(Player player, long gameId, int logId);
 
-    int discard(List<Card> cards);
+    // For when the player does not want to discard any cards
+    int discard(Player player, long gameId);
+
+    //For when the player wants to discard 3 cards
+    int discard(Player player, long gameId, Card.TYPE cardType1, Card.TYPE cardType2, Card.TYPE cardType3);
 
     Country addArmies(Player player, long gameId, long countryId, int armies);
 

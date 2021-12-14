@@ -143,6 +143,11 @@ public class Game {
             c.setControlledBy(p);
         }
 
+        //Create empty hands for player to receive cards
+        for (Player p : players) {
+            playersCards.add(Hand.builder().heldBy(p).build());
+        }
+
         //Take the top player and make him current
         this.currentPlayer = this.players.get(0);
         this.players.remove(this.currentPlayer);
@@ -188,7 +193,7 @@ public class Game {
     }
 
     //The Army bonus increases each time a set is turned in
-    private void nextBonus() {
+    public void nextBonus() {
         if (this.bonusArmies < 12) {
             this.bonusArmies += 2;
         } else if (this.bonusArmies < 15) {

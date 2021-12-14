@@ -2,10 +2,7 @@ package com.revature.rysk.entities.Game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.revature.rysk.entities.Player.Player;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
+@EqualsAndHashCode
 public class Hand {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hand_id_generator")
