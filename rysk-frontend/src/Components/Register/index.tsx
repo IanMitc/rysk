@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 // import "./register.css";
 import axios from "axios";
+import './index.css'
 
 export const Register = () => {
   const [player, setPlayer] = useState({
