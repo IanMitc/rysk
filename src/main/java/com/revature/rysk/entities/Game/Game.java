@@ -3,7 +3,10 @@ package com.revature.rysk.entities.Game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revature.rysk.entities.Player.Player;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +21,8 @@ import java.util.List;
 @Setter
 public class Game {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_id_generator")
+    @SequenceGenerator(name = "game_id_sequence", sequenceName = "game_id_sequence")
     private long gameId;
 
     @JsonIgnoreProperties({"authToken", "playerPassword"})
@@ -40,6 +44,13 @@ public class Game {
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "deck_deck_id")
     private Deck deck;
+
+    @JsonIgnore
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "game_players_cards",
+            joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"),
+            inverseJoinColumns = @JoinColumn(name = "players_cards_hand_id", referencedColumnName = "handId"))
+    List<Hand> playersCards = new ArrayList<>();
 
     @JsonIgnoreProperties({"game"})
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -63,6 +74,7 @@ public class Game {
     @JsonIgnore
     private int defendingDice2;
 
+    private int armiesToPlay;
     private int bonusArmies;
     private STAGE stage;
 
