@@ -3,6 +3,8 @@ package com.revature.rysk.entities.Game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revature.rysk.entities.Player.Player;
+import com.revature.rysk.exceptions.BadRequestException;
+import com.revature.rysk.exceptions.NotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,17 +27,17 @@ public class Game {
     @SequenceGenerator(name = "game_id_sequence", sequenceName = "game_id_sequence")
     private long gameId;
 
-    @JsonIgnoreProperties({"authToken", "playerPassword"})
+    @JsonIgnoreProperties({"playerAuthToken", "playerPassword"})
     @ManyToMany
     @JoinTable(name = "game_players", joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"), inverseJoinColumns = @JoinColumn(name = "players_player_id", referencedColumnName = "playerId"))
     private List<Player> players = new ArrayList<>(6);
 
-    @JsonIgnoreProperties({"authToken", "playerPassword"})
+    @JsonIgnoreProperties({"playerAuthToken", "playerPassword"})
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "current_player_player_id")
     private Player currentPlayer;
 
-    @JsonIgnoreProperties({"authToken", "playerPassword"})
+    @JsonIgnoreProperties({"playerAuthToken", "playerPassword"})
     @ManyToOne
     @JoinColumn(name = "attacking_player_player_id")
     private Player attackingPlayer;
@@ -192,8 +194,24 @@ public class Game {
         }
     }
 
+    //Add a message to the Game log
+    public void log(String message) {
+        this.logs.add(GameLog.builder().message(message).build());
+    }
+
+    //Get logs after logId
+    public List<GameLog> getLogs(int logId) {
+        List<GameLog> partialLogs = new ArrayList<>();
+
+        if (logId < this.logs.size()) {
+            partialLogs = this.logs.subList(logId + 1, this.logs.size());
+        }
+
+        return partialLogs;
+    }
+
     //The Army bonus increases each time a set is turned in
-    public void nextBonus() {
+    private void nextBonus() {
         if (this.bonusArmies < 12) {
             this.bonusArmies += 2;
         } else if (this.bonusArmies < 15) {
@@ -201,6 +219,140 @@ public class Game {
         } else {
             this.bonusArmies += 5;
         }
+    }
+
+    //Calculate armies and bonuses for controlling a continent
+    public int getArmiesToPlay(Player playerFromDb, List<Card> discardPile) {
+        //Make sure that this is the right time
+        if (this.stage.ordinal() > Game.STAGE.DISCARD.ordinal()) {
+            throw new BadRequestException("Wrong stage to discard cards");
+        }
+
+        //Calculate Standard number of armies
+        List<Country> countryList = this.getCountries();
+        List<Country.NAME> playerCountries = new ArrayList<>();
+        for (Country c : countryList) {
+            if (c.getControlledBy().equals(currentPlayer)) {
+                playerCountries.add(c.getName());
+            }
+        }
+        int armies = playerCountries.size() / 3;
+        this.log(currentPlayer.getPlayerName()
+                + " gets "
+                + armies
+                + " armies for having "
+                + playerCountries.size()
+                + " countries."
+        );
+
+        //Calculate bonus from controlling continents
+        List<Country.NAME> NorthAmerica = ContinentCountries.getCountries(Continent.NAME.NorthAmerica);
+        List<Country.NAME> SouthAmerica = ContinentCountries.getCountries(Continent.NAME.SouthAmerica);
+        List<Country.NAME> Europe = ContinentCountries.getCountries(Continent.NAME.Europe);
+        List<Country.NAME> Africa = ContinentCountries.getCountries(Continent.NAME.Africa);
+        List<Country.NAME> Asia = ContinentCountries.getCountries(Continent.NAME.Asia);
+        List<Country.NAME> Australia = ContinentCountries.getCountries(Continent.NAME.Australia);
+
+        int bonus = 0;
+        if (playerCountries.containsAll(NorthAmerica)) {
+            bonus += 5;
+            this.log(currentPlayer.getPlayerName()
+                    + " gets 5 armies for controlling N. America"
+            );
+        }
+        if (playerCountries.containsAll(SouthAmerica)) {
+            bonus += 2;
+            this.log(currentPlayer.getPlayerName()
+                    + " gets 2 armies for controlling S. America"
+            );
+        }
+        if (playerCountries.containsAll(Europe)) {
+            bonus += 5;
+            this.log(currentPlayer.getPlayerName()
+                    + " gets 5 armies for controlling Europe"
+            );
+        }
+        if (playerCountries.containsAll(Africa)) {
+            bonus += 3;
+            this.log(currentPlayer.getPlayerName()
+                    + " gets 3 armies for controlling Africa"
+            );
+        }
+        if (playerCountries.containsAll(Asia)) {
+            bonus += 7;
+            this.log(currentPlayer.getPlayerName()
+                    + " gets 7 armies for controlling Asia"
+            );
+        }
+        if (playerCountries.containsAll(Australia)) {
+            bonus += 2;
+            this.log(currentPlayer.getPlayerName()
+                    + " gets 2 armies for controlling Australia"
+            );
+        }
+
+        //Calculate bonus from trading in cards
+        if (discardPile != null) {
+
+            List<Hand> workingHands = new ArrayList<>(this.playersCards);
+            List<Card> playerHandList = new ArrayList<>();
+            Hand playerHand = null;
+            for (Hand h : workingHands) {
+                if (playerFromDb.equals(h.getHeldBy())) {
+                    playerHand = h;
+                    playerHandList = h.getCards();
+                    workingHands.remove(h);
+                }
+            }
+
+            if (playerHand == null) {
+                throw new NotFoundException("Hand not found");
+            } else if (playerHandList.size() < 3) {
+                throw new BadRequestException("Player does not hold enough cards to turn in");
+            }
+
+            boolean hasAll = true;
+            for (Card c : discardPile) {
+                hasAll = playerHandList.remove(c);
+            }
+
+            if (!hasAll) {
+                throw new BadRequestException("Player does not have these cards");
+            }
+
+            //Calculate bonus from cards
+            if ((discardPile.contains(Card.builder().type(Card.TYPE.Joker).build()))
+                    || (discardPile.get(0) == discardPile.get(1)
+                    && discardPile.get(0) == discardPile.get(2)
+                    && discardPile.get(1) == discardPile.get(2)
+            )
+                    || (discardPile.contains(Card.builder().type(Card.TYPE.Cannon).build())
+                    && discardPile.contains(Card.builder().type(Card.TYPE.FootSoldier).build())
+                    && discardPile.contains(Card.builder().type(Card.TYPE.Horseman).build())
+            )) {
+                bonus += bonusArmies;
+                nextBonus();
+                log(playerFromDb.getPlayerName()
+                        + " gets "
+                        + bonus
+                        + " armies from trading in cards."
+                );
+            } else {
+                throw new BadRequestException("Not a valid set of cards to turn in");
+            }
+
+            //Create new hand from remaining cards and save to playersCards
+            workingHands.add(Hand.builder().heldBy(playerFromDb).cards(playerHandList).build());
+            this.playersCards = workingHands;
+        }
+
+        int totalArmies = armies + bonus;
+        this.log(currentPlayer.getPlayerName() + " recieved " + totalArmies + " total armies.");
+
+        this.stage = Game.STAGE.ARMIES;
+        this.armiesToPlay = totalArmies;
+
+        return this.armiesToPlay;
     }
 
     public enum STAGE {

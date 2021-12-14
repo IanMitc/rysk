@@ -239,7 +239,7 @@ Success
 ]
 ```
 
-- Returns new game board.
+- Returns a new game board.
 
 #### Output:
 
