@@ -33,13 +33,13 @@ public interface GameService {
     //For when the player wants to discard 3 cards
     int discard(Player player, long gameId, Card.TYPE cardType1, Card.TYPE cardType2, Card.TYPE cardType3);
 
-    Country addArmies(Player player, long gameId, long countryId, int armies);
+    Country placeArmies(Player player, long gameId, int countryId, int numberOfArmies);
 
-    List<Integer> attack(Player player, long attackingCountryId, int attackingArmies, int numberOfDice, long defendingCountryId);
+    List<Integer> attack(Player player, int attackingCountryId, int attackingArmies, int numberOfDice, int defendingCountryId);
 
-    List<Integer> defend(Player player, long defendingCountryId, int numberOfDice);
+    List<Integer> defend(Player player, int defendingCountryId, int numberOfDice);
 
-    Country move(Player player, long fromCountryId, long toCountryId, int numberOfArmies);
+    Country move(Player player, int fromCountryId, int toCountryId, int numberOfArmies);
 
     List<Card> draw(Player player);
 }

@@ -520,6 +520,10 @@ Success
 
 - Returns the number of armies tha can be placed.
 
+```
+
+```
+
 ### //server:port/game/{gameId}/play/armies/{countryId}/{numberOfArmies}
 
 - Add armies to a given country.
@@ -536,6 +540,20 @@ Success
 ```
 
 - Returns updated country.
+
+```
+{
+    "controlledBy": {
+        "playerId": 1,
+        "playerEmail": "test@example.com",
+        "playerName": "Testy McTestface"
+    },
+    "name": "Alaska",
+    "countryId": 0,
+    "printableName": "Alaska",
+    "armies": 7
+}
+```
 
 ### //server:port/game/{gameId}/play/attack/{attackingCountryId}/{defendingCountryId}/{numberOfArmies}/{numberOfDice}
 

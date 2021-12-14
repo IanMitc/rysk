@@ -118,22 +118,27 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Country addArmies(Player player, long gameId, long countryId, int armies) {
+    public Country placeArmies(Player player, long gameId, int countryId, int numberOfArmies) {
+        Player playerFromDb = checkAuthorized(player);
+        Game game = getGame(playerFromDb, gameId);
+
+        Country country = game.placeArmies(playerFromDb, countryId, numberOfArmies);
+        gameRepository.save(game);
+        return country;
+    }
+
+    @Override
+    public List<Integer> attack(Player player, int attackingCountryId, int attackingArmies, int numberOfDice, int defendingCountryId) {
         return null;
     }
 
     @Override
-    public List<Integer> attack(Player player, long attackingCountryId, int attackingArmies, int numberOfDice, long defendingCountryId) {
+    public List<Integer> defend(Player player, int defendingCountryId, int numberOfDice) {
         return null;
     }
 
     @Override
-    public List<Integer> defend(Player player, long defendingCountryId, int numberOfDice) {
-        return null;
-    }
-
-    @Override
-    public Country move(Player player, long fromCountryId, long toCountryId, int numberOfArmies) {
+    public Country move(Player player, int fromCountryId, int toCountryId, int numberOfArmies) {
         return null;
     }
 

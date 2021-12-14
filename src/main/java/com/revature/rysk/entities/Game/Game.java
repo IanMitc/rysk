@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.exceptions.BadRequestException;
 import com.revature.rysk.exceptions.NotFoundException;
+import com.revature.rysk.exceptions.PermissionsException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -353,6 +354,29 @@ public class Game {
         this.armiesToPlay = totalArmies;
 
         return this.armiesToPlay;
+    }
+
+    public Country placeArmies(Player playerFromDb, int countryId, int numberOfArmies) {
+        //Make sure that this is the right time
+        if (this.stage.ordinal() > STAGE.ARMIES.ordinal()) {
+            throw new BadRequestException("Wrong stage to discard cards");
+        } else if (this.stage.ordinal() < STAGE.ARMIES.ordinal()) {
+            this.stage = STAGE.ARMIES;
+        }
+
+        if (numberOfArmies > this.armiesToPlay) {
+            throw new BadRequestException("Not enough armies left");
+        }
+
+        Country country = this.countries.get(countryId);
+
+        if (!country.getControlledBy().equals(playerFromDb)) {
+            throw new PermissionsException("This is not your country");
+        }
+
+        country.addArmies(numberOfArmies);
+        this.armiesToPlay -= numberOfArmies;
+        return country;
     }
 
     public enum STAGE {

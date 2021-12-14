@@ -1,6 +1,7 @@
 package com.revature.rysk.controllers;
 
 import com.revature.rysk.entities.Game.Card;
+import com.revature.rysk.entities.Game.Country;
 import com.revature.rysk.entities.Game.Game;
 import com.revature.rysk.entities.Game.GameLog;
 import com.revature.rysk.entities.Player.Player;
@@ -58,5 +59,10 @@ public class GameController {
     @PostMapping("/game/play/{gameId}/discard/{cardType1}/{cardType2}/{cardType3}")
     public int discard(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("carType1") Card.TYPE cardType1, @PathVariable("carType2") Card.TYPE cardType2, @PathVariable("carType3") Card.TYPE cardType3) {
         return gameService.discard(player, gameId, cardType1, cardType2, cardType3);
+    }
+
+    @PostMapping("/game/{gameId}/play/armies/{countryId}/{numberOfArmies}")
+    public Country placeArmies(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("countryId") int countryId, @PathVariable("numberOfArmies") int numberOfArmies) {
+        return gameService.placeArmies(player, gameId, countryId, numberOfArmies);
     }
 }
