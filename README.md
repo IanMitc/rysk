@@ -142,7 +142,6 @@ Success
 - returns new game board.
 
 ```
-{
     "gameId": 1,
     "players": [
         {
@@ -201,7 +200,6 @@ Success
     "defendingDice": [],
     "bonusArmies": 4,
     "stage": "DISCARD"
-}
 ```
 
 ### game/join/{gameID} (post Player)
@@ -262,7 +260,12 @@ Success
         ...
         ...
         ...
-        
+        {
+            "countryId": 41,
+            "controlledBy": {
+                "playerEmail": "test2@example.com",
+                "playerName": "Testy McTestface"
+            },
             "name": "WesternAustralia",
             "countryId": 41,
             "printableName": "W Australia",
