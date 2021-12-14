@@ -1,6 +1,5 @@
 package com.revature.rysk.entities.Player;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +16,6 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "player_id_generator")
     @SequenceGenerator(name = "player_id_generator", sequenceName = "player_id_sequence")
     @Column(nullable = false)
-    @JsonIgnore
     private long playerId;
 
     @Column(nullable = false, unique = true)
@@ -28,9 +26,17 @@ public class Player {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "auth_token_auth_token_id")
-    private AuthToken authToken;
+    private AuthToken playerAuthToken;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "password_password_id")
+    @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
+    @JoinColumn(name = "password_password_id", nullable = false)
     private Password playerPassword;
+
+    public boolean checkPassword(String otherPassword) {
+        return this.playerPassword.getPassword().equals(otherPassword);
+    }
+
+    public boolean checkAuthToken(String otherAuthToken) {
+        return this.playerAuthToken.getAuthToken().equals(otherAuthToken);
+    }
 }

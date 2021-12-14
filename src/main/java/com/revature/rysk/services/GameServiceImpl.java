@@ -55,7 +55,7 @@ public class GameServiceImpl implements GameService {
 
         Player playerFromDb = playerOptional.get();
 
-        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+        if (!playerFromDb.getPlayerAuthToken().getAuthToken().equals(player.getPlayerAuthToken().getAuthToken())) {
             throw new PermissionsException("You are not logged in");
         }
 
@@ -92,7 +92,7 @@ public class GameServiceImpl implements GameService {
 
         Player playerFromDb = playerOptional.get();
 
-        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+        if (!playerFromDb.getPlayerAuthToken().getAuthToken().equals(player.getPlayerAuthToken().getAuthToken())) {
             throw new PermissionsException("You are not logged in");
         }
 
@@ -121,7 +121,7 @@ public class GameServiceImpl implements GameService {
 
         Player playerFromDb = playerOptional.get();
 
-        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+        if (!playerFromDb.getPlayerAuthToken().getAuthToken().equals(player.getPlayerAuthToken().getAuthToken())) {
             throw new PermissionsException("You are not logged in");
         }
 
@@ -154,7 +154,7 @@ public class GameServiceImpl implements GameService {
 
         Player playerFromDb = playerOptional.get();
 
-        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+        if (!playerFromDb.getPlayerAuthToken().getAuthToken().equals(player.getPlayerAuthToken().getAuthToken())) {
             throw new PermissionsException("You are not logged in");
         }
 
@@ -187,7 +187,7 @@ public class GameServiceImpl implements GameService {
 
         Player playerFromDb = playerOptional.get();
 
-        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+        if (!playerFromDb.getPlayerAuthToken().getAuthToken().equals(player.getPlayerAuthToken().getAuthToken())) {
             throw new PermissionsException("You are not logged in");
         }
 
@@ -223,7 +223,7 @@ public class GameServiceImpl implements GameService {
 
         Player playerFromDb = playerOptional.get();
 
-        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+        if (!playerFromDb.getPlayerAuthToken().getAuthToken().equals(player.getPlayerAuthToken().getAuthToken())) {
             throw new PermissionsException("You are not logged in");
         }
 
@@ -323,7 +323,7 @@ public class GameServiceImpl implements GameService {
 
         Player playerFromDb = playerOptional.get();
 
-        if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
+        if (!playerFromDb.getPlayerAuthToken().getAuthToken().equals(player.getPlayerAuthToken().getAuthToken())) {
             throw new PermissionsException("You are not logged in");
         }
 

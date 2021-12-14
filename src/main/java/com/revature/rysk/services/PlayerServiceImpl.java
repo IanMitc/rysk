@@ -1,6 +1,7 @@
 package com.revature.rysk.services;
 
 import com.revature.rysk.entities.Player.AuthToken;
+import com.revature.rysk.entities.Player.Password;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.exceptions.DuplicateResourceException;
 import com.revature.rysk.exceptions.NotFoundException;
@@ -9,128 +10,127 @@ import com.revature.rysk.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
     @Autowired
-    PlayerRepository playerRepository;
+    private PlayerRepository playerRepository;
 
     @Override
     public Player addPlayer(Player player) {
         Optional<Player> checkedPlayer = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
-        if (checkedPlayer.isPresent())
+        if (checkedPlayer.isPresent()) {
             throw new DuplicateResourceException("Email is already in use");
+        }
+        player.setPlayerAuthToken(new AuthToken());
 
-        player.setAuthToken(new AuthToken());
-        Player playerOutput = playerRepository.save(player);
-        //we make the password null in the returned object because it should never be needed by the UI
-        playerOutput.getPlayerPassword().setPassword("");
-        return playerOutput;
+        return cleanPlayerForPlayer(playerRepository.save(player));
     }
 
     @Override
     public Player getPlayerByEmail(String email) {
-        Optional<Player> player = playerRepository.getPlayerByPlayerEmail(email);
-        if (player.isPresent()) {
-            Player playerOutput = player.get();
-            playerOutput.setAuthToken(null);
-            playerOutput.setPlayerPassword(null);
-            return playerOutput;
-        }
-        throw new NotFoundException("Player not found");
-    }
-
-    @Override
-    public Player getPlayerById(long id) {
-        Player playerOutput = playerRepository.getById(id);
-        //we make the password empty in the returned object because it should never be needed by the UI
-        //playerOutput.getPlayerPassword().setPassword("");
-        return playerOutput;
-    }
-
-    @Override
-    public Player updatePlayer(long id, Player player) {
-        Player playerFromDb = playerRepository.getById(id);
-        Optional<Player> playerByEmail = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
-
-        if (playerFromDb.getPlayerId() != player.getPlayerId() && player.getPlayerId() != 0) {
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(email);
+        if (playerOptional.isEmpty()) {
             throw new NotFoundException("Player not found");
-        } else if (!playerFromDb.getAuthToken().getAuthToken().equals(player.getAuthToken().getAuthToken())) {
-            throw new PermissionsException("Not authorized to update this Player");
+        }
+        Player playerOutput = playerOptional.get();
+        return cleanPlayerForOutput(playerOutput);
+    }
+
+    @Override
+    public Player updatePlayer(long playerId, Player player) {
+        //Check to make sure email isn't in use by another registered user
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+        Player playerCurrent;
+        if (playerOptional.isPresent()) {
+            playerCurrent = playerOptional.get();
+            if (playerCurrent.getPlayerId() != playerId) {
+                throw new DuplicateResourceException("Email is already in use");
+            }
         }
 
-        if (playerByEmail.isPresent() && playerByEmail.get().getPlayerId() != player.getPlayerId()) {
-            throw new DuplicateResourceException("Email is already in use");
+        playerCurrent = checkAuthorized(player);
+
+        playerCurrent.setPlayerName(player.getPlayerName());
+        playerCurrent.setPlayerEmail(player.getPlayerEmail());
+        //player may or may not be passed with a password
+        if (player.getPlayerPassword() != null && !Objects.equals(player.getPlayerPassword().getPassword(), "")) {
+            playerCurrent.setPlayerPassword(Password.builder()
+                    .password(player.getPlayerPassword().getPassword())
+                    .build()
+            );
         }
 
-        playerFromDb.setPlayerName(player.getPlayerName());
-        playerFromDb.setPlayerEmail(player.getPlayerEmail());
-        Player playerOutput = playerRepository.save(playerFromDb);
-        //we make the password empty in the returned object because it should never be needed by the UI
-        playerOutput.getPlayerPassword().setPassword("");
-        return playerOutput;
+        return cleanPlayerForPlayer(playerRepository.save(playerCurrent));
     }
 
     @Override
     public Player login(Player player) {
+        //Don't use check authorized because we only receive email and not player id
         Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
 
         if (playerOptional.isEmpty()) {
             throw new NotFoundException("Player not found");
         }
 
-        Player playerFromDb = playerOptional.get();
-        System.out.println(playerFromDb);
+        Player playerOutput = playerOptional.get();
 
-
-        if (!playerFromDb.getPlayerPassword().getPassword().equals(player.getPlayerPassword().getPassword())) {
+        if (!playerOutput.checkPassword(player.getPlayerPassword().getPassword())) {
             throw new NotFoundException("Email or password is incorrect");
         }
 
+        playerOutput.setPlayerAuthToken(new AuthToken());
 
-        playerFromDb.setAuthToken(new AuthToken());
-        playerRepository.save(playerFromDb);
-        //we make the password empty in the returned object because it should never be needed by the UI
-        playerFromDb.getPlayerPassword().setPassword("");
-        return playerFromDb;
+        return cleanPlayerForPlayer(playerRepository.save(playerOutput));
     }
 
     @Override
     public String logout(Player player) {
-        Player playerFromDb = playerRepository.getById(player.getPlayerId());
+        Player playerFromDb = checkAuthorized(player);
 
-        AuthToken authToken = playerFromDb.getAuthToken();
-        AuthToken authTokenToCheck = player.getAuthToken();
-
-        if (authToken != null) {
-            if (!authToken.getAuthToken().equals(authTokenToCheck.getAuthToken())) {
-                throw new PermissionsException("Not Authorized");
-            }
-            playerFromDb.setAuthToken(null);
-            playerRepository.save(playerFromDb);
-        }
-
+        playerFromDb.setPlayerAuthToken(null);
+        playerRepository.save(playerFromDb);
         return "Success";
     }
 
     @Override
     public Player checkLoggedIn(Player player) {
-        Optional<Player> playerFromDb = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
-        if (playerFromDb.isEmpty()) {
+        Player playerOutput = checkAuthorized(player);
+        return cleanPlayerForPlayer(playerOutput);
+    }
+
+    //Only used until I can figure out why Jackson annotations won't ignore these properties.
+    private Player cleanPlayerForPlayer(Player player) {
+        //we make the password empty in the returned object because it should never be needed by the UI
+        player.getPlayerPassword().setPassword("");
+        return player;
+    }
+
+    private Player cleanPlayerForOutput(Player player) {
+        //we make the password and auth token empty in the returned object because it should never be needed by the UI
+        player.getPlayerAuthToken().setAuthToken("");
+        player.getPlayerPassword().setPassword("");
+        return player;
+    }
+
+    private Player checkAuthorized(Player player) {
+        Player playerOutput = getPlayerById(player.getPlayerId());
+
+        if (playerOutput.getPlayerAuthToken() == null || !playerOutput.checkAuthToken(player.getPlayerAuthToken().getAuthToken())) {
+            throw new PermissionsException("Not Authorized");
+        }
+
+        return playerOutput;
+    }
+
+    private Player getPlayerById(long playerId) {
+        Optional<Player> playerOptional = playerRepository.findById(playerId);
+        if (playerOptional.isEmpty()) {
             throw new NotFoundException("Player not found");
         }
 
-        AuthToken authTokenFromDb = playerFromDb.get().getAuthToken();
-        AuthToken authToken = player.getAuthToken();
-
-        if (authTokenFromDb == null || !authTokenFromDb.getAuthToken().equals(authToken.getAuthToken())) {
-            throw new PermissionsException("Not logged in");
-        }
-
-        Player playerOutput = playerFromDb.get();
-        //we make the password empty in the returned object because it should never be needed by the UI
-        playerOutput.getPlayerPassword().setPassword("");
-        return playerOutput;
+        return playerOptional.get();
     }
 }

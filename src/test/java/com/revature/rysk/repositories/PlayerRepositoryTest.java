@@ -17,8 +17,8 @@ class PlayerRepositoryTest {
                 .playerName("Testy McTestface")
                 .build();
 
-        player.setAuthToken(new AuthToken());
-        player.setPlayerPassword(new Password(1,"Password"));
+        player.setPlayerAuthToken(new AuthToken());
+        player.setPlayerPassword(new Password(1, "Password"));
 
         playerRepository.save(player);
     }

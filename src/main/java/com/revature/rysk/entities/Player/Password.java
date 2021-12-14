@@ -22,5 +22,6 @@ public class Password {
     @JsonIgnore
     private long passwordId;
 
+    @Column(nullable = false)
     private String password;
 }

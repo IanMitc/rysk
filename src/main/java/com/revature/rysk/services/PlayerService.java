@@ -9,8 +9,6 @@ public interface PlayerService {
 
     Player getPlayerByEmail(String Email);
 
-    Player getPlayerById(long id);
-
     Player updatePlayer(long id, Player player);
 
     Player login(Player player);

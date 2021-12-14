@@ -9,7 +9,7 @@ export const Login = () => {
 
         playerEmail: "",
 
-        authToken: null || {
+        playerAuthToken: null || {
             authToken: "",
         },
         playerPassword: {
@@ -54,7 +54,7 @@ export const Login = () => {
                             setPlayer({
                                 playerEmail: response.data.playerEmail,
 
-                                authToken: {
+                                playerAuthToken: {
                                     authToken: response.data.authToken.authToken,
                                 },
                                 playerPassword: {

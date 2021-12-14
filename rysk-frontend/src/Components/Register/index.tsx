@@ -8,7 +8,7 @@ export const Register = () => {
     playerName: "",
     playerEmail: "",
 
-    authToken: null || {
+    playerAuthToken: null || {
       authToken: "",
     },
     playerPassword: null || {
@@ -40,7 +40,7 @@ export const Register = () => {
                     playerName: response.data.playerName,
                     playerEmail: response.data.playerEmail,
 
-                    authToken: {
+                    playerAuthToken: {
                       authToken: response.data.authToken.authToken,
                     },
                     playerPassword: {

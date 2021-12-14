@@ -5,126 +5,208 @@
 5. App flow
 6. Distribution of task between team members
 
-# Rysk REST API version 1.0
+# Rysk REST API version 0.2
 
 ## Player
 
-### player (post player)
+### //server:port/player (post player)
+
+- Register New Player
+
+#### Input:
 
 ```
+{
     "playerName": "Testy McTestface",
     "playerEmail": "test@example.com",
     "playerPassword": {
         "password": "password"
     }
+}
 ```
 
-- return player. Can be saved in cookie or local storage. Adds player to system.
+- return Player with Auth Token. Can be saved in cookie or local storage. Adds player to system.
+
+#### Output:
 
 ```    
+{
+    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "authToken": {
-        "authToken": "3df5860c-14a2-408f-bc7b-0042f27cb0ab"
+    "playerAuthToken": {
+        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
+    },
+    "playerPassword": {
+        "password": ""
     }
+}
 ```
 
-### player/email (post email)
+### //server:port/player/email (post email)
+
+- Find a player by Email Address
+
+#### Input:
 
 ```
 test@example.com
 ```
 
-- returns player
+- returns Sanitized Player
+
+#### Output:
 
 ```    
+{
+    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "authToken": null,
-```
-
-### player (put updated player info)
-
-```
-    "playerEmail": "test2@example.com",
-    "playerName": "Testy McTestface",
-    "authToken": {
-        "authToken": "ec3dd984-1262-4a25-8064-a9000f175695"
-    }
-```
-
-- returns updated player should be saved to cookie or local storage so user will stay logged in.
-
-```
-    "playerEmail": "test2@example.com",
-    "playerName": "Testy McTestface",
-    "authToken": {
-        "authToken": "ec3dd984-1262-4a25-8064-a9000f175695"
+    "playerAuthToken": {
+        "authToken": ""
     },
+    "playerPassword": {
+        "password": ""
+    }
+}
 ```
 
-### player/login (post Player)
+### //server:port/player (put updated player info)
+
+- Update a Player
+
+#### Input:
 
 ```
+{
+    "playerId": 1,
+    "playerEmail": "updated@email.com",
+    "playerName": "New Name",
+    "playerAuthToken": {
+        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
+    },
+    "playerPassword": {
+        "password": "newPassword"
+    }
+}
+```
+
+- returns Sanitized Player with Auth Token
+
+#### Output:
+
+```
+{
+    "playerId": 1,
+    "playerEmail": "updated@email.com",
+    "playerName": "New Name",
+    "playerAuthToken": {
+        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
+    },
+    "playerPassword": {
+        "password": ""
+    }
+}
+```
+
+### //server:port/player/login (post Player)
+
+- log a Player into the system
+
+#### Input:
+
+```
+{
     "playerEmail": "test@example.com",
     "playerPassword": {
         "password": "password"
     }
+}
 ```
 
-- returns Player. Can be saved in cookie or local storage.
+- returns Sanitized Player with Auth Token
+
+#### Output:
 
 ```    
+{
+    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "authToken": {
-        "authToken": "48daeea3-a109-43f0-a969-016cb6f9e86f"
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
+    },
+    "playerPassword": {
+        "password": ""
     }
+}
 ```
 
-### player/logout (post Player)
+### //server:port/player/logout (post Player)
+
+- Logs a Player out of the system
+
+#### Input:
 
 ```
-    "playerEmail": "test2@example.com",
-    "playerName": "Testy McTestface",
-    "authToken": {
-        "authToken": "9d6077c5-cc7b-4e85-91d0-0490fa4047b7"
+{
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
     }
+}
 ```
 
-- returns success and removes auth token from system so can no longer be used.
+- returns success and removes Auth Token from system.
+
+#### Output:
 
 ```
 Success
 ```
 
-### player/login/check (post Player)
+### //server:port/player/login/check (post Player)
+
+- Check if Auth Token is valid
+
+#### Input:
 
 ```
-    "playerEmail": "test@example.com",
-
-    "authToken": {
-        "authToken": "be120813-d39e-4306-bdd8-becbf0a8da65"
+ {
+    "playerId": 1,
+    "playerAuthToken": {
+        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
     }
+}
 ```
 
-- returns existing Player if valid
+- returns Sanitized Player with Auth Token
+
+#### Output:
 
 ```
+{
+    "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "authToken": {
-        "authToken": "be120813-d39e-4306-bdd8-becbf0a8da65"
+    "playerAuthToken": {
+        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
     },
+    "playerPassword": {
+        "password": ""
+    }
+}
 ```
 
-### player/games (post Player)
+### //server:port/player/games (post Player)
 
 - returns all games that player is a participant in
 
 ## Game Management
 
-### game/new (post Players for game)
+### //server:port/game/new (post Players for game)
+
+#### Input:
 
 ```
 [
@@ -140,6 +222,8 @@ Success
 ```
 
 - returns new game board.
+
+#### Output:
 
 ```
     "gameId": 1,
@@ -202,7 +286,9 @@ Success
     "stage": "DISCARD"
 ```
 
-### game/join/{gameID} (post Player)
+### //server:port/game/join/{gameID} (post Player)
+
+#### Input:
 
 ```
     "playerEmail": "test3@example.com",
@@ -213,6 +299,8 @@ Success
 ```
 
 - returns game board. Can be used for joining new or existing games also to update board in UI if needed.
+
+#### Output:
 
 ```
     "gameId": 7,
@@ -276,7 +364,9 @@ Success
     "stage": "DISCARD"
 ```
 
-### game/quit/{gameID} (post Player)
+### //server:port/game/quit/{gameID} (post Player)
+
+#### Input:
 
 ```
     "playerEmail": "test@example.com",
@@ -289,11 +379,15 @@ Success
 
 - returns success
 
+#### Output:
+
 ```
 Success
 ```
 
-### game/exit/{gameId] (post Player)
+### //server:port/game/exit/{gameId] (post Player)
+
+#### Input:
 
 ```
     "playerEmail": "test@example.com",
@@ -306,11 +400,15 @@ Success
 
 - returns success
 
+#### Output:
+
 ```
 Success
 ```
 
-### game/log/{gameID} (post Player)
+### //server:port/game/log/{gameID} (post Player)
+
+#### Input:
 
 ```
     "playerEmail": "test@example.com",
@@ -323,6 +421,8 @@ Success
 
 - returns the game history
 
+#### Output:
+
 ```
   {
   "message": "New Game Started"
@@ -332,7 +432,9 @@ Success
   }
 ```
 
-### game/log/{gameId}/{log id} (post Player)
+### //server:port/game/log/{gameId}/{log id} (post Player)
+
+#### Input:
 
 ```
     "playerEmail": "test@example.com",
@@ -346,6 +448,8 @@ Success
 - returns all log messages from a particular message to the most recent. If we don't use web sockets, we can have the
   log component call this on a timer and then update the UI game state if a new log is returned.
 
+#### Output:
+
 ```
     {
         "message": "Testy McTestface goes first"
@@ -354,36 +458,36 @@ Success
 
 ## Game Play
 
-### game/play/discard/{gameId} (post Player)
+### //server:port/game/play/discard/{gameId} (post Player)
 
 0 cards turned in for armies
 
 - returns number of armies for player to place
 
-### game/play/discard/{gameId}/{cardType1}/{cardType2}/{cardType3} (post Player)
+### //server:port/game/play/discard/{gameId}/{cardType1}/{cardType2}/{cardType3} (post Player)
 
 3 cards turned in for armies
 
 - returns number of armies for player to place
 
-### game/play/armies (post Player, game id, country id, number of armies to add)
+### //server:port/game/play/armies (post Player, game id, country id, number of armies to add)
 
 - returns updated country or failure if not auth, not turn, not controlled by player,
 
-### game/play/attack (post Player, attacking country id, number of attacking armies, number of dice, defending country id)
+### //server:port/game/play/attack (post Player, attacking country id, number of attacking armies, number of dice, defending country id)
 
 - returns up to 3 random numbers for dice roll or failure if not auth etc.
 
-### game/play/defend (post Player, defending country id, number of dice)
+### //server:port/game/play/defend (post Player, defending country id, number of dice)
 
 - returns up to 2 random numbers for dice roll or failure if not auth etc. Triggers logging of attack and if web sockets
   are implemented will tell players to update board info.
 
-### game/play/move (post Player, from country id, to country id, number of armies)
+### //server:port/game/play/move (post Player, from country id, to country id, number of armies)
 
 - returns updated countries or failure
 
-### game/play/draw (post Player)
+### //server:port/game/play/draw (post Player)
 
 - returns card if player took over a country, empty if not, or error. Also signals to the backend that the player's turn
   has ended.
