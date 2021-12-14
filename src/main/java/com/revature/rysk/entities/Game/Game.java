@@ -12,10 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -42,6 +39,14 @@ public class Game {
     @ManyToOne
     @JoinColumn(name = "attacking_player_player_id")
     private Player attackingPlayer;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "attacking_country_game_db_country_id")
+    private Country attackingCountry;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "defending_country_game_db_country_id")
+    private Country defendingCountry;
 
     @JsonIgnore
     @OneToOne(cascade = {CascadeType.ALL})
@@ -378,6 +383,55 @@ public class Game {
         country.addArmies(numberOfArmies);
         this.armiesToPlay -= numberOfArmies;
         return country;
+    }
+
+    public List<Integer> attack(Player playerFromDb, int attackingCountryId, int defendingCountryId, int numberOfArmies, int numberOfDice) {
+        //Make sure that this is the right time
+        if (this.stage.ordinal() > STAGE.ATTACK.ordinal()) {
+            throw new BadRequestException("Wrong stage to discard cards");
+        } else if (this.stage.ordinal() < STAGE.ATTACK.ordinal()) {
+            this.stage = STAGE.ATTACK;
+        }
+
+        if (numberOfDice > 3 || numberOfDice < 1) {
+            throw new BadRequestException("Please roll 1-3 dice");
+        }
+
+        this.attackingPlayer = playerFromDb;
+        this.attackingCountry = this.countries.get(attackingCountryId);
+
+        if (!this.attackingCountry.getControlledBy().equals(playerFromDb)) {
+            this.attackingCountry = null;
+            this.attackingPlayer = null;
+            throw new PermissionsException("This is not your country");
+        }
+
+        if (numberOfArmies > this.attackingCountry.getArmies() - 1) {
+            this.attackingCountry = null;
+            this.attackingPlayer = null;
+            throw new BadRequestException("You don't have enough armies for this attack");
+        }
+
+        //Can't roll more dice than the number of attacking armies
+        if (numberOfArmies < numberOfDice) {
+            numberOfDice = numberOfArmies;
+        }
+
+        //Get defending player and set as current, so they can defend
+        this.defendingCountry = this.countries.get(defendingCountryId);
+        this.currentPlayer = this.defendingCountry.getControlledBy();
+        this.stage = STAGE.DEFEND;
+
+        Random random = new Random();
+        attackingDice1 = random.nextInt(6) + 1;
+        attackingDice2 = random.nextInt(6) + 1;
+        attackingDice3 = random.nextInt(6) + 1;
+
+        List<Integer> roll = new ArrayList<>();
+        roll.add(attackingDice1);
+        roll.add(attackingDice2);
+        roll.add(attackingDice3);
+        return roll.subList(0, numberOfDice);
     }
 
     public enum STAGE {

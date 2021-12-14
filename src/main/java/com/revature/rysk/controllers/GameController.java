@@ -45,7 +45,9 @@ public class GameController {
     }
 
     @PostMapping("/game/{gameId}/log/{logId}")
-    public List<GameLog> tailLog(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("logId") int logId) {
+    public List<GameLog> tailLog(@RequestBody Player player,
+                                 @PathVariable("gameId") long gameId,
+                                 @PathVariable("logId") int logId) {
         return gameService.tailLog(player, gameId, logId);
     }
 
@@ -57,12 +59,29 @@ public class GameController {
 
     //For when the player wants to discard 3 cards
     @PostMapping("/game/play/{gameId}/discard/{cardType1}/{cardType2}/{cardType3}")
-    public int discard(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("carType1") Card.TYPE cardType1, @PathVariable("carType2") Card.TYPE cardType2, @PathVariable("carType3") Card.TYPE cardType3) {
+    public int discard(@RequestBody Player player,
+                       @PathVariable("gameId") long gameId,
+                       @PathVariable("carType1") Card.TYPE cardType1,
+                       @PathVariable("carType2") Card.TYPE cardType2,
+                       @PathVariable("carType3") Card.TYPE cardType3) {
         return gameService.discard(player, gameId, cardType1, cardType2, cardType3);
     }
 
     @PostMapping("/game/{gameId}/play/armies/{countryId}/{numberOfArmies}")
-    public Country placeArmies(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("countryId") int countryId, @PathVariable("numberOfArmies") int numberOfArmies) {
+    public Country placeArmies(@RequestBody Player player,
+                               @PathVariable("gameId") long gameId,
+                               @PathVariable("countryId") int countryId,
+                               @PathVariable("numberOfArmies") int numberOfArmies) {
         return gameService.placeArmies(player, gameId, countryId, numberOfArmies);
+    }
+
+    @PostMapping("/game/{gameId}/play/attack/{attackingCountryId}/{defendingCountryId}/{numberOfArmies}/{numberOfDice}")
+    public List<Integer> attack(@RequestBody Player player,
+                                @PathVariable("gameId") long gameId,
+                                @PathVariable("attackingCountryId") int attackingCountryId,
+                                @PathVariable("defendingCountryId") int defendingCountryId,
+                                @PathVariable("numberOfArmies") int numberOfArmies,
+                                @PathVariable("numberOfDice") int numberOfDice) {
+        return gameService.attack(gameId, player, attackingCountryId, defendingCountryId, numberOfArmies, numberOfDice);
     }
 }
