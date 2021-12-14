@@ -25,7 +25,7 @@ public class PlayerServiceImpl implements PlayerService {
         player.setAuthToken(new AuthToken());
         Player playerOutput = playerRepository.save(player);
         //we make the password null in the returned object because it should never be needed by the UI
-        //playerOutput.getPlayerPassword().setPassword("");
+        playerOutput.getPlayerPassword().setPassword("");
         return playerOutput;
     }
 
@@ -68,25 +68,32 @@ public class PlayerServiceImpl implements PlayerService {
         playerFromDb.setPlayerEmail(player.getPlayerEmail());
         Player playerOutput = playerRepository.save(playerFromDb);
         //we make the password empty in the returned object because it should never be needed by the UI
-        //playerOutput.getPlayerPassword().setPassword("");
+        playerOutput.getPlayerPassword().setPassword("");
         return playerOutput;
     }
 
     @Override
     public Player login(Player player) {
-        Optional<Player> playerFromDb = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
 
-        if (playerFromDb.isEmpty()
-                || !playerFromDb.get().getPlayerPassword().getPassword().equals(player.getPlayerPassword().getPassword())) {
+        if (playerOptional.isEmpty()) {
+            throw new NotFoundException("Player not found");
+        }
+
+        Player playerFromDb = playerOptional.get();
+        System.out.println(playerFromDb);
+
+
+        if (!playerFromDb.getPlayerPassword().getPassword().equals(player.getPlayerPassword().getPassword())) {
             throw new NotFoundException("Email or password is incorrect");
         }
 
-        Player playerOutput = playerFromDb.get();
-        playerOutput.setAuthToken(new AuthToken());
-        playerRepository.save(playerOutput);
+
+        playerFromDb.setAuthToken(new AuthToken());
+        playerRepository.save(playerFromDb);
         //we make the password empty in the returned object because it should never be needed by the UI
-        //playerOutput.getPlayerPassword().setPassword("");
-        return playerOutput;
+        playerFromDb.getPlayerPassword().setPassword("");
+        return playerFromDb;
     }
 
     @Override
@@ -123,7 +130,7 @@ public class PlayerServiceImpl implements PlayerService {
 
         Player playerOutput = playerFromDb.get();
         //we make the password empty in the returned object because it should never be needed by the UI
-        //playerOutput.getPlayerPassword().setPassword("");
+        playerOutput.getPlayerPassword().setPassword("");
         return playerOutput;
     }
 }
