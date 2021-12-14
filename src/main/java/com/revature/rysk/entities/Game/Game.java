@@ -345,6 +345,7 @@ public class Game {
             //Create new hand from remaining cards and save to playersCards
             workingHands.add(Hand.builder().heldBy(playerFromDb).cards(playerHandList).build());
             this.playersCards = workingHands;
+            this.deck.discard(discardPile);
         }
 
         int totalArmies = armies + bonus;
