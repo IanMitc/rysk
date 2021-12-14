@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -20,7 +17,8 @@ import java.util.Stack;
 @NoArgsConstructor
 public class Deck {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "deck_id_generator")
+    @SequenceGenerator(name = "deck_id_generator", sequenceName = "deck_id_sequence")
     private long deckId;
 
     @Embedded

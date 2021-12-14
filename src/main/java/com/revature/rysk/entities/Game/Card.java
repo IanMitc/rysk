@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
 public class Card {
     @Enumerated
     private TYPE type;

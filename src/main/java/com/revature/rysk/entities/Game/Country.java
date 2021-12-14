@@ -1,5 +1,6 @@
 package com.revature.rysk.entities.Game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revature.rysk.entities.Player.Player;
 import lombok.*;
@@ -14,8 +15,10 @@ import javax.persistence.*;
 @Builder
 public class Country {
     @Id
-    @GeneratedValue
-    private long gameDbId;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "country_id_generator")
+    @SequenceGenerator(name = "country_id_generator", sequenceName = "country_id_sequence", allocationSize = 42)
+    @JsonIgnore
+    private long gameDbCountryId;
 
     @JsonIgnoreProperties({"authToken", "playerPassword"})
     @OneToOne

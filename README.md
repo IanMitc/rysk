@@ -142,7 +142,6 @@ Success
 - returns new game board.
 
 ```
-{
     "gameId": 1,
     "players": [
         {
@@ -201,7 +200,6 @@ Success
     "defendingDice": [],
     "bonusArmies": 4,
     "stage": "DISCARD"
-}
 ```
 
 ### game/join/{gameID} (post Player)
@@ -262,7 +260,12 @@ Success
         ...
         ...
         ...
-        
+        {
+            "countryId": 41,
+            "controlledBy": {
+                "playerEmail": "test2@example.com",
+                "playerName": "Testy McTestface"
+            },
             "name": "WesternAustralia",
             "countryId": 41,
             "printableName": "W Australia",
@@ -351,9 +354,17 @@ Success
 
 ## Game Play
 
-### game/play/discard (post Player, 0 or 3 cards)
+### game/play/discard/{gameId} (post Player)
 
-- returns number of additional armies earned
+0 cards turned in for armies
+
+- returns number of armies for player to place
+
+### game/play/discard/{gameId}/{cardType1}/{cardType2}/{cardType3} (post Player)
+
+3 cards turned in for armies
+
+- returns number of armies for player to place
 
 ### game/play/armies (post Player, game id, country id, number of armies to add)
 
@@ -376,3 +387,11 @@ Success
 
 - returns card if player took over a country, empty if not, or error. Also signals to the backend that the player's turn
   has ended.
+
+### TODO: Probably needed for gameplay
+
+- get player hand
+- get current player
+- get current stage
+- get current bonus armies
+- get countries by player id

@@ -3,7 +3,10 @@ package com.revature.rysk.entities.Game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revature.rysk.entities.Player.Player;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +21,8 @@ import java.util.List;
 @Setter
 public class Game {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_id_generator")
+    @SequenceGenerator(name = "game_id_sequence", sequenceName = "game_id_sequence")
     private long gameId;
 
     @JsonIgnoreProperties({"authToken", "playerPassword"})
@@ -41,6 +45,13 @@ public class Game {
     @JoinColumn(name = "deck_deck_id")
     private Deck deck;
 
+    @JsonIgnore
+    @ManyToMany(cascade = {CascadeType.ALL})
+    @JoinTable(name = "game_players_cards",
+            joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"),
+            inverseJoinColumns = @JoinColumn(name = "players_cards_hand_id", referencedColumnName = "handId"))
+    List<Hand> playersCards = new ArrayList<>();
+
     @JsonIgnoreProperties({"game"})
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GameLog> logs = new ArrayList<>();
@@ -48,7 +59,7 @@ public class Game {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "game_countries",
             joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"),
-            inverseJoinColumns = @JoinColumn(name = "countries_game_db_id", referencedColumnName = "gameDbId"))
+            inverseJoinColumns = @JoinColumn(name = "countries_game_db_id", referencedColumnName = "gameDbCountryId"))
     List<Country> countries = new ArrayList<>();
 
     @JsonIgnore
@@ -63,6 +74,7 @@ public class Game {
     @JsonIgnore
     private int defendingDice2;
 
+    private int armiesToPlay;
     private int bonusArmies;
     private STAGE stage;
 
@@ -131,6 +143,11 @@ public class Game {
             c.setControlledBy(p);
         }
 
+        //Create empty hands for player to receive cards
+        for (Player p : players) {
+            playersCards.add(Hand.builder().heldBy(p).build());
+        }
+
         //Take the top player and make him current
         this.currentPlayer = this.players.get(0);
         this.players.remove(this.currentPlayer);
@@ -176,7 +193,7 @@ public class Game {
     }
 
     //The Army bonus increases each time a set is turned in
-    private void nextBonus() {
+    public void nextBonus() {
         if (this.bonusArmies < 12) {
             this.bonusArmies += 2;
         } else if (this.bonusArmies < 15) {
