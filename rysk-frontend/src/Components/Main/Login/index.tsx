@@ -19,8 +19,6 @@ export const Login = () => {
     });
 
 
-
-
     const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPlayer({
             ...player,
@@ -32,7 +30,7 @@ export const Login = () => {
     // const onSubmit = () => {
     //     console.log(player);
     //     axios
-    //         .post("http://localhost:8080/player", player)
+    //         .post("http://localhost:8080/player/login", player)
     //         .then((response) => {
     //             console.log(response);
     //         })
@@ -48,7 +46,7 @@ export const Login = () => {
                     onSubmit={(event) => {
                         event.preventDefault();
                         axios
-                        .post("http://localhost:8080/player", player)
+                        .post("http://localhost:8080/player/login", player)
                         .then((response) => {
                             console.log(response);
                             setPlayer({
