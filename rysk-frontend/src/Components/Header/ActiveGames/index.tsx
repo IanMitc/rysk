@@ -7,12 +7,22 @@ const ActiveGames = () => {
       <p className="lead">
         other players
       </p>
-      
+      <p className="lead">
+          No of Countries
+      </p>
+      <p className="lead">
+          No of Armies
+      </p>
       <a href="#" role="button">
-        Join
+        Play
       </a> 
-      <a href="#" role="button">Decline</a>
-     
+      {/* <input
+              type="submit"
+              value="Register"
+              className="btn btn-primary btn-block"
+            /> */}
+      <a href="#" role="button">  Forfiet</a>
+        
     </div>
   );
 };

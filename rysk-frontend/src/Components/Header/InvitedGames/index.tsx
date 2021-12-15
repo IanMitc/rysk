@@ -14,7 +14,7 @@ const InvitedGames = () => {
       <a href="#" role="button">
         Join
       </a> 
-      <a href="#" role="button">Decline</a>
+      <a href="#" role="button">  Decline</a>
       
     </div>
   );
