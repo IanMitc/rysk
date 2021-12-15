@@ -20,7 +20,7 @@ public class Country {
     @JsonIgnore
     private long gameDbCountryId;
 
-    @JsonIgnoreProperties({"authToken", "playerPassword"})
+    @JsonIgnoreProperties({"playerAuthToken", "playerPassword"})
     @OneToOne
     @JoinColumn(name = "controlled_by_player_id")
     private Player controlledBy;
@@ -31,6 +31,14 @@ public class Country {
     private long countryId;
     private String printableName;
     private int armies;
+
+    public void addArmies(int numberOfArmies) {
+        this.armies += numberOfArmies;
+    }
+
+    public void subtractArmies(int numberOfArmies) {
+        this.armies -= numberOfArmies;
+    }
 
     public enum NAME {
         Alaska,

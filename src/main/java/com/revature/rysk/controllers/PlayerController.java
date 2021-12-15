@@ -1,15 +1,20 @@
 package com.revature.rysk.controllers;
 
 import com.revature.rysk.entities.Player.Player;
+import com.revature.rysk.services.GameService;
 import com.revature.rysk.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class PlayerController {
     @Autowired
     private PlayerService playerService;
+    @Autowired
+    private GameService gameService;
 
     @PostMapping("/player")
     public Player addPlayer(@RequestBody Player newPlayer) {
@@ -39,5 +44,10 @@ public class PlayerController {
     @PostMapping("/player/check")
     public Player checkLoggedIn(@RequestBody Player player) {
         return playerService.checkLoggedIn(player);
+    }
+
+    @PostMapping("/player/games")
+    public List<Long> getGames(@RequestBody Player player) {
+        return gameService.getGames(player);
     }
 }
