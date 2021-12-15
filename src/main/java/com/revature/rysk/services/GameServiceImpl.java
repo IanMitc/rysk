@@ -168,7 +168,12 @@ public class GameServiceImpl implements GameService {
     @Override
     public List<Long> getGames(Player player) {
         Player playerFromDb = checkAuthorized(player);
-        return gameRepository.getGamesByPlayerId(playerFromDb.getPlayerId());
+        List<Game> games = gameRepository.findGamesByPlayers_PlayerId(playerFromDb.getPlayerId());
+        List<Long> gameIds = new ArrayList<>();
+        for (Game g : games) {
+            gameIds.add(g.getGameId());
+        }
+        return gameIds;
     }
 
     private Player checkAuthorized(Player player) {
