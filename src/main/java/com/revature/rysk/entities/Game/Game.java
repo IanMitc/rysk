@@ -569,10 +569,13 @@ public class Game {
         if (playerWon) {
             card = this.deck.draw();
             playerWon = false;
+            log(this.currentPlayer.getPlayerName() + " drew a card");
         }
+
 
         nextPlayer();
         this.stage = STAGE.DISCARD;
+        log(this.currentPlayer.getPlayerName() + "'s turn");
         return card;
     }
 
