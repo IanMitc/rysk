@@ -213,7 +213,20 @@ Success
 }
 ```
 
-- Returns array of game ids.
+- Returns an array of game ids.
+
+#### Output:
+
+```
+[
+    1,
+    2,
+    52,
+    53,
+    54,
+    55
+]
+```
 
 ## Game Management
 

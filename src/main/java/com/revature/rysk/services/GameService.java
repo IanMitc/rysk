@@ -42,4 +42,6 @@ public interface GameService {
     List<Country> move(Player player, long gameId, int fromCountryId, int toCountryId, int numberOfArmies);
 
     Card draw(Player player, long gameId);
+
+    List<Long> getGames(Player player);
 }
