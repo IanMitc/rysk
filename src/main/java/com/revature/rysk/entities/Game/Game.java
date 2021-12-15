@@ -83,6 +83,7 @@ public class Game {
     private int defendingDice2;
 
     private int armiesToPlay;
+    private boolean playerWon;
     private int bonusArmies;
     private STAGE stage;
 
@@ -155,18 +156,18 @@ public class Game {
         for (Player p : players) {
             playersCards.add(Hand.builder().heldBy(p).build());
         }
-
-        //Take the top player and make him current
-        this.currentPlayer = this.players.get(0);
-        this.players.remove(this.currentPlayer);
-        this.players.add(this.currentPlayer);
-
+        this.attackingDice1 = -1;
+        this.attackingDice2 = -1;
+        this.attackingDice3 = -1;
+        this.defendingDice1 = -1;
+        this.defendingDice2 = -1;
+        this.playerWon = false;
         this.bonusArmies = 4;
-
         this.stage = STAGE.DISCARD;
 
-        this.logs.add(GameLog.builder().game(this).message("New Game Started").build());
-        this.logs.add(GameLog.builder().game(this).message(currentPlayer.getPlayerName() + " goes first").build());
+        nextPlayer();
+        log("New Game Started");
+        log(currentPlayer.getPlayerName() + " goes first");
     }
 
     //If a player leaves the game, we take their countries and deal them to the remaining players.
@@ -229,10 +230,7 @@ public class Game {
 
     //Calculate armies and bonuses for controlling a continent
     public int getArmiesToPlay(Player playerFromDb, List<Card> discardPile) {
-        //Make sure that this is the right time
-        if (this.stage.ordinal() > Game.STAGE.DISCARD.ordinal()) {
-            throw new BadRequestException("Wrong stage to discard cards");
-        }
+        checkStage(playerFromDb, STAGE.DISCARD);
 
         //Calculate Standard number of armies
         List<Country> countryList = this.getCountries();
@@ -363,12 +361,7 @@ public class Game {
     }
 
     public Country placeArmies(Player playerFromDb, int countryId, int numberOfArmies) {
-        //Make sure that this is the right time
-        if (this.stage.ordinal() > STAGE.ARMIES.ordinal()) {
-            throw new BadRequestException("Wrong stage to discard cards");
-        } else if (this.stage.ordinal() < STAGE.ARMIES.ordinal()) {
-            this.stage = STAGE.ARMIES;
-        }
+        checkStage(playerFromDb, STAGE.ARMIES);
 
         if (numberOfArmies > this.armiesToPlay) {
             throw new BadRequestException("Not enough armies left");
@@ -386,12 +379,7 @@ public class Game {
     }
 
     public List<Integer> attack(Player playerFromDb, int attackingCountryId, int defendingCountryId, int numberOfArmies, int numberOfDice) {
-        //Make sure that this is the right time
-        if (this.stage.ordinal() > STAGE.ATTACK.ordinal()) {
-            throw new BadRequestException("Wrong stage to discard cards");
-        } else if (this.stage.ordinal() < STAGE.ATTACK.ordinal()) {
-            this.stage = STAGE.ATTACK;
-        }
+        checkStage(playerFromDb, STAGE.ATTACK);
 
         if (numberOfDice > 3 || numberOfDice < 1) {
             throw new BadRequestException("Please roll 1-3 dice");
@@ -424,14 +412,120 @@ public class Game {
 
         Random random = new Random();
         attackingDice1 = random.nextInt(6) + 1;
-        attackingDice2 = random.nextInt(6) + 1;
-        attackingDice3 = random.nextInt(6) + 1;
+        if (numberOfDice > 1) {
+            attackingDice2 = random.nextInt(6) + 1;
+        }
+        if (numberOfDice > 2) {
+            attackingDice3 = random.nextInt(6) + 1;
+        }
 
         List<Integer> roll = new ArrayList<>();
         roll.add(attackingDice1);
         roll.add(attackingDice2);
         roll.add(attackingDice3);
         return roll.subList(0, numberOfDice);
+    }
+
+    public List<Integer> defend(Player playerFromDb, int numberOfDice) {
+        checkStage(playerFromDb, STAGE.DEFEND);
+
+        if (numberOfDice > 2 || numberOfDice < 1) {
+            throw new BadRequestException("Please roll 1 or 2 dice");
+        }
+
+        //Can't roll more dice than the number of defending armies
+        if (this.defendingCountry.getArmies() < numberOfDice) {
+            numberOfDice = this.defendingCountry.getArmies();
+        }
+
+        Random random = new Random();
+        defendingDice1 = random.nextInt(6) + 1;
+        if (numberOfDice > 1) {
+            defendingDice2 = random.nextInt(6) + 1;
+        }
+
+        List<Integer> defendingRoll = new ArrayList<>();
+        defendingRoll.add(defendingDice1);
+        defendingRoll.add(defendingDice2);
+        defendingRoll.sort(Comparator.reverseOrder());
+        List<Integer> attackingRoll = new ArrayList<>();
+        attackingRoll.add(attackingDice1);
+        attackingRoll.add(attackingDice2);
+        attackingRoll.add(attackingDice3);
+        attackingRoll.sort(Comparator.reverseOrder());
+
+        int attackerLoses = 0;
+        int defenderLoses = 0;
+        for (int i = 0; i < 2; i++) {
+            if (defendingRoll.get(i) > -1 && attackingRoll.get(i) > -1) {
+                if (defendingRoll.get(i) < attackingRoll.get(i)) {
+                    defenderLoses++;
+                } else {
+                    attackerLoses++;
+                }
+            }
+        }
+
+        attackingCountry.subtractArmies(attackerLoses);
+        defendingCountry.subtractArmies(defenderLoses);
+
+        log(this.attackingPlayer.getPlayerName() + " rolled " +
+                (this.attackingDice1 + 1) +
+                (this.attackingDice2 > -1 ? ", " + (this.attackingDice2 + 1) : "") +
+                (this.attackingDice3 > -1 ? " and " + (this.attackingDice3 + 1) : "")
+        );
+        log(this.currentPlayer.getPlayerName() + " rolled " +
+                (this.defendingDice1 + 1) +
+                (this.defendingDice2 > -1 ? " and " + (this.defendingDice2 + 1) : "")
+        );
+
+        log(this.attackingPlayer.getPlayerName() +
+                " lost " + attackerLoses +
+                " armies from " + this.attackingCountry.getPrintableName());
+
+        log(this.currentPlayer.getPlayerName() +
+                " lost " + defenderLoses +
+                " armies from " + this.defendingCountry.getPrintableName());
+
+        if (this.defendingCountry.getArmies() == 0) {
+            this.defendingCountry.setControlledBy(this.attackingPlayer);
+            this.playerWon = true;
+            log(this.attackingPlayer + " captured " + this.defendingCountry.getPrintableName());
+        }
+
+        //Clear out info from current attack
+        this.currentPlayer = this.attackingPlayer;
+        this.attackingPlayer = null;
+        this.attackingCountry = null;
+        this.defendingCountry = null;
+        this.attackingDice1 = -1;
+        this.attackingDice2 = -1;
+        this.attackingDice3 = -1;
+        this.defendingDice1 = -1;
+        this.defendingDice2 = -1;
+        this.stage = STAGE.ATTACK;
+        return defendingRoll.subList(0, numberOfDice);
+    }
+
+    private void checkStage(Player playerFromDb, STAGE stageToCheck) {
+        //Make sure that it's the player's turn
+        if (!currentPlayer.equals(playerFromDb)) {
+            throw new PermissionsException("It's not your turn");
+        }
+
+        //Make sure that this is the right time
+        if (this.stage.ordinal() > stageToCheck.ordinal()) {
+            throw new BadRequestException("Wrong stage to discard cards");
+        } else if (this.stage.ordinal() < stageToCheck.ordinal()) {
+            this.stage = stageToCheck;
+        }
+    }
+
+    private void nextPlayer() {
+        //Take the top player and make him current
+        this.currentPlayer = this.players.get(0);
+        this.players.remove(this.currentPlayer);
+        this.players.add(this.currentPlayer);
     }
 
     public enum STAGE {

@@ -36,6 +36,10 @@ public class Country {
         this.armies += numberOfArmies;
     }
 
+    public void subtractArmies(int numberOfArmies) {
+        this.armies -= numberOfArmies;
+    }
+
     public enum NAME {
         Alaska,
         Alberta,

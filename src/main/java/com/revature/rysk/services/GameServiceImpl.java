@@ -138,8 +138,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<Integer> defend(Player player, int defendingCountryId, int numberOfDice) {
-        return null;
+    public List<Integer> defend(Player player, long gameId, int numberOfDice) {
+        Player playerFromDb = checkAuthorized(player);
+        Game game = getGame(playerFromDb, gameId);
+
+        List<Integer> defenseRoll = game.defend(playerFromDb, numberOfDice);
+        gameRepository.save(game);
+        return defenseRoll;
     }
 
     @Override

@@ -84,4 +84,9 @@ public class GameController {
                                 @PathVariable("numberOfDice") int numberOfDice) {
         return gameService.attack(gameId, player, attackingCountryId, defendingCountryId, numberOfArmies, numberOfDice);
     }
+
+    @PostMapping("/game/{gameId}/play/defend/{numberOfDice}")
+    public List<Integer> defend(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("numberOfDice") int numberOfDice) {
+        return gameService.defend(player, gameId, numberOfDice);
+    }
 }

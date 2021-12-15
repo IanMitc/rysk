@@ -37,7 +37,7 @@ public interface GameService {
 
     List<Integer> attack(long gameId, Player player, int attackingCountryId, int defendingCountryId, int numberOfArmies, int numberOfDice);
 
-    List<Integer> defend(Player player, int defendingCountryId, int numberOfDice);
+    List<Integer> defend(Player player, long gameId, int numberOfDice);
 
     Country move(Player player, int fromCountryId, int toCountryId, int numberOfArmies);
 
