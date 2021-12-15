@@ -562,6 +562,20 @@ public class Game {
         return changedCountries;
     }
 
+    public Card draw(Player playerFromDb) {
+        checkStage(playerFromDb, STAGE.DRAW);
+
+        Card card = null;
+        if (playerWon) {
+            card = this.deck.draw();
+            playerWon = false;
+        }
+
+        nextPlayer();
+        this.stage = STAGE.DISCARD;
+        return card;
+    }
+
     public enum STAGE {
         DISCARD, ARMIES, ATTACK, DEFEND, MOVE, DRAW
     }

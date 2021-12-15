@@ -98,4 +98,9 @@ public class GameController {
                               @PathVariable("numberOfArmies") int numberOfArmies) {
         return gameService.move(player, gameId, fromCountryId, toCountryId, numberOfArmies);
     }
+
+    @PostMapping("/game/{gameId}/play/draw")
+    public Card draw(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+        return gameService.draw(player, gameId);
+    }
 }

@@ -158,8 +158,11 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<Card> draw(Player player) {
-        return null;
+    public Card draw(Player player, long gameId) {
+        Player playerFromDb = checkAuthorized(player);
+        Game game = getGame(playerFromDb, gameId);
+
+        return game.draw(playerFromDb);
     }
 
     private Player checkAuthorized(Player player) {
