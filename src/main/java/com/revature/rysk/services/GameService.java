@@ -39,7 +39,7 @@ public interface GameService {
 
     List<Integer> defend(Player player, long gameId, int numberOfDice);
 
-    Country move(Player player, int fromCountryId, int toCountryId, int numberOfArmies);
+    List<Country> move(Player player, long gameId, int fromCountryId, int toCountryId, int numberOfArmies);
 
     List<Card> draw(Player player);
 }

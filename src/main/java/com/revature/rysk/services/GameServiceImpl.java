@@ -148,8 +148,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Country move(Player player, int fromCountryId, int toCountryId, int numberOfArmies) {
-        return null;
+    public List<Country> move(Player player, long gameId, int fromCountryId, int toCountryId, int numberOfArmies) {
+        Player playerFromDb = checkAuthorized(player);
+        Game game = getGame(playerFromDb, gameId);
+
+        List<Country> changedCountries = game.move(playerFromDb, fromCountryId, toCountryId, numberOfArmies);
+        gameRepository.save(game);
+        return changedCountries;
     }
 
     @Override

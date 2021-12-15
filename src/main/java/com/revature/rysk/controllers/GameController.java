@@ -89,4 +89,13 @@ public class GameController {
     public List<Integer> defend(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("numberOfDice") int numberOfDice) {
         return gameService.defend(player, gameId, numberOfDice);
     }
+
+    @PostMapping("/game/{gameId}/play/move/{fromCountryId}/{toCountryId}/{numberOfArmies}")
+    public List<Country> move(@RequestBody Player player,
+                              @PathVariable("gameId") long gameId,
+                              @PathVariable("fromCountryId") int fromCountryId,
+                              @PathVariable("toCountryId") int toCountryId,
+                              @PathVariable("numberOfArmies") int numberOfArmies) {
+        return gameService.move(player, gameId, fromCountryId, toCountryId, numberOfArmies);
+    }
 }

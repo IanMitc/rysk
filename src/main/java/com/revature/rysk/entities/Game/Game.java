@@ -528,6 +528,40 @@ public class Game {
         this.players.add(this.currentPlayer);
     }
 
+    public List<Country> move(Player playerFromDb, int fromCountryId, int toCountryId, int numberOfArmies) {
+        checkStage(playerFromDb, STAGE.MOVE);
+
+        Country fromCountry = this.countries.get(fromCountryId);
+        Country toCountry = this.countries.get(toCountryId);
+
+        //Make sure that the countries border each other
+        List<Country.NAME> neighbors = CountryNeighbors.getNeighbors(fromCountry.getName());
+        if (!neighbors.contains(toCountry.getName())) {
+            throw new BadRequestException("These countries aren't neighbors");
+        }
+
+        if (numberOfArmies > fromCountry.getArmies() - 1) {
+            throw new BadRequestException("You can only move up to " + (fromCountry.getArmies() - 1) + " countries");
+        }
+
+        fromCountry.subtractArmies(numberOfArmies);
+        toCountry.addArmies(numberOfArmies);
+        log(playerFromDb.getPlayerName() +
+                " moved " +
+                numberOfArmies +
+                " armies from " +
+                fromCountry.getPrintableName() +
+                " to " +
+                toCountry.getPrintableName()
+        );
+
+        List<Country> changedCountries = new ArrayList<>();
+        changedCountries.add(fromCountry);
+        changedCountries.add(toCountry);
+        this.stage = STAGE.DRAW;
+        return changedCountries;
+    }
+
     public enum STAGE {
         DISCARD, ARMIES, ATTACK, DEFEND, MOVE, DRAW
     }
