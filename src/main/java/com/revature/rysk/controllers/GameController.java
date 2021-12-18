@@ -58,7 +58,7 @@ public class GameController {
     }
 
     //For when the player wants to discard 3 cards
-    @PostMapping("/game/play/{gameId}/discard/{cardType1}/{cardType2}/{cardType3}")
+    @PostMapping("/game/{gameId}/play/discard/{cardType1}/{cardType2}/{cardType3}")
     public int discard(@RequestBody Player player,
                        @PathVariable("gameId") long gameId,
                        @PathVariable("carType1") Card.TYPE cardType1,
