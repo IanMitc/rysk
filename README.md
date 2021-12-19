@@ -19,9 +19,7 @@
 {
     "playerName": "Testy McTestface",
     "playerEmail": "test@example.com",
-    "playerPassword": {
-        "password": "password"
-    }
+    "playerPassword": "password"
 }
 ```
 
@@ -34,12 +32,7 @@
     "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "playerAuthToken": {
-        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -53,21 +46,14 @@
 test@example.com
 ```
 
-- Returns a sanitized Player
+- Returns a Player
 
 #### Output:
 
 ```    
 {
-    "playerId": 1,
     "playerEmail": "test@example.com",
-    "playerName": "Testy McTestface",
-    "playerAuthToken": {
-        "authToken": ""
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerName": "Testy McTestface"
 }
 ```
 
@@ -80,32 +66,23 @@ test@example.com
 ```
 {
     "playerId": 1,
-    "playerEmail": "updated@email.com",
-    "playerName": "New Name",
-    "playerAuthToken": {
-        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
-    },
-    "playerPassword": {
-        "password": "newPassword"
-    }
+    "playerEmail": "tasty@example.com",
+    "playerName": "Tasty McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18",
+    "playerPassword": "newPassword"
 }
 ```
 
-- Returns a sanitized Player with an Auth Token.
+- Returns a Player with an Auth Token.
 
 #### Output:
 
 ```
 {
     "playerId": 1,
-    "playerEmail": "updated@email.com",
-    "playerName": "New Name",
-    "playerAuthToken": {
-        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerEmail": "tasty@example.com",
+    "playerName": "Tasty McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -118,9 +95,7 @@ test@example.com
 ```
 {
     "playerEmail": "test@example.com",
-    "playerPassword": {
-        "password": "password"
-    }
+    "playerPassword": "password"
 }
 ```
 
@@ -133,12 +108,7 @@ test@example.com
     "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -151,9 +121,8 @@ test@example.com
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -172,15 +141,14 @@ Success
 #### Input: (post Player)
 
 ```
- {
+{
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
-    }
+    "playerEmail": "test@example.com",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
-- Returns a sanitized Player with an Auth Token.
+- Returns a Player with an Auth Token.
 
 #### Output:
 
@@ -189,12 +157,7 @@ Success
     "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "playerAuthToken": {
-        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -205,11 +168,10 @@ Success
 #### Input: (post Player)
 
 ```
- {
+{
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
-    }
+    "playerEmail": "test@example.com",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
