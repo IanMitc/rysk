@@ -19,9 +19,7 @@
 {
     "playerName": "Testy McTestface",
     "playerEmail": "test@example.com",
-    "playerPassword": {
-        "password": "password"
-    }
+    "playerPassword": "password"
 }
 ```
 
@@ -34,12 +32,7 @@
     "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "playerAuthToken": {
-        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -53,21 +46,15 @@
 test@example.com
 ```
 
-- Returns a sanitized Player
+- Returns a Player
 
 #### Output:
 
 ```    
 {
-    "playerId": 1,
+    "playerId": 53,
     "playerEmail": "test@example.com",
-    "playerName": "Testy McTestface",
-    "playerAuthToken": {
-        "authToken": ""
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerName": "Testy McTestface"
 }
 ```
 
@@ -80,32 +67,23 @@ test@example.com
 ```
 {
     "playerId": 1,
-    "playerEmail": "updated@email.com",
-    "playerName": "New Name",
-    "playerAuthToken": {
-        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
-    },
-    "playerPassword": {
-        "password": "newPassword"
-    }
+    "playerEmail": "tasty@example.com",
+    "playerName": "Tasty McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18",
+    "playerPassword": "newPassword"
 }
 ```
 
-- Returns a sanitized Player with an Auth Token.
+- Returns a Player with an Auth Token.
 
 #### Output:
 
 ```
 {
     "playerId": 1,
-    "playerEmail": "updated@email.com",
-    "playerName": "New Name",
-    "playerAuthToken": {
-        "authToken": "f03fc991-5258-4ecf-abb9-cf9093fb8fbe"
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerEmail": "tasty@example.com",
+    "playerName": "Tasty McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -118,9 +96,7 @@ test@example.com
 ```
 {
     "playerEmail": "test@example.com",
-    "playerPassword": {
-        "password": "password"
-    }
+    "playerPassword": "password"
 }
 ```
 
@@ -133,12 +109,7 @@ test@example.com
     "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -151,9 +122,9 @@ test@example.com
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -172,15 +143,15 @@ Success
 #### Input: (post Player)
 
 ```
- {
+{
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
-- Returns a sanitized Player with an Auth Token.
+- Returns a Player with an Auth Token.
 
 #### Output:
 
@@ -189,12 +160,7 @@ Success
     "playerId": 1,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface",
-    "playerAuthToken": {
-        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
-    },
-    "playerPassword": {
-        "password": ""
-    }
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -205,26 +171,74 @@ Success
 #### Input: (post Player)
 
 ```
- {
+{
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
-- Returns an array of game ids.
+- Returns an array of games.
 
 #### Output:
 
 ```
 [
-    1,
-    2,
-    52,
-    53,
-    54,
-    55
+    {
+        "gameId": 1,
+        "players": [
+           {
+                "playerId": 1,
+                "playerEmail": "test@example.com",
+                "playerName": "Testy McTestface"
+            },
+            {
+                "playerId": 53,
+                "playerEmail": "test3@example.com",
+                "playerName": "Testy McTestface"
+            },
+            {
+                "playerId": 1,
+                "playerEmail": "test@example.com",
+                "playerName": "Testy McTestface"
+            }
+        ],
+        "currentPlayer": {
+            "playerId": 1,
+            "playerEmail": "test@example.com",
+            "playerName": "Testy McTestface"
+        },
+        "playerWon": false,
+        "stage": "DISCARD"
+    },
+    {
+        "gameId": 2,
+        "players": [
+            {
+                "playerId": 1,
+                "playerEmail": "test@example.com",
+                "playerName": "Testy McTestface"
+            },
+            {
+                "playerId": 53,
+                "playerEmail": "test3@example.com",
+                "playerName": "Testy McTestface"
+            },
+            {
+                "playerId": 52,
+                "playerEmail": "test2@example.com",
+                "playerName": "Testy McTestface"
+            }
+        ],
+        "currentPlayer": {
+            "playerId": 52,
+            "playerEmail": "test2@example.com",
+            "playerName": "Testy McTestface"
+        },
+        "playerWon": false,
+        "stage": "DISCARD"
+    }
 ]
 ```
 
@@ -238,15 +252,18 @@ Success
 
 ```
 [
-     {
+    {
         "playerId": 1,
-        "playerEmail": "test2@example.com",
-        "playerAuthToken": {
-           "authToken": "54905046-4ad1-49bb-be23-90b95f1e35c0"
-        }
+        "playerEmail": "test@example.com",
+        "playerName": "Testy McTestface",
+        "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
     },
     {
-        "playerId": 2,
+        "playerId": 1,
+        "playerEmail": "test@example.com"
+    },
+    {
+        "playerId": 52,
         "playerEmail": "test2@example.com"
     }
 ]
@@ -257,43 +274,58 @@ Success
 #### Output:
 
 ```
+{
     "gameId": 1,
     "players": [
         {
-            "playerEmail": "test2@example.com",
+            "playerId": 1,
+            "playerEmail": "test@example.com",
             "playerName": "Testy McTestface"
         },
         {
-            "playerEmail": "test@example.com",
+            "playerId": 53,
+            "playerEmail": "test3@example.com",
+            "playerName": "Testy McTestface"
+        },
+        {
+            "playerId": 52,
+            "playerEmail": "test2@example.com",
             "playerName": "Testy McTestface"
         }
     ],
     "currentPlayer": {
-        "playerEmail": "test@example.com",
+        "playerId": 52,
+        "playerEmail": "test2@example.com",
         "playerName": "Testy McTestface"
     },
     "attackingPlayer": null,
-    "deck": {
-        "deckId": 14
+    "attackingCountry": null,
+    "defendingCountry": null,
+    "playersCards": {
+        "cards": null,
+        "heldBy": {
+            "playerId": 53,
+            "playerEmail": "test3@example.com",
+            "playerName": "Testy McTestface"
+        }
     },
     "logs": [
         {
-            "logId": 1,
             "message": "New Game Started"
         },
         {
-            "logId": 2,
             "message": "Testy McTestface goes first"
         }
     ],
     "countries": [
         {
-            "countryId": 0,
             "controlledBy": {
+                "playerId": 52,
                 "playerEmail": "test2@example.com",
                 "playerName": "Testy McTestface"
             },
             "name": "Alaska",
+            "countryId": 0,
             "printableName": "Alaska",
             "armies": 1
         },
@@ -301,20 +333,27 @@ Success
         ...
         ...        
         {
-            "countryId": 41,
             "controlledBy": {
-                "playerEmail": "test2@example.com",
+                "playerId": 1,
+                "playerEmail": "test@example.com",
                 "playerName": "Testy McTestface"
             },
             "name": "WesternAustralia",
+            "countryId": 41,
             "printableName": "W Australia",
             "armies": 1
         }
     ],
-    "attackingDice": [],
-    "defendingDice": [],
+    "attackingDice1": 0,
+    "attackingDice2": 0,
+    "attackingDice3": 0,
+    "defendingDice1": 0,
+    "defendingDice2": 0,
+    "armiesToPlay": 0,
+    "playerWon": false,
     "bonusArmies": 4,
     "stage": "DISCARD"
+}
 ```
 
 ### //server:port/game/{gameID}/join
@@ -326,9 +365,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -337,41 +376,54 @@ Success
 #### Output:
 
 ```
-    "gameId": 7,
+ {
+    "gameId": 1,
     "players": [
         {
+            "playerId": 1,
             "playerEmail": "test@example.com",
             "playerName": "Testy McTestface"
         },
         {
-            "playerEmail": "test2@example.com",
+            "playerId": 53,
+            "playerEmail": "test3@example.com",
             "playerName": "Testy McTestface"
         },
         {
-            "playerEmail": "test3@example.com",
+            "playerId": 52,
+            "playerEmail": "test2@example.com",
             "playerName": "Testy McTestface"
         }
     ],
     "currentPlayer": {
+        "playerId": 52,
         "playerEmail": "test2@example.com",
         "playerName": "Testy McTestface"
     },
     "attackingPlayer": null,
+    "attackingCountry": null,
+    "defendingCountry": null,
+    "playersCards": {
+        "cards": null,
+        "heldBy": {
+            "playerId": 53,
+            "playerEmail": "test3@example.com",
+            "playerName": "Testy McTestface"
+        }
+    },
     "logs": [
         {
-            "logId": 51,
             "message": "New Game Started"
         },
         {
-            "logId": 52,
             "message": "Testy McTestface goes first"
         }
     ],
     "countries": [
         {
-            "gameDbId": 9,
             "controlledBy": {
-                "playerEmail": "test@example.com",
+                "playerId": 52,
+                "playerEmail": "test2@example.com",
                 "playerName": "Testy McTestface"
             },
             "name": "Alaska",
@@ -381,11 +433,11 @@ Success
         },
         ...
         ...
-        ...
+        ...        
         {
-            "countryId": 41,
             "controlledBy": {
-                "playerEmail": "test2@example.com",
+                "playerId": 1,
+                "playerEmail": "test@example.com",
                 "playerName": "Testy McTestface"
             },
             "name": "WesternAustralia",
@@ -394,8 +446,16 @@ Success
             "armies": 1
         }
     ],
+    "attackingDice1": 0,
+    "attackingDice2": 0,
+    "attackingDice3": 0,
+    "defendingDice1": 0,
+    "defendingDice2": 0,
+    "armiesToPlay": 0,
+    "playerWon": false,
     "bonusArmies": 4,
     "stage": "DISCARD"
+}
 ```
 
 ### //server:port/game/{gameID}/quit
@@ -407,9 +467,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -430,9 +490,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -453,9 +513,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -481,9 +541,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -508,9 +568,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -525,9 +585,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -546,9 +606,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -577,9 +637,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -594,9 +654,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -611,9 +671,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -628,9 +688,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 

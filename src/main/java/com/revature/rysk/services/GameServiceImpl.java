@@ -166,33 +166,41 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<Long> getGames(Player player) {
+    public List<Game> getGames(Player player) {
         Player playerFromDb = checkAuthorized(player);
-        List<Game> games = gameRepository.findGamesByPlayers_PlayerId(playerFromDb.getPlayerId());
-        List<Long> gameIds = new ArrayList<>();
-        for (Game g : games) {
-            gameIds.add(g.getGameId());
-        }
-        return gameIds;
+        return gameRepository.findGamesByPlayers_PlayerId(playerFromDb.getPlayerId());
     }
 
     private Player checkAuthorized(Player player) {
-        Player playerOutput = getPlayerById(player.getPlayerId());
 
-        if (playerOutput.getPlayerAuthToken() == null || !playerOutput.checkAuthToken(player.getPlayerAuthToken().getAuthToken())) {
-            throw new PermissionsException("Not Authorized");
+        if (player.getPlayerPassword() == null && player.getPlayerAuthToken() == null) {
+            throw new BadRequestException("No authentication provided");
         }
 
-        return playerOutput;
-    }
-
-    private Player getPlayerById(long playerId) {
-        Optional<Player> playerOptional = playerRepository.findById(playerId);
-        if (playerOptional.isEmpty()) {
+        if (player.getPlayerId() == 0 && (player.getPlayerEmail() == null || player.getPlayerEmail().equals(""))) {
             throw new NotFoundException("Player not found");
         }
 
-        return playerOptional.get();
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerOptional.isEmpty()) {
+            playerOptional = playerRepository.findById(player.getPlayerId());
+            if (playerOptional.isEmpty()) {
+                throw new NotFoundException("Player not found");
+            }
+        }
+
+        Player playerOutput = playerOptional.get();
+
+        if (player.getPlayerAuthToken() != null) {
+            if (!playerOutput.checkAuthToken(player.getPlayerAuthToken().getAuthToken())) {
+                throw new PermissionsException("Not Authorized");
+            }
+        } else if (!playerOutput.checkPassword(player.getPlayerPassword().getPassword())) {
+            throw new NotFoundException("Email or password is incorrect");
+        }
+
+        return playerOutput;
     }
 
     private Game getGame(Player playerFromDb, long gameId) {

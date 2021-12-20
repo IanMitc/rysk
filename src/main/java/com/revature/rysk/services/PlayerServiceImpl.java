@@ -3,6 +3,7 @@ package com.revature.rysk.services;
 import com.revature.rysk.entities.Player.AuthToken;
 import com.revature.rysk.entities.Player.Password;
 import com.revature.rysk.entities.Player.Player;
+import com.revature.rysk.exceptions.BadRequestException;
 import com.revature.rysk.exceptions.DuplicateResourceException;
 import com.revature.rysk.exceptions.NotFoundException;
 import com.revature.rysk.exceptions.PermissionsException;
@@ -26,7 +27,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
         player.setPlayerAuthToken(new AuthToken());
 
-        return cleanPlayerForPlayer(playerRepository.save(player));
+        return playerRepository.save(player);
     }
 
     @Override
@@ -35,8 +36,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (playerOptional.isEmpty()) {
             throw new NotFoundException("Player not found");
         }
-        Player playerOutput = playerOptional.get();
-        return cleanPlayerForOutput(playerOutput);
+        return playerOptional.get();
     }
 
     @Override
@@ -63,27 +63,16 @@ public class PlayerServiceImpl implements PlayerService {
             );
         }
 
-        return cleanPlayerForPlayer(playerRepository.save(playerCurrent));
+        return playerRepository.save(playerCurrent);
     }
 
     @Override
     public Player login(Player player) {
-        //Don't use check authorized because we only receive email and not player id
-        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
-
-        if (playerOptional.isEmpty()) {
-            throw new NotFoundException("Player not found");
-        }
-
-        Player playerOutput = playerOptional.get();
-
-        if (!playerOutput.checkPassword(player.getPlayerPassword().getPassword())) {
-            throw new NotFoundException("Email or password is incorrect");
-        }
+        Player playerOutput = checkAuthorized(player);
 
         playerOutput.setPlayerAuthToken(new AuthToken());
 
-        return cleanPlayerForPlayer(playerRepository.save(playerOutput));
+        return playerRepository.save(playerOutput);
     }
 
     @Override
@@ -97,40 +86,38 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player checkLoggedIn(Player player) {
-        Player playerOutput = checkAuthorized(player);
-        return cleanPlayerForPlayer(playerOutput);
-    }
-
-    //Only used until I can figure out why Jackson annotations won't ignore these properties.
-    private Player cleanPlayerForPlayer(Player player) {
-        //we make the password empty in the returned object because it should never be needed by the UI
-        player.getPlayerPassword().setPassword("");
-        return player;
-    }
-
-    private Player cleanPlayerForOutput(Player player) {
-        //we make the password and auth token empty in the returned object because it should never be needed by the UI
-        player.getPlayerAuthToken().setAuthToken("");
-        player.getPlayerPassword().setPassword("");
-        return player;
+        return checkAuthorized(player);
     }
 
     private Player checkAuthorized(Player player) {
-        Player playerOutput = getPlayerById(player.getPlayerId());
 
-        if (playerOutput.getPlayerAuthToken() == null || !playerOutput.checkAuthToken(player.getPlayerAuthToken().getAuthToken())) {
-            throw new PermissionsException("Not Authorized");
+        if (player.getPlayerPassword() == null && player.getPlayerAuthToken() == null){
+            throw new BadRequestException("No authentication provided");
         }
 
-        return playerOutput;
-    }
-
-    private Player getPlayerById(long playerId) {
-        Optional<Player> playerOptional = playerRepository.findById(playerId);
-        if (playerOptional.isEmpty()) {
+        if (player.getPlayerId() == 0 && (player.getPlayerEmail() == null || player.getPlayerEmail().equals(""))) {
             throw new NotFoundException("Player not found");
         }
 
-        return playerOptional.get();
+        Optional<Player> playerOptional = playerRepository.getPlayerByPlayerEmail(player.getPlayerEmail());
+
+        if (playerOptional.isEmpty()) {
+            playerOptional = playerRepository.findById(player.getPlayerId());
+            if (playerOptional.isEmpty()) {
+                throw new NotFoundException("Player not found");
+            }
+        }
+
+        Player playerOutput = playerOptional.get();
+
+        if (player.getPlayerAuthToken() != null) {
+            if (!playerOutput.checkAuthToken(player.getPlayerAuthToken().getAuthToken())) {
+                throw new PermissionsException("Not Authorized");
+            }
+        } else if (!playerOutput.checkPassword(player.getPlayerPassword().getPassword())) {
+            throw new NotFoundException("Email or password is incorrect");
+        }
+
+        return playerOutput;
     }
 }

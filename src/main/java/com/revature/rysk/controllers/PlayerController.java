@@ -1,11 +1,16 @@
 package com.revature.rysk.controllers;
 
-import com.revature.rysk.entities.Player.Player;
+import com.revature.rysk.dto.GameForDisplayDto;
+import com.revature.rysk.dto.PlayerForDisplayDto;
+import com.revature.rysk.dto.PlayerWithAuthTokenDto;
+import com.revature.rysk.dto.PlayerWithPasswordDto;
+import com.revature.rysk.entities.Game.Game;
 import com.revature.rysk.services.GameService;
 import com.revature.rysk.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,37 +22,48 @@ public class PlayerController {
     private GameService gameService;
 
     @PostMapping("/player")
-    public Player addPlayer(@RequestBody Player newPlayer) {
-        return playerService.addPlayer(newPlayer);
+    public PlayerWithAuthTokenDto addPlayer(@RequestBody PlayerWithPasswordDto newPlayer) {
+        return PlayerWithAuthTokenDto.getDto(playerService.addPlayer(PlayerWithPasswordDto.getPlayer(newPlayer)));
     }
 
     @PostMapping("/player/email")
-    public Player getPlayer(@RequestBody String email) {
-        return playerService.getPlayerByEmail(email);
+    public PlayerForDisplayDto getPlayer(@RequestBody String email) {
+        return PlayerForDisplayDto.getDto(playerService.getPlayerByEmail(email));
     }
 
     @PutMapping("/player")
-    public Player updatePlayer(@RequestBody Player updatedPlayer) {
-        return playerService.updatePlayer(updatedPlayer.getPlayerId(), updatedPlayer);
+    public PlayerWithAuthTokenDto updatePlayer(@RequestBody PlayerWithPasswordDto updatedPlayer) {
+        return PlayerWithAuthTokenDto.getDto(
+                playerService.updatePlayer(
+                        updatedPlayer.getPlayerId(),
+                        PlayerWithPasswordDto.getPlayer(updatedPlayer)
+                ));
     }
 
     @PostMapping("/player/login")
-    public Player login(@RequestBody Player player) {
-        return playerService.login(player);
+    public PlayerWithAuthTokenDto login(@RequestBody PlayerWithPasswordDto player) {
+        return PlayerWithAuthTokenDto.getDto(playerService.login(PlayerWithPasswordDto.getPlayer(player)));
     }
 
     @PostMapping("/player/logout")
-    public String logout(@RequestBody Player player) {
-        return playerService.logout(player);
+    public String logout(@RequestBody PlayerWithAuthTokenDto player) {
+        return playerService.logout(PlayerWithAuthTokenDto.getPlayer(player));
     }
 
     @PostMapping("/player/check")
-    public Player checkLoggedIn(@RequestBody Player player) {
-        return playerService.checkLoggedIn(player);
+    public PlayerWithAuthTokenDto checkLoggedIn(@RequestBody PlayerWithAuthTokenDto player) {
+        return PlayerWithAuthTokenDto.getDto(playerService.checkLoggedIn(PlayerWithAuthTokenDto.getPlayer(player)));
     }
 
     @PostMapping("/player/games")
-    public List<Long> getGames(@RequestBody Player player) {
-        return gameService.getGames(player);
+    public List<GameForDisplayDto> getGames(@RequestBody PlayerWithAuthTokenDto player) {
+        List<Game> games = gameService.getGames(PlayerWithAuthTokenDto.getPlayer(player));
+
+        List<GameForDisplayDto> gameDtoList = new ArrayList<>();
+        for (Game g : games) {
+            gameDtoList.add(GameForDisplayDto.getDto(g));
+        }
+
+        return gameDtoList;
     }
 }

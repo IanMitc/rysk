@@ -26,5 +26,6 @@ public class Hand {
 
     @OneToOne
     @JoinColumn(name = "held_by_player_id")
+    @JsonIgnore
     private Player heldBy;
 }
