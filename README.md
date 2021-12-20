@@ -52,6 +52,7 @@ test@example.com
 
 ```    
 {
+    "playerId": 53,
     "playerEmail": "test@example.com",
     "playerName": "Testy McTestface"
 }
@@ -122,6 +123,7 @@ test@example.com
 {
     "playerId": 1,
     "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
     "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
@@ -144,7 +146,8 @@ Success
 {
     "playerId": 1,
     "playerEmail": "test@example.com",
-    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -171,7 +174,8 @@ Success
 {
     "playerId": 1,
     "playerEmail": "test@example.com",
-    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
 }
 ```
 
@@ -184,9 +188,9 @@ Success
     {
         "gameId": 1,
         "players": [
-            {
-                "playerId": 52,
-                "playerEmail": "test2@example.com",
+           {
+                "playerId": 1,
+                "playerEmail": "test@example.com",
                 "playerName": "Testy McTestface"
             },
             {
@@ -249,9 +253,10 @@ Success
 ```
 [
     {
-        "playerId": 53,
-        "playerEmail": "test3@example.com",
-        "playerAuthToken": "717ae273-ecd4-4f13-bec2-087aa373175b"
+        "playerId": 1,
+        "playerEmail": "test@example.com",
+        "playerName": "Testy McTestface",
+        "playerAuthToken": "2979a5da-0d12-4d06-8ea9-73f6a205ff18"
     },
     {
         "playerId": 1,
@@ -360,9 +365,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -462,9 +467,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -485,9 +490,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -508,9 +513,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -536,9 +541,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -563,9 +568,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -580,9 +585,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -601,9 +606,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -632,9 +637,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -649,9 +654,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -666,9 +671,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 
@@ -683,9 +688,9 @@ Success
 ```
 {
     "playerId": 1,
-    "playerAuthToken": {
-        "authToken": "3ef407ea-1d03-4105-a8f8-49153786b000"
-    }
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
 }
 ```
 

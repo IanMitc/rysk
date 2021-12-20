@@ -29,83 +29,95 @@ public class GameController {
     }
 
     @PostMapping("/game/{gameId}/join")
-    public GameDto joinGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+    public GameDto joinGame(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         Game game = gameService.joinGame(player, gameId);
         return GameDto.getDto(game, player);
     }
 
     @PostMapping("/game/{gameId}/quit")
-    public String quitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+    public String quitGame(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.quitGame(player, gameId);
     }
 
     @PostMapping("/game/{gameId}/exit")
-    public String exitGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+    public String exitGame(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.exitGame(player, gameId);
     }
 
     @PostMapping("/game/{gameId}/log")
-    public List<GameLog> getFullLog(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+    public List<GameLog> getFullLog(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.getFullLog(player, gameId);
     }
 
     @PostMapping("/game/{gameId}/log/{logId}")
-    public List<GameLog> tailLog(@RequestBody Player player,
+    public List<GameLog> tailLog(@RequestBody PlayerWithAuthTokenDto playerDto,
                                  @PathVariable("gameId") long gameId,
                                  @PathVariable("logId") int logId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.tailLog(player, gameId, logId);
     }
 
     // For when the player does not want to discard any cards
     @PostMapping("/game/{gameId}/play/discard")
-    public int discard(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+    public int discard(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.discard(player, gameId);
     }
 
     //For when the player wants to discard 3 cards
     @PostMapping("/game/{gameId}/play/discard/{cardType1}/{cardType2}/{cardType3}")
-    public int discard(@RequestBody Player player,
+    public int discard(@RequestBody PlayerWithAuthTokenDto playerDto,
                        @PathVariable("gameId") long gameId,
                        @PathVariable("carType1") Card.TYPE cardType1,
                        @PathVariable("carType2") Card.TYPE cardType2,
                        @PathVariable("carType3") Card.TYPE cardType3) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.discard(player, gameId, cardType1, cardType2, cardType3);
     }
 
     @PostMapping("/game/{gameId}/play/armies/{countryId}/{numberOfArmies}")
-    public Country placeArmies(@RequestBody Player player,
+    public Country placeArmies(@RequestBody PlayerWithAuthTokenDto playerDto,
                                @PathVariable("gameId") long gameId,
                                @PathVariable("countryId") int countryId,
                                @PathVariable("numberOfArmies") int numberOfArmies) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.placeArmies(player, gameId, countryId, numberOfArmies);
     }
 
     @PostMapping("/game/{gameId}/play/attack/{attackingCountryId}/{defendingCountryId}/{numberOfArmies}/{numberOfDice}")
-    public List<Integer> attack(@RequestBody Player player,
+    public List<Integer> attack(@RequestBody PlayerWithAuthTokenDto playerDto,
                                 @PathVariable("gameId") long gameId,
                                 @PathVariable("attackingCountryId") int attackingCountryId,
                                 @PathVariable("defendingCountryId") int defendingCountryId,
                                 @PathVariable("numberOfArmies") int numberOfArmies,
                                 @PathVariable("numberOfDice") int numberOfDice) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.attack(gameId, player, attackingCountryId, defendingCountryId, numberOfArmies, numberOfDice);
     }
 
     @PostMapping("/game/{gameId}/play/defend/{numberOfDice}")
-    public List<Integer> defend(@RequestBody Player player, @PathVariable("gameId") long gameId, @PathVariable("numberOfDice") int numberOfDice) {
+    public List<Integer> defend(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId, @PathVariable("numberOfDice") int numberOfDice) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.defend(player, gameId, numberOfDice);
     }
 
     @PostMapping("/game/{gameId}/play/move/{fromCountryId}/{toCountryId}/{numberOfArmies}")
-    public List<Country> move(@RequestBody Player player,
+    public List<Country> move(@RequestBody PlayerWithAuthTokenDto playerDto,
                               @PathVariable("gameId") long gameId,
                               @PathVariable("fromCountryId") int fromCountryId,
                               @PathVariable("toCountryId") int toCountryId,
                               @PathVariable("numberOfArmies") int numberOfArmies) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.move(player, gameId, fromCountryId, toCountryId, numberOfArmies);
     }
 
     @PostMapping("/game/{gameId}/play/draw")
-    public Card draw(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+    public Card draw(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.draw(player, gameId);
     }
 }

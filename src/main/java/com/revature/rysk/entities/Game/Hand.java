@@ -1,7 +1,6 @@
 package com.revature.rysk.entities.Game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revature.rysk.entities.Player.Player;
 import lombok.*;
 
@@ -27,6 +26,6 @@ public class Hand {
 
     @OneToOne
     @JoinColumn(name = "held_by_player_id")
-    @JsonIgnoreProperties({"playerAuthToken", "playerPassword"})
+    @JsonIgnore
     private Player heldBy;
 }
