@@ -1,19 +1,17 @@
-import React, { useState } from "react";
-// import "./register.css";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import './index.css'
+import Form from "react-bootstrap/esm/Form";
+import Button from "react-bootstrap/esm/Button";
+import { Player } from "../../Interfaces/Player/Player";
 
 export const Register = () => {
-  const [player, setPlayer] = useState({
-    playerName: "",
+  const [player, setPlayer] = useState<Player>({
     playerEmail: "",
+    playerPassword: "",
+  });
 
-    playerAuthToken: null || {
-      authToken: "",
-    },
-    playerPassword: null || {
-      password: "",
-    },
+  useEffect(() => {
+    console.log(player);
   });
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,83 +19,62 @@ export const Register = () => {
       ...player,
       [event.target.name]: event.target.value,
     });
-    console.log(player);
   };
 
   return (
-    <div className="row">
-      <div className="col-lg-3" />
-      <div className="col-lg-6">
-        <div className="wrapper">
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              axios
-                .post("http://localhost:8080/player", player)
-                .then((response) => {
-                  console.log(response);
-                  setPlayer({
-                    playerName: response.data.playerName,
-                    playerEmail: response.data.playerEmail,
-
-                    playerAuthToken: {
-                      authToken: response.data.authToken.authToken,
-                    },
-                    playerPassword: {
-                      password: response.data.playerPassword.password,
-                    },
-                  });
-                })
-                .catch((e) => console.log(e));
-            }}
-          >
-            <h1>Register</h1>
-            <div className="form-group">
-              <label>Player Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="playerName"
-                value={player.playerName}
-                onChange={onChangeHandler}
-              />
-            </div>
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="text"
-                className="form-control"
-                name="playerEmail"
-                value={player.playerEmail}
-                onChange={onChangeHandler}
-              />
-            </div>
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                className="form-control"
-                name="playerPassword.password"
-                value={player.playerPassword.password}
-                onChange={(event) => {
-                  setPlayer((prevPlayer) => ({
-                    ...prevPlayer,
-                    playerPassword: {
-                      password: event.target.value,
-                    },
-                  }));
-                  console.log(player);
-                }}
-              />
-            </div>
-            <input
-              type="submit"
-              value="Register"
-              className="btn btn-primary btn-block"
-            />
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-};
+    <Form
+      onSubmit={async (event) => {
+        event.preventDefault();
+        try {
+          const response = await axios.post(
+            "http://localhost:8080/player",
+            player
+          );
+          console.log(response);
+          setPlayer({
+            playerId: response.data.playerId,
+            playerName: response.data.playerName,
+            playerEmail: response.data.playerEmail,
+            playerAuthToken: response.data.playerAuthToken,
+            playerPassword: response.data.playerPassword,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }}
+    >
+      <Form.Group controlId="formGroupEmail">
+        <Form.Label>Name</Form.Label>
+        <Form.Control
+          type="text"
+          name="playerName"
+          value={player.playerName}
+          onChange={onChangeHandler}
+          placeholder="Enter Name"
+        />
+      </Form.Group>
+      <Form.Group controlId="formGroupEmail">
+        <Form.Label>Email</Form.Label>
+        <Form.Control
+          type="email"
+          name="playerEmail"
+          value={player.playerEmail}
+          onChange={onChangeHandler}
+          placeholder="Enter Email"
+        />
+      </Form.Group>
+      <Form.Group controlId="formGroupPassword">
+        <Form.Label>Password</Form.Label>
+        <Form.Control
+          type="password"
+          name="playerPassword"
+          value={player.playerPassword}
+          onChange={onChangeHandler}
+          placeholder="Enter Password"
+        />
+      </Form.Group>
+      <Button variant="primary" type="submit" block={true}>
+        Register
+      </Button>
+    </Form>
+  );};
