@@ -1,5 +1,6 @@
 package com.revature.rysk.services;
 
+import com.revature.rysk.dto.GameLogDto;
 import com.revature.rysk.entities.Game.Card;
 import com.revature.rysk.entities.Game.Country;
 import com.revature.rysk.entities.Game.Game;
@@ -12,6 +13,7 @@ import com.revature.rysk.repositories.GameRepository;
 import com.revature.rysk.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ public class GameServiceImpl implements GameService {
     private PlayerRepository playerRepository;
 
     @Override
+    @Transactional
     public Game newGame(List<Player> players) {
         if (players.size() > 6 || players.size() < 2) {
             throw new BadRequestException("Only 2-6 players allowed");
@@ -45,17 +48,18 @@ public class GameServiceImpl implements GameService {
         Game game = new Game();
         game.newGame(newPlayers);
 
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return game;
     }
 
     @Override
+    @Transactional
     public String quitGame(Player player, long gameId) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
         game.removePlayer(playerFromDb);
         game.log(playerFromDb.getPlayerName() + " quit the game. Countries have been reallocated.");
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return "Success";
     }
 
@@ -66,43 +70,60 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    @Transactional
     public String exitGame(Player player, long gameId) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
         game.log(playerFromDb.getPlayerName() + " exited the game.");
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return "Success";
     }
 
     @Override
-    public List<GameLog> getFullLog(Player player, long gameId) {
+    public List<GameLogDto> getFullLog(Player player, long gameId) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
-        return game.getLogs();
+
+        List<GameLog> gameLogs = game.getLogs();
+        List<GameLogDto> gameLogDtos = new ArrayList<>();
+        for (GameLog g : gameLogs) {
+            gameLogDtos.add(GameLogDto.getDto(g));
+        }
+
+        return gameLogDtos;
     }
 
     @Override
-    public List<GameLog> tailLog(Player player, long gameId, int logId) {
+    public List<GameLogDto> tailLog(Player player, long gameId, int logId) {
         if (logId < 0) {
             throw new BadRequestException("There are no negative logs");
         }
 
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
-        return game.getLogs(logId);
+
+        List<GameLog> gameLogs = game.getLogs(logId);
+        List<GameLogDto> gameLogDtos = new ArrayList<>();
+        for (GameLog g : gameLogs) {
+            gameLogDtos.add(GameLogDto.getDto(g));
+        }
+
+        return gameLogDtos;
     }
 
     @Override
+    @Transactional
     public int discard(Player player, long gameId) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
 
         int totalArmies = game.getArmiesToPlay(playerFromDb, null);
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return totalArmies;
     }
 
     @Override
+    @Transactional
     public int discard(Player player, long gameId, Card.TYPE cardType1, Card.TYPE cardType2, Card.TYPE cardType3) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
@@ -113,56 +134,63 @@ public class GameServiceImpl implements GameService {
         discardPile.add(Card.builder().type(cardType3).build());
 
         int totalArmies = game.getArmiesToPlay(playerFromDb, discardPile);
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return totalArmies;
     }
 
     @Override
+    @Transactional
     public Country placeArmies(Player player, long gameId, int countryId, int numberOfArmies) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
 
         Country country = game.placeArmies(playerFromDb, countryId, numberOfArmies);
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return country;
     }
 
     @Override
+    @Transactional
     public List<Integer> attack(long gameId, Player player, int attackingCountryId, int defendingCountryId, int numberOfArmies, int numberOfDice) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
 
         List<Integer> attackRoll = game.attack(playerFromDb, attackingCountryId, defendingCountryId, numberOfArmies, numberOfDice);
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return attackRoll;
     }
 
     @Override
+    @Transactional
     public List<Integer> defend(Player player, long gameId, int numberOfDice) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
 
         List<Integer> defenseRoll = game.defend(playerFromDb, numberOfDice);
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return defenseRoll;
     }
 
     @Override
+    @Transactional
     public List<Country> move(Player player, long gameId, int fromCountryId, int toCountryId, int numberOfArmies) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
 
         List<Country> changedCountries = game.move(playerFromDb, fromCountryId, toCountryId, numberOfArmies);
-        gameRepository.save(game);
+        gameRepository.saveAndFlush(game);
         return changedCountries;
     }
 
     @Override
+    @Transactional
     public Card draw(Player player, long gameId) {
         Player playerFromDb = checkAuthorized(player);
         Game game = getGame(playerFromDb, gameId);
 
-        return game.draw(playerFromDb);
+        Card card = game.draw(playerFromDb);
+        gameRepository.saveAndFlush(game);
+        return card;
     }
 
     @Override

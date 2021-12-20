@@ -1,7 +1,5 @@
 package com.revature.rysk.entities.Game;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.exceptions.BadRequestException;
 import com.revature.rysk.exceptions.NotFoundException;
@@ -37,15 +35,14 @@ public class Game {
     @JoinColumn(name = "attacking_player_player_id")
     private Player attackingPlayer;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @JoinColumn(name = "attacking_country_game_db_country_id")
     private Country attackingCountry;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @JoinColumn(name = "defending_country_game_db_country_id")
     private Country defendingCountry;
 
-    @JsonIgnore
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "deck_deck_id")
     private Deck deck;
@@ -56,11 +53,10 @@ public class Game {
             inverseJoinColumns = @JoinColumn(name = "players_cards_hand_id", referencedColumnName = "handId"))
     List<Hand> playersCards = new ArrayList<>();
 
-    @JsonIgnoreProperties({"game"})
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<GameLog> logs = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "game_countries",
             joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"),
             inverseJoinColumns = @JoinColumn(name = "countries_game_db_id", referencedColumnName = "gameDbCountryId"))
@@ -402,12 +398,12 @@ public class Game {
         this.stage = STAGE.DEFEND;
 
         Random random = new Random();
-        attackingDice1 = random.nextInt(6) + 1;
+        attackingDice1 = random.nextInt(5);
         if (numberOfDice > 1) {
-            attackingDice2 = random.nextInt(6) + 1;
+            attackingDice2 = random.nextInt(5);
         }
         if (numberOfDice > 2) {
-            attackingDice3 = random.nextInt(6) + 1;
+            attackingDice3 = random.nextInt(5);
         }
 
         List<Integer> roll = new ArrayList<>();
@@ -430,9 +426,9 @@ public class Game {
         }
 
         Random random = new Random();
-        defendingDice1 = random.nextInt(6) + 1;
+        defendingDice1 = random.nextInt(5);
         if (numberOfDice > 1) {
-            defendingDice2 = random.nextInt(6) + 1;
+            defendingDice2 = random.nextInt(5);
         }
 
         List<Integer> defendingRoll = new ArrayList<>();
@@ -481,7 +477,7 @@ public class Game {
         if (this.defendingCountry.getArmies() == 0) {
             this.defendingCountry.setControlledBy(this.attackingPlayer);
             this.playerWon = true;
-            log(this.attackingPlayer + " captured " + this.defendingCountry.getPrintableName());
+            log(this.attackingPlayer.getPlayerName() + " captured " + this.defendingCountry.getPrintableName());
         }
 
         //Clear out info from current attack

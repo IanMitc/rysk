@@ -1,11 +1,11 @@
 package com.revature.rysk.controllers;
 
 import com.revature.rysk.dto.GameDto;
+import com.revature.rysk.dto.GameLogDto;
 import com.revature.rysk.dto.PlayerWithAuthTokenDto;
 import com.revature.rysk.entities.Game.Card;
 import com.revature.rysk.entities.Game.Country;
 import com.revature.rysk.entities.Game.Game;
-import com.revature.rysk.entities.Game.GameLog;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,15 +48,15 @@ public class GameController {
     }
 
     @PostMapping("/game/{gameId}/log")
-    public List<GameLog> getFullLog(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
+    public List<GameLogDto> getFullLog(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
         Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.getFullLog(player, gameId);
     }
 
     @PostMapping("/game/{gameId}/log/{logId}")
-    public List<GameLog> tailLog(@RequestBody PlayerWithAuthTokenDto playerDto,
-                                 @PathVariable("gameId") long gameId,
-                                 @PathVariable("logId") int logId) {
+    public List<GameLogDto> tailLog(@RequestBody PlayerWithAuthTokenDto playerDto,
+                                    @PathVariable("gameId") long gameId,
+                                    @PathVariable("logId") int logId) {
         Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.tailLog(player, gameId, logId);
     }
