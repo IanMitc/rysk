@@ -1,5 +1,7 @@
 package com.revature.rysk.controllers;
 
+import com.revature.rysk.dto.GameDto;
+import com.revature.rysk.dto.PlayerWithAuthTokenDto;
 import com.revature.rysk.entities.Game.Card;
 import com.revature.rysk.entities.Game.Country;
 import com.revature.rysk.entities.Game.Game;
@@ -20,13 +22,16 @@ public class GameController {
     GameService gameService;
 
     @PostMapping("/game/new")
-    public Game newGame(@RequestBody() List<Player> players) {
-        return gameService.newGame(players);
+    public GameDto newGame(@RequestBody() List<PlayerWithAuthTokenDto> players) {
+        Game game = gameService.newGame(PlayerWithAuthTokenDto.getPlayers(players));
+        Player player = PlayerWithAuthTokenDto.getPlayer(players.get(0));
+        return GameDto.getDto(game, player);
     }
 
     @PostMapping("/game/{gameId}/join")
-    public Game joinGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
-        return gameService.joinGame(player, gameId);
+    public GameDto joinGame(@RequestBody Player player, @PathVariable("gameId") long gameId) {
+        Game game = gameService.joinGame(player, gameId);
+        return GameDto.getDto(game, player);
     }
 
     @PostMapping("/game/{gameId}/quit")

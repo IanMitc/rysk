@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -33,5 +36,13 @@ public class PlayerWithAuthTokenDto {
                 .playerName(player.getPlayerName())
                 .playerAuthToken(player.getPlayerAuthToken().getAuthToken())
                 .build();
+    }
+
+    public static List<Player> getPlayers(List<PlayerWithAuthTokenDto> dtoList) {
+        List<Player> players = new ArrayList<>();
+        for (PlayerWithAuthTokenDto dto : dtoList) {
+            players.add(getPlayer(dto));
+        }
+        return players;
     }
 }

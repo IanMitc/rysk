@@ -1,14 +1,16 @@
 package com.revature.rysk.controllers;
 
+import com.revature.rysk.dto.GameForDisplayDto;
 import com.revature.rysk.dto.PlayerForDisplayDto;
 import com.revature.rysk.dto.PlayerWithAuthTokenDto;
 import com.revature.rysk.dto.PlayerWithPasswordDto;
-import com.revature.rysk.entities.Player.Player;
+import com.revature.rysk.entities.Game.Game;
 import com.revature.rysk.services.GameService;
 import com.revature.rysk.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -54,7 +56,14 @@ public class PlayerController {
     }
 
     @PostMapping("/player/games")
-    public List<Long> getGames(@RequestBody PlayerWithAuthTokenDto player) {
-        return gameService.getGames(PlayerWithAuthTokenDto.getPlayer(player));
+    public List<GameForDisplayDto> getGames(@RequestBody PlayerWithAuthTokenDto player) {
+        List<Game> games = gameService.getGames(PlayerWithAuthTokenDto.getPlayer(player));
+
+        List<GameForDisplayDto> gameDtoList = new ArrayList<>();
+        for (Game g : games) {
+            gameDtoList.add(GameForDisplayDto.getDto(g));
+        }
+
+        return gameDtoList;
     }
 }

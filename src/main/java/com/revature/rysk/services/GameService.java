@@ -43,5 +43,5 @@ public interface GameService {
 
     Card draw(Player player, long gameId);
 
-    List<Long> getGames(Player player);
+    List<Game> getGames(Player player);
 }

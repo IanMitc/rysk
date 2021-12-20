@@ -25,17 +25,14 @@ public class Game {
     @SequenceGenerator(name = "game_id_sequence", sequenceName = "game_id_sequence")
     private long gameId;
 
-    @JsonIgnoreProperties({"playerAuthToken", "playerPassword"})
     @ManyToMany
     @JoinTable(name = "game_players", joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"), inverseJoinColumns = @JoinColumn(name = "players_player_id", referencedColumnName = "playerId"))
     private List<Player> players = new ArrayList<>(6);
 
-    @JsonIgnoreProperties({"playerAuthToken", "playerPassword"})
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "current_player_player_id")
     private Player currentPlayer;
 
-    @JsonIgnoreProperties({"playerAuthToken", "playerPassword"})
     @ManyToOne
     @JoinColumn(name = "attacking_player_player_id")
     private Player attackingPlayer;
@@ -53,7 +50,6 @@ public class Game {
     @JoinColumn(name = "deck_deck_id")
     private Deck deck;
 
-    @JsonIgnore
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(name = "game_players_cards",
             joinColumns = @JoinColumn(name = "game_null", referencedColumnName = "gameId"),
@@ -70,16 +66,11 @@ public class Game {
             inverseJoinColumns = @JoinColumn(name = "countries_game_db_id", referencedColumnName = "gameDbCountryId"))
     List<Country> countries = new ArrayList<>();
 
-    @JsonIgnore
     private int attackingDice1;
-    @JsonIgnore
     private int attackingDice2;
-    @JsonIgnore
     private int attackingDice3;
 
-    @JsonIgnore
     private int defendingDice1;
-    @JsonIgnore
     private int defendingDice2;
 
     private int armiesToPlay;
@@ -577,6 +568,16 @@ public class Game {
         this.stage = STAGE.DISCARD;
         log(this.currentPlayer.getPlayerName() + "'s turn");
         return card;
+    }
+
+    public Hand getPlayersHand(Player player) {
+        Hand handOutput = null;
+        for (Hand h : playersCards) {
+            if (h.getHeldBy().equals(player)) {
+                handOutput = h;
+            }
+        }
+        return handOutput;
     }
 
     public enum STAGE {
