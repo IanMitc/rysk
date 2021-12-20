@@ -13,11 +13,11 @@ export interface GameState {
   playersCards?: Hand;
   logs: GameLog[];
   countries: Country[];
-  attackingDice1?: number;
-  attackingDice2?: number;
-  attackingDice3?: number;
-  defendingDice1?: number;
-  defendingDice2?: number;
+  attackingDice1: number;
+  attackingDice2: number;
+  attackingDice3: number;
+  defendingDice1: number;
+  defendingDice2: number;
   armiesToPlay: number;
   playerWon: boolean;
   bonusArmies: number;
