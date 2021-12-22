@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { update } from "../Slices/playerSlice";
+import  playerReducer  from "../Slices/playerSlice";
+import gameReducer from "../Slices/gameSlice"
 
 export const store = configureStore({
   reducer: {
-    loggedInPlayer: update,
-    // currentGame: gameReducer,
+    loggedInPlayer: playerReducer,
+    currentGame: gameReducer,
   },
 });
 

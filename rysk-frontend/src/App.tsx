@@ -13,7 +13,7 @@ function App() {
   const [cookies, setCookie] = useCookies(["player"]);
 
   useEffect(() => {
-    setPlayer(cookies.player);
+    // setPlayer(cookies.player);
   });
 
   return (

@@ -14,12 +14,12 @@ export const playerSlice = createSlice({
   name: "loggedInPlayer",
   initialState,
   reducers: {
-    update: (state, action: PayloadAction<Player>) => {
+    updatePlayer: (state, action: PayloadAction<Player>) => {
       state = action.payload;
     },
   },
 });
 
-export const { update } = playerSlice.actions;
+export const { updatePlayer } = playerSlice.actions;
 export const selectPlayer = (state: RootState) => state.loggedInPlayer;
 export default playerSlice.reducer;
