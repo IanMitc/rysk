@@ -43,7 +43,7 @@ export const Register = () => {
         }
       }}
     >
-      <Form.Group controlId="formGroupEmail">
+      <Form.Group controlId="formGroupName">
         <Form.Label>Name</Form.Label>
         <Form.Control
           type="text"

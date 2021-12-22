@@ -3,16 +3,23 @@ import axios from "axios";
 import { Player } from "../../Interfaces/Player/Player";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { useAppDispatch, useAppSelector } from "../../Store/hooks";
+import { update } from "../../Slices/playerSlice";
 
 export const Login = () => {
+  const playerSelector = useAppSelector((state) => state.loggedInPlayer)
+  const dispatch = useAppDispatch;
+
   const [player, setPlayer] = useState<Player>({
     playerEmail: "",
     playerPassword: "",
   });
 
-  useEffect(() => {
-    console.log(player);
-  });
+  const [loading, setLoading] = useState<boolean>();
+
+  const [cookies, setCookie] = useCookies(["player"]);
 
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPlayer({
@@ -20,11 +27,13 @@ export const Login = () => {
       [event.target.name]: event.target.value,
     });
   };
+
   return (
     <Form
       onSubmit={async (event) => {
         event.preventDefault();
         try {
+          setLoading(true);
           const response = await axios.post(
             "http://localhost:8080/player/login",
             player
@@ -39,6 +48,10 @@ export const Login = () => {
           });
         } catch (error) {
           console.log(error);
+        } finally {
+          setLoading(false);
+          setCookie("player", player, { path: "/" });
+          dispatch();
         }
       }}
     >
@@ -62,9 +75,16 @@ export const Login = () => {
           placeholder="Enter Password"
         />
       </Form.Group>
-      <Button variant="primary" type="submit" block={true}>
-        Login
-      </Button>
+      <Form.Group controlId="formGroupButtons" className="row">
+        <Button variant="primary" type="submit">
+          Login
+        </Button>
+        <Link className="btn btn-secondary" to="/register">
+          Register
+        </Link>
+      </Form.Group>
     </Form>
   );
 };
+
+

@@ -1,6 +1,6 @@
 export interface Player {
   playerId?: number;
-  playerEmail: string;
+  playerEmail?: string;
   playerName?: string;
   playerAuthToken?: string;
   playerPassword?: string;
