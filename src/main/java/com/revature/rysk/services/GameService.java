@@ -1,9 +1,9 @@
 package com.revature.rysk.services;
 
+import com.revature.rysk.dto.GameLogDto;
 import com.revature.rysk.entities.Game.Card;
 import com.revature.rysk.entities.Game.Country;
 import com.revature.rysk.entities.Game.Game;
-import com.revature.rysk.entities.Game.GameLog;
 import com.revature.rysk.entities.Player.Player;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +22,10 @@ public interface GameService {
     //and they're not there, but it might be good just to notify the other players
     String exitGame(Player player, long gameId);
 
-    List<GameLog> getFullLog(Player player, long gameId);
+    List<GameLogDto> getFullLog(Player player, long gameId);
 
     //gets all log messages after specific message
-    List<GameLog> tailLog(Player player, long gameId, int logId);
+    List<GameLogDto> tailLog(Player player, long gameId, int logId);
 
     // For when the player does not want to discard any cards
     int discard(Player player, long gameId);

@@ -1,8 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { GameProps } from "..";
 
-export const PlayForfeitButtons = (props: GameProps) => {
+export const PlayForfeitButtons = () => {
   <div className="row">
     <Router>
       <Link to="/play?id={ props.id }" className="btn btn-primary">
