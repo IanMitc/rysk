@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import "./index.css";
 import axios from "axios";
-import { updatePlayer } from "../../../features/player/playerSlice";
+import { updatePlayer } from "../../features/player/playerSlice";
 
 const Register = () => {
   const loggedInPlayer = useSelector((state) => state.loggedInPlayer.value);

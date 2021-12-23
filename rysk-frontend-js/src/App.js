@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import Register from "./Components/Pages/Register";
+import Register from "./pages/Register";
 import { updatePlayer } from "./features/player/playerSlice";
 
 function App() {
