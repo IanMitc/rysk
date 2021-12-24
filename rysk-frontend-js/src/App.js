@@ -4,8 +4,8 @@ import { useSelector } from "react-redux";
 import Register from "./pages/Register";
 import { updatePlayer } from "./features/player/playerSlice";
 import { updateGame } from "./features/game/gameSlice";
-import { GameBoard } from "./components/Game/GameBoard";
-import Logs from "./components/Game/Logs";
+import { GameBoard } from "./pages/Game/GameBoard";
+import {Logs} from "./pages/Game/Logs";
 
 function App() {
   const dispatch = useDispatch();

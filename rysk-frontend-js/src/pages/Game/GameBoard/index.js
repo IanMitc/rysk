@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { PlayerDisplay } from "./PlayerDisplay";
 import { CountryCardItem } from "./CountryCardItem";
 import { Logs } from "../Logs";
-import { CardColumns, CardGroup } from "react-bootstrap";
+import { CardColumns, CardDeck, CardGroup } from "react-bootstrap";
 
 export const GameBoard = () => {
   const loggedInPlayer = useSelector((state) => state.loggedInPlayer.value);

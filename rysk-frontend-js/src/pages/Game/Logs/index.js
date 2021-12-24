@@ -3,7 +3,7 @@ import { ListGroup } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { LogItem } from "./LogItem";
 
-const Logs = () => {
+export const Logs = () => {
   const logs = useSelector((state) => state.game.value.logs);
   console.log(logs);
   return (
@@ -14,4 +14,3 @@ const Logs = () => {
     </ListGroup>
   );
 };
-export default Logs;
