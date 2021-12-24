@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Register from "./pages/Register";
 import { updatePlayer } from "./features/player/playerSlice";
-
+import "bootstrap/dist/css/bootstrap.min.css";
 function App() {
   const loggedInPlayer = useSelector((state) => state.loggedInPlayer.value);
   const dispatch = useDispatch();
