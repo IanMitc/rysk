@@ -5,7 +5,7 @@ import Register from "./pages/Register";
 import { updatePlayer } from "./features/player/playerSlice";
 import { updateGame } from "./features/game/gameSlice";
 import { GameBoard } from "./components/Game/GameBoard";
-import { Logs } from "./components/Game/Logs";
+import Logs from "./components/Game/Logs";
 
 function App() {
   const dispatch = useDispatch();
