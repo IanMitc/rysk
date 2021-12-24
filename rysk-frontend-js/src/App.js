@@ -6,6 +6,7 @@ import { updatePlayer } from "./features/player/playerSlice";
 import { updateGame } from "./features/game/gameSlice";
 import { GameBoard } from "./pages/Game/GameBoard";
 import {Logs} from "./pages/Game/Logs";
+import Game from "./pages/Game";
 
 function App() {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ function App() {
     playerPassword: "password",
   };
   //dispatch(updatePlayer(newPlayer));
+  
   dispatch(
     updatePlayer({
       playerId: 1,
@@ -26,6 +28,7 @@ function App() {
       playerAuthToken: "42776053-39f3-484c-80d4-3d89ff38fbd9",
     })
   );
+  
   dispatch(
     updateGame({
       gameId: 1,
@@ -543,8 +546,7 @@ function App() {
 
   return (
     <div className="App">
-      <GameBoard />
-      <Logs />
+     <Game/>
     </div>
   );
 }
