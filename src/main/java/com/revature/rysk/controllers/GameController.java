@@ -9,14 +9,12 @@ import com.revature.rysk.entities.Game.Game;
 import com.revature.rysk.entities.Player.Player;
 import com.revature.rysk.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class GameController {
     @Autowired
     GameService gameService;
@@ -72,9 +70,9 @@ public class GameController {
     @PostMapping("/game/{gameId}/play/discard/{cardType1}/{cardType2}/{cardType3}")
     public int discard(@RequestBody PlayerWithAuthTokenDto playerDto,
                        @PathVariable("gameId") long gameId,
-                       @PathVariable("carType1") Card.TYPE cardType1,
-                       @PathVariable("carType2") Card.TYPE cardType2,
-                       @PathVariable("carType3") Card.TYPE cardType3) {
+                       @PathVariable("cardType1") Card.TYPE cardType1,
+                       @PathVariable("cardType2") Card.TYPE cardType2,
+                       @PathVariable("cardType3") Card.TYPE cardType3) {
         Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.discard(player, gameId, cardType1, cardType2, cardType3);
     }

@@ -292,15 +292,15 @@ public class Game {
                 if (playerFromDb.equals(h.getHeldBy())) {
                     playerHand = h;
                     playerHandList = h.getCards();
-                    workingHands.remove(h);
                 }
             }
 
             if (playerHand == null) {
                 throw new NotFoundException("Hand not found");
-            } else if (playerHandList.size() < 3) {
+            } else if (playerHandList == null || playerHandList.size() < 3) {
                 throw new BadRequestException("Player does not hold enough cards to turn in");
             }
+
 
             boolean hasAll = true;
             for (Card c : discardPile) {
@@ -332,6 +332,8 @@ public class Game {
                 throw new BadRequestException("Not a valid set of cards to turn in");
             }
 
+            //remove old hand to replace with updated hand
+            this.playersCards.remove(playerHand);
             //Create new hand from remaining cards and save to playersCards
             workingHands.add(Hand.builder().heldBy(playerFromDb).cards(playerHandList).build());
             this.playersCards = workingHands;
