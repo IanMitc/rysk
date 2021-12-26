@@ -1,9 +1,10 @@
 import axios from "axios";
 import React from "react";
 import { useState } from "react";
-import { Container, FormGroup, ListGroup } from "react-bootstrap";
+import { Button, Container, Form, FormGroup, ListGroup } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { updateGame } from "../../../../features/game/gameSlice";
 import { CheckableCard } from "./CheckableCard";
 
 export const Discard = () => {
@@ -41,45 +42,73 @@ export const Discard = () => {
     }
   };
 
-  const onClickHandler = async (event) => {
-    await axios
-      .post(
-        "http://localhost:8080/game/" + game.gameId + "/play/discard",
-        loggedInPlayer
-      )
-      .then((result) => {
-        console.log(result);
-      })
-      .error((e) => {
-        console.log(e);
-      })
-      .finally(() => {
-        updateGame();
-      });
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
+    let selectedCards = [];
+    for (let i = 0; i < 5; i++) {
+      let cardChecked = checkedCards[i];
+      if (cardChecked) {
+        selectedCards.push(game.playersCards.cards[i]);
+      }
+    }
+    if (selectedCards.length === 3) {
+      let cardString =
+        "/" +
+        selectedCards[0].type +
+        "/" +
+        selectedCards[1].type +
+        "/" +
+        selectedCards[2].type;
+      await axios
+        .post(
+          "http://localhost:8080/game/" +
+            game.gameId +
+            "/play/discard" +
+            cardString,
+          loggedInPlayer
+        )
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .finally(() => {
+          updateCurrentGame();
+        });
+    } else {
+      setErrorMessage("You must choose 3 cards");
+    }
   };
 
-  const updateGame = async () => {
-    const updatedGame = await axios.post(
-      "http://localhost:8080/game/" + game.gameId + "join",
-      loggedInPlayer
-    );
-    dispatch(updateGame, updatedGame);
+  const updateCurrentGame = async () => {
+    await axios
+      .post(
+        "http://localhost:8080/game/" + game.gameId + "/join",
+        loggedInPlayer
+      )
+      .then((response) => {
+        dispatch(updateGame(response.data));
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   };
 
   const noCardsHandler = async () => {
-    await axios
+      await axios
       .post(
         "http://localhost:8080/game/" + game.gameId + "/play/discard",
         loggedInPlayer
       )
-      .then((result) => {
-        console.log(result);
+      .then((response) => {
+        console.log(response);
       })
-      .error((e) => {
+      .catch((e) => {
         console.log(e);
       })
       .finally(() => {
-        updateGame();
+        updateCurrentGame();
       });
   };
 
@@ -89,28 +118,31 @@ export const Discard = () => {
 
   return (
     <Container>
-      <h4>Choose 3 cards to Discard</h4>
-      <FormGroup>
-        <ListGroup>
-          {game.playersCards.cards.length < 3
-            ? game.playersCards.cards.map((card, id) => (
-                <ListGroup.Item key={id}>{card.type}</ListGroup.Item>
-              ))
-            : game.playersCards.cards.map((card, id) => {
-                console.log("This is the id: " + id);
-                console.log(checkedCards[id]);
-                return (
-                  <CheckableCard
-                    card={card}
-                    checked={checkedCards[id]}
-                    onChange={onCheckHandler}
-                    name={id}
-                    key={id}
-                  />
-                );
-              })}
-        </ListGroup>
-      </FormGroup>
+      <h4>Choose cards to Discard(Select 3)</h4>
+      <Form onSubmit={onSubmitHandler}>
+        <FormGroup>
+          <ListGroup>
+            {game.playersCards.cards.length < 3
+              ? game.playersCards.cards.map((card, id) => (
+                  <ListGroup.Item key={id}>{card.type}</ListGroup.Item>
+                ))
+              : game.playersCards.cards.map((card, id) => {
+                  return (
+                    <CheckableCard
+                      card={card}
+                      checked={checkedCards[id]}
+                      onChange={onCheckHandler}
+                      name={id}
+                      key={id}
+                    />
+                  );
+                })}
+          </ListGroup>
+        </FormGroup>
+        <Button variant="primary" type="submit">
+          Submit
+        </Button>
+      </Form>
       {errorMessage}
     </Container>
   );

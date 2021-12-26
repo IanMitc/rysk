@@ -5,7 +5,6 @@ import { LogItem } from "./LogItem";
 
 export const Logs = () => {
   const logs = useSelector((state) => state.game.value.logs);
-  console.log(logs);
   return (
     <ListGroup as="ol">
       {logs.map((log, index) => (

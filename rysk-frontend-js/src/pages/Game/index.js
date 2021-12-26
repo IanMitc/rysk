@@ -12,7 +12,7 @@ function Game() {
           <GameBoard />
         </Col>
         <Col>
-        <GamePlay/>
+          <GamePlay />
         </Col>
       </Row>
       <Logs />

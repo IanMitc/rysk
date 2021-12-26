@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Card } from "react-bootstrap";
 
 export const CountryCardItem = (props) => {
-    console.log(props)
-
   return (
     <Card>
         <Card.Title>{props.country.printableName}</Card.Title>

@@ -2,7 +2,6 @@ import React from "react";
 import { Form, ListGroup } from "react-bootstrap";
 
 export const CheckableCard = (props) => {
-  console.log(props)
   return (
     <ListGroup.Item>
       <Form.Check

@@ -61,6 +61,7 @@ function App() {
           { type: "Joker" },
         ],
       },
+      // playersCards: null,
       logs: [
         {
           message: "New Game Started",
@@ -540,7 +541,7 @@ function App() {
       defendingDice2: 0,
       armiesToPlay: 0,
       playerWon: false,
-      bonusArmies: 4,
+      bonusArmies: 0,
       stage: "DISCARD",
     })
   );
