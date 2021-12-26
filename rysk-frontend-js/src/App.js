@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import Register from "./pages/Register";
 import { updatePlayer } from "./features/player/playerSlice";
 import { updateGame } from "./features/game/gameSlice";
-import { GameBoard } from "./pages/Game/GameBoard";
-import {Logs} from "./pages/Game/Logs";
 import Game from "./pages/Game";
 
 function App() {
@@ -19,7 +15,7 @@ function App() {
     playerPassword: "password",
   };
   //dispatch(updatePlayer(newPlayer));
-  
+
   dispatch(
     updatePlayer({
       playerId: 1,
@@ -28,7 +24,7 @@ function App() {
       playerAuthToken: "42776053-39f3-484c-80d4-3d89ff38fbd9",
     })
   );
-  
+
   dispatch(
     updateGame({
       gameId: 1,
@@ -58,7 +54,12 @@ function App() {
       attackingCountry: null,
       defendingCountry: null,
       playersCards: {
-        cards: null,
+        cards: [
+          { type: "Horseman" },
+          { type: "Cannon" },
+          { type: "FootSoldier" },
+          { type: "Joker" },
+        ],
       },
       logs: [
         {
@@ -546,7 +547,7 @@ function App() {
 
   return (
     <div className="App">
-     <Game/>
+      <Game />
     </div>
   );
 }

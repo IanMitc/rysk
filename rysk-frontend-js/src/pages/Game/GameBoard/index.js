@@ -8,9 +8,7 @@ import { CardColumns, CardDeck, CardGroup } from "react-bootstrap";
 
 export const GameBoard = () => {
   const loggedInPlayer = useSelector((state) => state.loggedInPlayer.value);
-  const currentGameCountries = useSelector(
-    (state) => state.game.value.countries
-  );
+  const currentGameCountries = useSelector((state) => state.game.value.countries);
   const currentGamePlayers = useSelector((state) => state.game.value.players);
   const dispatch = useDispatch();
 
