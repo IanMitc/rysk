@@ -120,6 +120,24 @@ export const Discard = () => {
     noCardsHandler();
   }
 
+  let cardsList = ""
+  if (game.playersCards.cards !== null){
+    cardsList = game.playersCards.cards.length < 3
+      ? game.playersCards.cards.map((card, id) => (
+          <ListGroup.Item key={id}>{card.type}</ListGroup.Item>
+        ))
+      : game.playersCards.cards.map((card, id) => {
+          return (
+            <CheckableCard
+              card={card}
+              checked={checkedCards[id]}
+              onChange={onCheckHandler}
+              name={id}
+              key={id}
+            />
+          );
+        })
+  }
   return (
     <Container>
       {game.currentPlayer.playerName} is deciding whether to discard <br />
@@ -127,21 +145,7 @@ export const Discard = () => {
       <Form onSubmit={onSubmitHandler}>
         <FormGroup>
           <ListGroup>
-            {game.playersCards.cards.length < 3
-              ? game.playersCards.cards.map((card, id) => (
-                  <ListGroup.Item key={id}>{card.type}</ListGroup.Item>
-                ))
-              : game.playersCards.cards.map((card, id) => {
-                  return (
-                    <CheckableCard
-                      card={card}
-                      checked={checkedCards[id]}
-                      onChange={onCheckHandler}
-                      name={id}
-                      key={id}
-                    />
-                  );
-                })}
+            {cardsList}
           </ListGroup>
         </FormGroup>
         <Button variant="primary" type="submit">
