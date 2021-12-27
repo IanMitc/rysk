@@ -25,7 +25,7 @@ public class GameDto {
     private Country defendingCountry;
     private Hand playersCards;
     private List<GameLogDto> logs;
-    private List<Country> countries;
+    private List<CountryDto> countries;
     private int attackingDice1;
     private int attackingDice2;
     private int attackingDice3;
@@ -39,7 +39,6 @@ public class GameDto {
     public static GameDto getDto(Game game, Player player) {
         GameDto dto = GameDto.builder()
                 .gameId(game.getGameId())
-                .countries(game.getCountries())
                 .armiesToPlay(game.getArmiesToPlay())
                 .playerWon(game.isPlayerWon())
                 .bonusArmies(game.getBonusArmies())
@@ -68,6 +67,13 @@ public class GameDto {
             dto.setDefendingDice1(game.getDefendingDice1() + 1);
             dto.setDefendingDice2(game.getDefendingDice2() + 1);
         }
+        List<CountryDto> countriesDto = new ArrayList<>();
+
+        for (Country c : game.getCountries()) {
+            countriesDto.add(CountryDto.getDTO(c));
+        }
+
+        dto.setCountries(countriesDto);
 
         List<GameLog> gameLogs = game.getLogs();
         List<GameLogDto> gameLogDtos = new ArrayList<>();

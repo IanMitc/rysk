@@ -367,6 +367,7 @@ public class Game {
         if(this.armiesToPlay == 0){
             this.stage=STAGE.ATTACK;
         }
+        this.log(playerFromDb.getPlayerName()+ " placed " + numberOfArmies + " armies on " + country.getPrintableName());
         return country;
     }
 
