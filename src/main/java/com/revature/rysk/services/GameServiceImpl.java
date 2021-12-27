@@ -161,6 +161,15 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public String attack(Player player, Long gameId) {
+        Player playerFromDb = checkAuthorized(player);
+        Game game = getGame(playerFromDb, gameId);
+        game.attack(playerFromDb);
+        gameRepository.saveAndFlush(game);
+        return "Success";
+    }
+
+    @Override
     @Transactional
     public List<Integer> defend(Player player, long gameId, int numberOfDice) {
         Player playerFromDb = checkAuthorized(player);
@@ -197,13 +206,6 @@ public class GameServiceImpl implements GameService {
     public List<Game> getGames(Player player) {
         Player playerFromDb = checkAuthorized(player);
         return gameRepository.findGamesByPlayers_PlayerId(playerFromDb.getPlayerId());
-    }
-
-    @Override
-    public String attack(Player player, Long gameId) {
-        Player playerFromDb = checkAuthorized(player);
-        Game game = getGame(playerFromDb, gameId);
-        return game.attack(playerFromDb);
     }
 
     private Player checkAuthorized(Player player) {

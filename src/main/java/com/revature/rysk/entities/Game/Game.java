@@ -416,6 +416,13 @@ public class Game {
         roll.add(attackingDice1);
         roll.add(attackingDice2);
         roll.add(attackingDice3);
+
+        this.log(currentPlayer.getPlayerName()
+                + " attacked "
+                + defendingCountry.getPrintableName()
+                + " with "
+                + attackingCountry.getPrintableName());
+
         return roll.subList(0, numberOfDice);
     }
 
@@ -582,10 +589,10 @@ public class Game {
         return handOutput;
     }
 
-    public String attack(Player playerFromDb) {
+    public void attack(Player playerFromDb) {
         checkStage(playerFromDb, STAGE.ATTACK);
         this.stage = STAGE.MOVE;
-        return "Success";
+        this.log(currentPlayer.getPlayerName() + " ended his attack");
     }
 
     public enum STAGE {
