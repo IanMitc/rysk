@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 @Entity
 @Getter
@@ -21,11 +21,11 @@ public class Deck {
     @SequenceGenerator(name = "deck_id_generator", sequenceName = "deck_id_sequence")
     private long deckId;
 
-    @Embedded
-    private Stack<Card> cards;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Card> cards;
 
     public void newDeck() {
-        this.cards = new Stack<>();
+        this.cards = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
             this.cards.add(Card.builder().type(Card.TYPE.Cannon).build());
             this.cards.add(Card.builder().type(Card.TYPE.FootSoldier).build());
@@ -38,7 +38,9 @@ public class Deck {
     }
 
     public Card draw() {
-        return this.cards.pop();
+        Card card = this.cards.get(0);
+        this.cards.remove(card);
+        return card;
     }
 
     public void discard(List<Card> discarded) {

@@ -1,11 +1,11 @@
 package com.revature.rysk.entities.Game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
-@Embeddable
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -13,6 +13,12 @@ import javax.persistence.Enumerated;
 @Builder
 @EqualsAndHashCode
 public class Card {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_id_generator")
+    @SequenceGenerator(name = "card_id_generator", sequenceName = "card_id_sequence")
+    @JsonIgnore
+    Long cardId;
+
     @Enumerated
     private TYPE type;
 

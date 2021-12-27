@@ -18,10 +18,9 @@ public class Hand {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hand_id_generator")
     @SequenceGenerator(name = "hand_id_generator", sequenceName = "hand_id_sequence")
-    @JsonIgnore
     private long handId;
 
-    @Embedded
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Card> cards;
 
     @OneToOne

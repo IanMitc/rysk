@@ -21,7 +21,7 @@ export const Armies = () => {
       playersCountries.push(country);
   });
 
-  const [selectedCountry, setSelectedCountry] = useState(playersCountries[0]);
+  const [selectedCountry, setSelectedCountry] = useState(playersCountries[0] ? playersCountries[0] : "");
 
   const updateCurrentGame = async () => {
     await axios
@@ -102,8 +102,7 @@ export const Armies = () => {
 
   return (
     <div>
-      Place your Armies
-      <br />
+      {game.currentPlayer.playerName} is placing their armies. <br />
       You have {armiesToPlay} armies to play
       <Form onSubmit={onSubmitHandler}>
         <Form.Group controlId="countrySelect">

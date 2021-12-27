@@ -192,6 +192,13 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public void move(Player player, long gameId) {
+        Player playerFromDb = checkAuthorized(player);
+        Game game = getGame(playerFromDb, gameId);
+        game.move(playerFromDb);
+    }
+
+    @Override
     @Transactional
     public Card draw(Player player, long gameId) {
         Player playerFromDb = checkAuthorized(player);

@@ -120,6 +120,15 @@ public class GameController {
         return gameService.move(player, gameId, fromCountryId, toCountryId, numberOfArmies);
     }
 
+    //When player Doesn't want to move
+    @PostMapping("/game/{gameId}/play/move")
+    public String move(@RequestBody PlayerWithAuthTokenDto playerDto,
+                              @PathVariable("gameId") long gameId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
+        gameService.move(player, gameId);
+        return "Success";
+    }
+
     @PostMapping("/game/{gameId}/play/draw")
     public Card draw(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
         Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);

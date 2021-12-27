@@ -47,4 +47,6 @@ public interface GameService {
 
     //ends attack stage
     String attack(Player player, Long gameId);
+
+    void move(Player player, long gameId);
 }

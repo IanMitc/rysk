@@ -49,9 +49,10 @@ function App() {
     if (undefined === loggedInPlayer.playerId) {
       loginPlayer(1);
     }
-    if (game.gameId === -1){
-    loadGame(1);}
-    if (game.currentPlayer.playerId !== loggedInPlayer.playerId) {
+    if (game.gameId === -1) {
+      loadGame(1);
+    }
+    if (game.currentPlayer.playerId !== loggedInPlayer.playerId & game.currentPlayer.playerId !== -1) {
       loginPlayer(game.currentPlayer.playerId);
     }
   });

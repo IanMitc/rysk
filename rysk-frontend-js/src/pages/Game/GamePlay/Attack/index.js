@@ -16,18 +16,18 @@ export const Attack = () => {
   let playersCountries = [];
   countries.map((country) => {
     if (
-      (country.controlledBy.playerId === loggedInPlayer.playerId) &
+      (country.controlledBy.playerId === game.currentPlayer.playerId) &
       (country.armies > 1)
     )
       playersCountries.push(country);
   });
 
-  const [selectedCountry, setSelectedCountry] = useState(playersCountries[0]);
+  const [selectedCountry, setSelectedCountry] = useState(playersCountries[0] ? playersCountries[0] : "");
   const [armiesCanAttack, setArmiesCanAttack] = useState(
-    playersCountries[0].armies - 1
+    playersCountries[0]?playersCountries[0].armies - 1:0
   );
   const [armiesToAttack, setArmiesToAttack] = useState(
-    playersCountries[0].armies - 1
+    playersCountries[0]?playersCountries[0].armies - 1:0
   );
 
   let neighborsArray = [];
@@ -40,7 +40,7 @@ export const Attack = () => {
   });
   let [neighbors, setNeighbors] = useState(neighborsArray);
 
-  const [defendingCountry, setDefendingCountry] = useState(neighborsArray[0]);
+  const [defendingCountry, setDefendingCountry] = useState(neighborsArray[0] ? neighborsArray[0] : "");
   const [attackDice, setAttackDice] = useState(1);
 
   const updateCurrentGame = async () => {
@@ -93,10 +93,9 @@ export const Attack = () => {
         neighborsArray.push(country);
     });
     setNeighbors(neighborsArray);
-    console.log(countries[event.target.value].armies - 1);
     setArmiesCanAttack(countries[event.target.value].armies - 1);
     setArmiesToAttack(countries[event.target.value].armies - 1);
-    setDefendingCountry(neighborsArray[0]);
+    setDefendingCountry(neighborsArray[0] ? neighborsArray[0] : "");
   };
 
   const onDefendChangeHandler = (event) => {
@@ -138,22 +137,9 @@ export const Attack = () => {
         updateCurrentGame();
       });
   };
-  
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(loggedInPlayer);
-    console.log(
-      " " +
-        game.gameId +
-        " " +
-        selectedCountry.countryId +
-        " " +
-        defendingCountry.countryId +
-        " " +
-        armiesToAttack +
-        " " +
-        attackDice
-    );
     axios
       .post(
         "http://localhost:8080/game/" +
@@ -197,9 +183,23 @@ export const Attack = () => {
       });
   };
 
+  let optionList = "";
+  if (playersCountries[0] !== "") {
+    optionList = playersCountries.map((country, id) => {
+      return <CountryOption country={country} key={id} />;
+    });
+  }
+
+  let neighborsOptionList = "";
+  if (neighbors[0] !== "") {
+    neighborsOptionList = neighbors.map((country, id) => (
+      <CountryOption country={country} key={id} />
+    ));
+  }
+
   return (
     <div>
-      Attack
+      {game.currentPlayer.playerName} is deciding whether to attack. <br/>
       <Form onSubmit={onSubmitHandler}>
         <Form.Group>
           <Form.Label>Attacking Country</Form.Label>
@@ -208,9 +208,7 @@ export const Attack = () => {
             label="country"
             onChange={onAttackChangeHandler}
           >
-            {playersCountries.map((country, id) => (
-              <CountryOption country={country} key={id} />
-            ))}
+            {optionList}
           </Form.Control>
         </Form.Group>
         <Form.Group>
@@ -220,9 +218,7 @@ export const Attack = () => {
             label="country"
             onChange={onDefendChangeHandler}
           >
-            {neighbors.map((country, id) => (
-              <CountryOption country={country} key={id} />
-            ))}
+            {neighborsOptionList}
           </Form.Control>
         </Form.Group>
         <Form.Group>

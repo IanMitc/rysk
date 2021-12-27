@@ -429,6 +429,12 @@ public class Game {
         return roll.subList(0, numberOfDice);
     }
 
+    public void attack(Player playerFromDb) {
+        checkStage(playerFromDb, STAGE.ATTACK);
+        this.stage = STAGE.MOVE;
+        this.log(currentPlayer.getPlayerName() + " ended his attack");
+    }
+
     public List<Integer> defend(Player playerFromDb, int numberOfDice) {
         checkStage(playerFromDb, STAGE.DEFEND);
 
@@ -569,6 +575,11 @@ public class Game {
         return changedCountries;
     }
 
+    public void move(Player playerFromDb) {
+        checkStage(playerFromDb, STAGE.MOVE);
+        this.stage = STAGE.DRAW;
+    }
+
     public Card draw(Player playerFromDb) {
         checkStage(playerFromDb, STAGE.DRAW);
 
@@ -594,12 +605,6 @@ public class Game {
             }
         }
         return handOutput;
-    }
-
-    public void attack(Player playerFromDb) {
-        checkStage(playerFromDb, STAGE.ATTACK);
-        this.stage = STAGE.MOVE;
-        this.log(currentPlayer.getPlayerName() + " ended his attack");
     }
 
     public enum STAGE {

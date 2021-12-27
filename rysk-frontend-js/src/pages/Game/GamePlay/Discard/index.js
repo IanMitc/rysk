@@ -122,7 +122,8 @@ export const Discard = () => {
 
   return (
     <Container>
-      <h4>Choose cards to Discard(Select 3)</h4>
+      {game.currentPlayer.playerName} is deciding whether to discard <br />
+      Choose cards to Discard(Select 3)
       <Form onSubmit={onSubmitHandler}>
         <FormGroup>
           <ListGroup>
