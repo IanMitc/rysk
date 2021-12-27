@@ -40,7 +40,7 @@ export const Attack = () => {
   });
   let [neighbors, setNeighbors] = useState(neighborsArray);
 
-  const [defendingCountry, setDefendingCountry] = useState({});
+  const [defendingCountry, setDefendingCountry] = useState(neighborsArray[0]);
   const [attackDice, setAttackDice] = useState(1);
 
   const updateCurrentGame = async () => {
@@ -101,6 +101,43 @@ export const Attack = () => {
     setDefendingCountry(game.countries[event.target.value]);
   };
 
+  const endAttackHandler = async (event) => {
+    event.preventDefault();
+    axios
+      .post(
+        "http://localhost:8080/game/" +
+          game.gameId +
+          "/play/attack",
+        loggedInPlayer
+      )
+      .then((response) => {
+        console.log("In end attack then");
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log("In end attack catch");
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log("Error", error.message);
+        }
+        console.log(error.config);
+      })
+      .finally(() => {
+        console.log("In end attack finally");
+        updateCurrentGame();
+      });
+  }
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     console.log(loggedInPlayer);
@@ -158,74 +195,76 @@ export const Attack = () => {
         updateCurrentGame();
       });
   };
-  if (game.attackingCountry === null) {
-    return (
-      <div>
-        Attack
-        <Form onSubmit={onSubmitHandler}>
-          <Form.Group controlId="attackingCountrySelect">
-            <Form.Label>Attacking Country</Form.Label>
-            <Form.Control
-              as="select"
-              label="country"
-              onChange={onAttackChangeHandler}
+
+  return (
+    <div>
+      Attack
+      <Form onSubmit={onSubmitHandler}>
+        <Form.Group controlId="attackingCountrySelect">
+          <Form.Label>Attacking Country</Form.Label>
+          <Form.Control
+            as="select"
+            label="country"
+            onChange={onAttackChangeHandler}
+          >
+            {playersCountries.map((country, id) => (
+              <CountryOption country={country} key={id} />
+            ))}
+          </Form.Control>
+        </Form.Group>
+        <Form.Group controlId="defendingCountrySelect">
+          <Form.Label>Defending Country</Form.Label>
+          <Form.Control
+            as="select"
+            label="country"
+            onChange={onDefendChangeHandler}
+          >
+            {neighbors.map((country, id) => (
+              <CountryOption country={country} key={id} />
+            ))}
+          </Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>
+            Attacking Armies: <br />
+            {armiesToAttack}/{armiesCanAttack}
+          </Form.Label>
+          <ButtonGroup controlId="attackingArmies">
+            <Button variant="success" size="small" onClick={incrementHandler}>
+              +
+            </Button>
+            <Button variant="danger" size="small" onClick={decrementHandler}>
+              -
+            </Button>
+          </ButtonGroup>
+          <Form.Label>
+            Dice to Roll: <br />
+            {attackDice}
+          </Form.Label>
+          <ButtonGroup controlId="attackingDice">
+            <Button
+              variant="success"
+              size="small"
+              onClick={incrementDiceHandler}
             >
-              {playersCountries.map((country, id) => (
-                <CountryOption country={country} key={id} />
-              ))}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group controlId="defendingCountrySelect">
-            <Form.Label>Defending Country</Form.Label>
-            <Form.Control
-              as="select"
-              label="country"
-              onChange={onDefendChangeHandler}
+              +
+            </Button>
+            <Button
+              variant="danger"
+              size="small"
+              onClick={decrementDiceHandler}
             >
-              {neighbors.map((country, id) => (
-                <CountryOption country={country} key={id} />
-              ))}
-            </Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>
-              Attacking Armies: <br />
-              {armiesToAttack}/{armiesCanAttack}
-            </Form.Label>
-            <ButtonGroup controlId="attackingArmies">
-              <Button variant="success" size="small" onClick={incrementHandler}>
-                +
-              </Button>
-              <Button variant="danger" size="small" onClick={decrementHandler}>
-                -
-              </Button>
-            </ButtonGroup>
-            <Form.Label>
-              Dice to Roll: <br />
-              {attackDice}
-            </Form.Label>
-            <ButtonGroup controlId="attackingDice">
-              <Button
-                variant="success"
-                size="small"
-                onClick={incrementDiceHandler}
-              >
-                +
-              </Button>
-              <Button
-                variant="danger"
-                size="small"
-                onClick={decrementDiceHandler}
-              >
-                -
-              </Button>
-            </ButtonGroup>
-          </Form.Group>
+              -
+            </Button>
+          </ButtonGroup>
+        </Form.Group>
+        <ButtonGroup>
           <Button variant="primary" type="submit">
             Submit
           </Button>
-        </Form>
-      </div>
-    );
-  }
+          <Button variant="danger" onClick={endAttackHandler}>End Attack</Button>
+        </ButtonGroup>
+      </Form>
+    </div>
+  );
 };

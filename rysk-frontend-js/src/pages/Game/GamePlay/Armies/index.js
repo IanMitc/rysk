@@ -61,7 +61,6 @@ export const Armies = () => {
     console.log(
       " " + game.gameId + " " + selectedCountry.countryId + " " + armiesToAdd
     );
-
     axios
       .post(
         "http://localhost:8080/game/" +
@@ -73,11 +72,11 @@ export const Armies = () => {
         loggedInPlayer
       )
       .then((response) => {
-        console.log("In then")
+        console.log("In then");
         console.log(response);
       })
       .catch((error) => {
-        console.log("In catch")
+        console.log("In catch");
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -91,12 +90,12 @@ export const Armies = () => {
           console.log(error.request);
         } else {
           // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
+          console.log("Error", error.message);
         }
         console.log(error.config);
       })
       .finally(() => {
-        console.log("In finally")
+        console.log("In finally");
         updateCurrentGame();
       });
   };
@@ -125,7 +124,7 @@ export const Armies = () => {
               -
             </Button>
           </ButtonGroup>
-        </Form.Group>{" "}
+        </Form.Group>
         <Button variant="primary" type="submit">
           Submit
         </Button>
