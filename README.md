@@ -645,6 +645,29 @@ Success
 
 - Returns an array of up to 3 random numbers for the dice roll.
 
+### //server:port/game/{gameId}/play/attack/
+
+- Ends the Attack stage
+
+#### Input: (post Player)
+
+```
+{
+    "playerId": 1,
+    "playerEmail": "test@example.com",
+    "playerName": "Testy McTestface",
+    "playerAuthToken": "af33be99-0eac-4619-a6b4-a838e513be9e"
+}
+```
+
+- Returns Success
+
+#### Output:
+
+```
+Success
+```
+
 ### //server:port/game/{gameId}/play/defend/{numberOfDice}
 
 - Defend against an attack.

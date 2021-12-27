@@ -44,4 +44,7 @@ public interface GameService {
     Card draw(Player player, long gameId);
 
     List<Game> getGames(Player player);
+
+    //ends attack stage
+    String attack(Player player, Long gameId);
 }

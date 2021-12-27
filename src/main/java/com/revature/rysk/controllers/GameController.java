@@ -97,6 +97,13 @@ public class GameController {
         return gameService.attack(gameId, player, attackingCountryId, defendingCountryId, numberOfArmies, numberOfDice);
     }
 
+    //ends attack stage
+    @PostMapping("/game/{gameId}/play/attack/")
+    public String attack(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
+        Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
+        return gameService.attack(player, gameId);
+    }
+
     @PostMapping("/game/{gameId}/play/defend/{numberOfDice}")
     public List<Integer> defend(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId, @PathVariable("numberOfDice") int numberOfDice) {
         Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);

@@ -364,10 +364,10 @@ public class Game {
 
         country.addArmies(numberOfArmies);
         this.armiesToPlay -= numberOfArmies;
-        if(this.armiesToPlay == 0){
-            this.stage=STAGE.ATTACK;
+        if (this.armiesToPlay == 0) {
+            this.stage = STAGE.ATTACK;
         }
-        this.log(playerFromDb.getPlayerName()+ " placed " + numberOfArmies + " armies on " + country.getPrintableName());
+        this.log(playerFromDb.getPlayerName() + " placed " + numberOfArmies + " armies on " + country.getPrintableName());
         return country;
     }
 
@@ -580,6 +580,12 @@ public class Game {
             }
         }
         return handOutput;
+    }
+
+    public String attack(Player playerFromDb) {
+        checkStage(playerFromDb, STAGE.ATTACK);
+        this.stage = STAGE.MOVE;
+        return "Success";
     }
 
     public enum STAGE {

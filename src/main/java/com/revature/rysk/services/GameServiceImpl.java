@@ -199,6 +199,13 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findGamesByPlayers_PlayerId(playerFromDb.getPlayerId());
     }
 
+    @Override
+    public String attack(Player player, Long gameId) {
+        Player playerFromDb = checkAuthorized(player);
+        Game game = getGame(playerFromDb, gameId);
+        return game.attack(playerFromDb);
+    }
+
     private Player checkAuthorized(Player player) {
 
         if (player.getPlayerPassword() == null && player.getPlayerAuthToken() == null) {
