@@ -62,6 +62,7 @@ public class Game {
             inverseJoinColumns = @JoinColumn(name = "countries_game_db_id", referencedColumnName = "gameDbCountryId"))
     List<Country> countries = new ArrayList<>();
 
+    private int attackingArmies;
     private int attackingDice1;
     private int attackingDice2;
     private int attackingDice3;
@@ -143,6 +144,7 @@ public class Game {
         for (Player p : players) {
             playersCards.add(Hand.builder().heldBy(p).build());
         }
+        this.attackingArmies = 0;
         this.attackingDice1 = -1;
         this.attackingDice2 = -1;
         this.attackingDice3 = -1;
@@ -373,6 +375,7 @@ public class Game {
 
     public List<Integer> attack(Player playerFromDb, int attackingCountryId, int defendingCountryId, int numberOfArmies, int numberOfDice) {
         checkStage(playerFromDb, STAGE.ATTACK);
+        this.attackingArmies = numberOfArmies;
 
         if (numberOfDice > 3 || numberOfDice < 1) {
             throw new BadRequestException("Please roll 1-3 dice");
@@ -387,15 +390,15 @@ public class Game {
             throw new PermissionsException("This is not your country");
         }
 
-        if (numberOfArmies > this.attackingCountry.getArmies() - 1) {
+        if (this.attackingArmies > this.attackingCountry.getArmies() - 1) {
             this.attackingCountry = null;
             this.attackingPlayer = null;
             throw new BadRequestException("You don't have enough armies for this attack");
         }
 
         //Can't roll more dice than the number of attacking armies
-        if (numberOfArmies < numberOfDice) {
-            numberOfDice = numberOfArmies;
+        if (this.attackingArmies < numberOfDice) {
+            numberOfDice = this.attackingArmies;
         }
 
         //Get defending player and set as current, so they can defend
@@ -488,7 +491,10 @@ public class Game {
                 " armies from " + this.defendingCountry.getPrintableName());
 
         if (this.defendingCountry.getArmies() == 0) {
+            int invadingForce = this.attackingArmies - attackerLoses;
             this.defendingCountry.setControlledBy(this.attackingPlayer);
+            this.defendingCountry.setArmies(invadingForce);
+            this.attackingCountry.subtractArmies(invadingForce);
             this.playerWon = true;
             log(this.attackingPlayer.getPlayerName() + " captured " + this.defendingCountry.getPrintableName());
         }
@@ -498,6 +504,7 @@ public class Game {
         this.attackingPlayer = null;
         this.attackingCountry = null;
         this.defendingCountry = null;
+        this.attackingArmies = 0;
         this.attackingDice1 = -1;
         this.attackingDice2 = -1;
         this.attackingDice3 = -1;

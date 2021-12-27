@@ -26,6 +26,7 @@ public class GameDto {
     private Hand playersCards;
     private List<GameLogDto> logs;
     private List<CountryDto> countries;
+    private int attackingArmies;
     private int attackingDice1;
     private int attackingDice2;
     private int attackingDice3;
@@ -40,6 +41,7 @@ public class GameDto {
         GameDto dto = GameDto.builder()
                 .gameId(game.getGameId())
                 .armiesToPlay(game.getArmiesToPlay())
+                .attackingArmies(game.getAttackingArmies())
                 .playerWon(game.isPlayerWon())
                 .bonusArmies(game.getBonusArmies())
                 .stage(game.getStage())
