@@ -98,7 +98,7 @@ public class GameController {
     }
 
     //ends attack stage
-    @PostMapping("/game/{gameId}/play/attack/")
+    @PostMapping("/game/{gameId}/play/attack")
     public String attack(@RequestBody PlayerWithAuthTokenDto playerDto, @PathVariable("gameId") long gameId) {
         Player player = PlayerWithAuthTokenDto.getPlayer(playerDto);
         return gameService.attack(player, gameId);

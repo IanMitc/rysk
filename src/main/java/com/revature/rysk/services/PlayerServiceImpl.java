@@ -27,7 +27,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
         player.setPlayerAuthToken(new AuthToken());
 
-        return playerRepository.save(player);
+        return playerRepository.saveAndFlush(player);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class PlayerServiceImpl implements PlayerService {
             );
         }
 
-        return playerRepository.save(playerCurrent);
+        return playerRepository.saveAndFlush(playerCurrent);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class PlayerServiceImpl implements PlayerService {
 
         playerOutput.setPlayerAuthToken(new AuthToken());
 
-        return playerRepository.save(playerOutput);
+        return playerRepository.saveAndFlush(playerOutput);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class PlayerServiceImpl implements PlayerService {
         Player playerFromDb = checkAuthorized(player);
 
         playerFromDb.setPlayerAuthToken(null);
-        playerRepository.save(playerFromDb);
+        playerRepository.saveAndFlush(playerFromDb);
         return "Success";
     }
 
@@ -91,7 +91,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     private Player checkAuthorized(Player player) {
 
-        if (player.getPlayerPassword() == null && player.getPlayerAuthToken() == null){
+        if (player.getPlayerPassword() == null && player.getPlayerAuthToken() == null) {
             throw new BadRequestException("No authentication provided");
         }
 

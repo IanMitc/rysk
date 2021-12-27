@@ -80,6 +80,8 @@ export const Attack = () => {
       setAttackDice(attackDice - 1);
     }
   };
+
+  
   const onAttackChangeHandler = (event) => {
     setSelectedCountry(countries[event.target.value]);
     let neighborsArray = [];
@@ -105,9 +107,7 @@ export const Attack = () => {
     event.preventDefault();
     axios
       .post(
-        "http://localhost:8080/game/" +
-          game.gameId +
-          "/play/attack",
+        "http://localhost:8080/game/" + game.gameId + "/play/attack",
         loggedInPlayer
       )
       .then((response) => {
@@ -137,7 +137,8 @@ export const Attack = () => {
         console.log("In end attack finally");
         updateCurrentGame();
       });
-  }
+  };
+  
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     console.log(loggedInPlayer);
@@ -200,7 +201,7 @@ export const Attack = () => {
     <div>
       Attack
       <Form onSubmit={onSubmitHandler}>
-        <Form.Group controlId="attackingCountrySelect">
+        <Form.Group>
           <Form.Label>Attacking Country</Form.Label>
           <Form.Control
             as="select"
@@ -212,7 +213,7 @@ export const Attack = () => {
             ))}
           </Form.Control>
         </Form.Group>
-        <Form.Group controlId="defendingCountrySelect">
+        <Form.Group>
           <Form.Label>Defending Country</Form.Label>
           <Form.Control
             as="select"
@@ -229,7 +230,7 @@ export const Attack = () => {
             Attacking Armies: <br />
             {armiesToAttack}/{armiesCanAttack}
           </Form.Label>
-          <ButtonGroup controlId="attackingArmies">
+          <ButtonGroup>
             <Button variant="success" size="small" onClick={incrementHandler}>
               +
             </Button>
@@ -241,7 +242,7 @@ export const Attack = () => {
             Dice to Roll: <br />
             {attackDice}
           </Form.Label>
-          <ButtonGroup controlId="attackingDice">
+          <ButtonGroup>
             <Button
               variant="success"
               size="small"
@@ -262,7 +263,9 @@ export const Attack = () => {
           <Button variant="primary" type="submit">
             Submit
           </Button>
-          <Button variant="danger" onClick={endAttackHandler}>End Attack</Button>
+          <Button variant="danger" onClick={endAttackHandler}>
+            End Attack
+          </Button>
         </ButtonGroup>
       </Form>
     </div>
