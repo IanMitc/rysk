@@ -51,7 +51,10 @@ export const Discard = () => {
         selectedCards.push(game.playersCards.cards[i]);
       }
     }
-    if (selectedCards.length === 3) {
+
+    if (selectedCards.length === 0) {
+      noCardsHandler();
+    } else if (selectedCards.length === 3) {
       let cardString =
         "/" +
         selectedCards[0].type +
@@ -59,6 +62,7 @@ export const Discard = () => {
         selectedCards[1].type +
         "/" +
         selectedCards[2].type;
+
       await axios
         .post(
           "http://localhost:8080/game/" +
@@ -67,8 +71,8 @@ export const Discard = () => {
             cardString,
           loggedInPlayer
         )
-        .then((result) => {
-          console.log(result);
+        .then((response) => {
+          console.log(response);
         })
         .catch((e) => {
           console.log(e);
@@ -92,11 +96,11 @@ export const Discard = () => {
       })
       .catch((error) => {
         console.log(error);
-      })
+      });
   };
 
   const noCardsHandler = async () => {
-      await axios
+    await axios
       .post(
         "http://localhost:8080/game/" + game.gameId + "/play/discard",
         loggedInPlayer

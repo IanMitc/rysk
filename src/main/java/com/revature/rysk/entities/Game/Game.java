@@ -364,6 +364,9 @@ public class Game {
 
         country.addArmies(numberOfArmies);
         this.armiesToPlay -= numberOfArmies;
+        if(this.armiesToPlay == 0){
+            this.stage=STAGE.ATTACK;
+        }
         return country;
     }
 
