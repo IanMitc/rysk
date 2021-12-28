@@ -7,6 +7,7 @@ then npm start.
 The demo will log you in as the first player and as the players change, it will automatically log you in to the active 
 player.
 
+Rules for play can be found at https://www.ultraboardgames.com/risk/game-rules.php
 Full Documentation and examples for the API are at the end of this document.
 
 Credits:
