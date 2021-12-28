@@ -18,7 +18,7 @@ Database Design and Setup
 Demo Web Site
 Documentation
 
-Ahmadwali Zadron
+Ahmadwali Zadron:
 Register Componenet(Unused)
 Login Component(Unused)
 
