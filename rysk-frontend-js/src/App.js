@@ -45,6 +45,7 @@ function App() {
         });
     }
   };
+  
   useEffect(() => {
     if (undefined === loggedInPlayer.playerId) {
       loginPlayer(1);

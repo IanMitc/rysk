@@ -1,9 +1,24 @@
-1. Project Name
-2. Project Description (short explanation of idea)
-3. Feature list
-4. Wire frame
-5. App flow
-6. Distribution of task between team members
+Rysk is an api meant to assist in developing a web based board game. A basic web ui is included. 
+
+Build and run the spring boot api with maven. to run the demo api create some users with the api and create a new game.
+You can then run the react frontend by going into rysk-frontend-js, run npm install to download all dependencies 
+then npm start.
+
+The demo will log you in as the first player and as the players change, it will automatically log you in to the active 
+player.
+
+Full Documentation and examples for the API are at the end of this document.
+
+Credits:
+Ian Mitchell:
+API Design 
+Spring Boot REST Server
+Database Design and Setup
+Demo Web Site
+
+Ahmadwali Zadron
+Register Componenet(Unused)
+Login Component(Unused)
 
 # Rysk REST API version 0.3
 
