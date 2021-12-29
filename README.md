@@ -10,17 +10,17 @@ player.
 Rules for play can be found at https://www.ultraboardgames.com/risk/game-rules.php
 Full Documentation and examples for the API are at the end of this document.
 
-Credits:
-Ian Mitchell:
-API Design 
-Spring Boot REST Server
-Database Design and Setup
-Demo Web Site
-Documentation
+#Credits
+##Ian Mitchell
+- API Design 
+- Spring Boot REST Server
+- Database Design and Setup
+- Demo Web Site
+- Documentation
 
-Ahmadwali Zadron:
-Register Componenet(Unused)
-Login Component(Unused)
+##Ahmadwali Zadron
+- Register Componenet(Unused)
+- Login Component(Unused)
 
 # Rysk REST API version 0.3
 
