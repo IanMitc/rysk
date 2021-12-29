@@ -735,11 +735,3 @@ Success
 ```
 
 - Returns a card.
-
-### TODO: Probably needed for gameplay
-
-- get player hand
-- get current player
-- get current stage
-- get current bonus armies
-- get countries by player id
